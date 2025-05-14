@@ -1,0 +1,14 @@
+.react-international-phone-country-selector-button {
+    width: 100%;
+    height: 48px;
+    background-color: transparent !important;
+    border: none !important;
+  }
+
+  .react-international-phone-country-selector-button {
+    pointer-events: none !important;
+  }
+
+  .react-international-phone-country-selector-button__dropdown-arrow {
+    display: none !important; /* Hide the arrow */
+  }
