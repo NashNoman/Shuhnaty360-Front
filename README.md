@@ -14,7 +14,7 @@ A modern web application for managing shipping operations, built with React, Typ
 ## Tech Stack
 
 - ⚡ [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
-- ⚛️ [React 18](https://reactjs.org/) - A JavaScript library for building user interfaces
+- ⚛️ [React 19](https://reactjs.org/) - A JavaScript library for building user interfaces
 - 🎨 [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
 - 🏗️ [TypeScript](https://www.typescriptlang.org/) - TypeScript is a typed superset of JavaScript
 - 📊 [Recharts](https://recharts.org/) - A composable charting library built on React components
