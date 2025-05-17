@@ -28,6 +28,8 @@ export const getUser = createAsyncThunk("users/getUser", async (id: any) => {
         password: "admin",
       },
     });
+    console.log(response.data);
+
     return response.data;
   } catch (err: any) {
     console.error("API Error:", err.response?.data || err.message);
