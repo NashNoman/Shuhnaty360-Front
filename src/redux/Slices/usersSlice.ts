@@ -1,97 +1,108 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { baseURL } from '../../../config';
-import axios from 'axios';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { baseURL } from "../../../config";
 
-export const getUsers = createAsyncThunk('users/getUsers', async () => {
+export const getUsers = createAsyncThunk("users/getUsers", async () => {
   try {
-    const response = await axios.get(`${baseURL}/accounts/api/`, {
+    const response = await axios.get(`${baseURL}/api/accounts/users/`, {
       auth: {
-        username: 'admin',
-        password: 'admin',
+        username: "admin",
+        password: "admin",
+      },
+    });
+    console.log(response.data);
+
+    return response.data.data;
+  } catch (err: any) {
+    console.error("API Error:", err.response?.data || err.message);
+    throw err;
+  }
+});
+
+export const getUser = createAsyncThunk("users/getUser", async (id: any) => {
+  try {
+    const response = await axios.get(`${baseURL}/api/accounts/users/${id}`, {
+      auth: {
+        username: "admin",
+        password: "admin",
       },
     });
     return response.data;
   } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
+    console.error("API Error:", err.response?.data || err.message);
     throw err;
   }
 });
 
-export const getUser = createAsyncThunk('users/getUser', async (id: any) => {
+export const addUser = createAsyncThunk("users/addUser", async (data: any) => {
   try {
-    const response = await axios.get(`${baseURL}/accounts/api/${id}`, {
+    const response = await axios.post(`${baseURL}/api/accounts/users/`, data, {
       auth: {
-        username: 'admin',
-        password: 'admin',
+        username: "admin",
+        password: "admin",
       },
     });
     return response.data;
   } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
+    console.error("API Error:", err.response?.data || err.message);
     throw err;
   }
 });
 
-export const addUser = createAsyncThunk('users/addUser', async (data: any) => {
-  try {
-    const response = await axios.post(`${baseURL}/accounts/api/`, data, {
-      auth: {
-        username: 'admin',
-        password: 'admin',
-      },
-    });
-    return response.data;
-  } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
-    throw err;
+export const editUser = createAsyncThunk(
+  "users/editUser",
+  async ({ id, data }: any) => {
+    try {
+      const response = await axios.put(
+        `${baseURL}/accounts/users/${id}/`,
+        data,
+        {
+          auth: {
+            username: "admin",
+            password: "admin",
+          },
+        }
+      );
+      return response.data;
+    } catch (err: any) {
+      console.error("API Error:", err.response?.data || err.message);
+      throw err;
+    }
   }
-});
+);
 
-export const editUser = createAsyncThunk('users/editUser', async ({ id, data }: any) => {
-  try {
-    const response = await axios.put(
-      `${baseURL}/accounts/api/${id}/`,
-      data,
-      {
-        auth: {
-          username: 'admin',
-          password: 'admin',
-        },
-      }
-    );
-    return response.data;
-  } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
-    throw err;
+export const deleteUser = createAsyncThunk(
+  "users/deleteUser",
+  async (id: any) => {
+    try {
+      const response = await axios.delete(
+        `${baseURL}/api/accounts/users/${id}`,
+        {
+          auth: {
+            username: "admin",
+            password: "admin",
+          },
+        }
+      );
+      return response.data;
+    } catch (err: any) {
+      console.error("API Error:", err.response?.data || err.message);
+      throw err;
+    }
   }
-});
-
-export const deleteUser = createAsyncThunk('users/deleteUser', async (id: any) => {
-  try {
-    const response = await axios.delete(`${baseURL}/accounts/api/${id}`, {
-      auth: {
-        username: 'admin',
-        password: 'admin',
-      },
-    });
-    return response.data;
-  } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
-    throw err;
-  }
-});
+);
 
 const usersSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState: {
     users: [],
     user: {
       id: null,
-      username: '',
-      email: '',
-      first_name: '',
-      last_name: '',
+      username: "",
+      email: "",
+      first_name: "",
+      last_name: "",
       is_active: false,
       is_staff: false,
     },

@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import { FiPlus } from 'react-icons/fi';
-import Pagination from '../../components/pagination/Pagination';
-import SelectMenu from '../../components/SelectMenu';
-import SearchInput from '../../components/searchInput/SearchInput';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
-import { getUsers } from '../../redux/Slices/usersSlice';
-import UsersTable from '../../components/usersDrivers/UsersTable';
-import { useSidebar } from '../../context/SidebarContext';
+import { useEffect, useState } from "react";
+import { FiPlus } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Pagination from "../../components/pagination/Pagination";
+import SearchInput from "../../components/searchInput/SearchInput";
+import SelectMenu from "../../components/SelectMenu";
+import UsersTable from "../../components/usersDrivers/UsersTable";
+import { useSidebar } from "../../context/SidebarContext";
+import { getUsers } from "../../redux/Slices/usersSlice";
+import { AppDispatch, RootState } from "../../redux/store";
 
 const selectMenuOptions = [
-  { label: 'الكل', value: 'all' },
-  { label: 'متاح', value: 'available' },
-  { label: 'غير متاح', value: 'notAvailable' },
+  { label: "الكل", value: "all" },
+  { label: "متاح", value: "available" },
+  { label: "غير متاح", value: "notAvailable" },
 ];
 
 const Users = () => {
   const navigate = useNavigate();
-  const [selectedUserStatus, setSelectedUserStatus] = useState('الكل');
+  const [selectedUserStatus, setSelectedUserStatus] = useState("الكل");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const users = useSelector((state: RootState) => state.users.users);
   const isLoading = useSelector((state: RootState) => state.users.isLoading);
@@ -41,17 +41,22 @@ const Users = () => {
     setCurrentPage(1);
   };
 
-  const fieldsToCheck = ['username', 'first_name', 'last_name', 'email'];
+  const fieldsToCheck = ["username", "first_name", "last_name", "email"];
 
-  const filteredData = users.filter((user: any) =>
-    fieldsToCheck.some((field) => {
+  const filteredData = users.filter((user: any) => {
+    const matchesSearch = fieldsToCheck.some((field) => {
       const fieldValue = user[field];
       return (
-        typeof fieldValue === 'string' &&
+        typeof fieldValue === "string" &&
         fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
       );
-    }),
-  );
+    });
+    const matchesStatus =
+      selectedUserStatus === "الكل" ||
+      (selectedUserStatus === "متاح" && user.status === "available") ||
+      (selectedUserStatus === "غير متاح" && user.status === "notAvailable");
+    return matchesSearch && matchesStatus;
+  });
 
   const sortedData = [...filteredData].sort((a: any, b: any) => a.id - b.id);
 
@@ -60,21 +65,21 @@ const Users = () => {
       {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && 'lg:transform -translate-x-[5%]'
+            isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className='loader'></span>
+          <span className="loader"></span>
         </div>
       )}
-      <div className='p-4'>
+      <div className="p-4">
         <div
           className={`flex flex-col items-start gap-2 md:flex-row md:items-center md:justify-between mb-10`}
         >
           <button
-            className='flex items-center py-2 px-6 gap-2 rounded-lg bg-[#DD7E1F] text-[#FCFCFC] text-lg'
+            className="flex items-center py-2 px-6 gap-2 rounded-lg bg-[#DD7E1F] text-[#FCFCFC] text-lg"
             onClick={() => {
-              navigate('/users/add-user');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              navigate("/users/add-user");
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
             إضافة مندوب
@@ -85,9 +90,11 @@ const Users = () => {
             onChange={(e: any) => setSearchValue(e.target.value)}
           />
         </div>
-        <div className='shadow-xl rounded-3xl px-8 py-4'>
-          <div className='w-full flex justify-between items-center mb-6'>
-            <h1 className='xs:text-lg text-xl text-nowrap font-bold'>قائمة المناديب</h1>
+        <div className="shadow-xl rounded-3xl px-8 py-4">
+          <div className="w-full flex justify-between items-center mb-6">
+            <h1 className="xs:text-lg text-xl text-nowrap font-bold">
+              قائمة المناديب
+            </h1>
             <SelectMenu
               options={selectMenuOptions}
               selectedItem={selectedUserStatus}
@@ -99,7 +106,7 @@ const Users = () => {
             data={sortedData}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
-            page='users'
+            page="users"
           />
           <Pagination
             totalItems={sortedData.length}
