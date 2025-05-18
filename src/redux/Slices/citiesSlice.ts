@@ -1,50 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { baseURL } from '../../../config';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { baseURL } from "../../../config";
 
-export const getCities = createAsyncThunk('cities/getCities', async () => {
+export const getCities = createAsyncThunk("cities/getCities", async () => {
   try {
-    const response = await axios.get(`${baseURL}/cities/api/`, {
+    const response = await axios.get(`${baseURL}/api/cities/api/`, {
       auth: {
-        username: 'admin',
-        password: 'admin',
+        username: "admin",
+        password: "admin",
       },
     });
     return response.data;
   } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
+    console.error("API Error:", err.response?.data || err.message);
     throw err;
   }
 });
 
-export const getCity = createAsyncThunk('cities/getCity', async (id: any) => {
+export const getCity = createAsyncThunk("cities/getCity", async (id: any) => {
   try {
-    const response = await axios.get(`${baseURL}/cities/api/${id}`, {
+    const response = await axios.get(`${baseURL}/api/cities/api/${id}`, {
       auth: {
-        username: 'admin',
-        password: 'admin',
+        username: "admin",
+        password: "admin",
       },
     });
     return response.data;
   } catch (err: any) {
-    console.error('API Error:', err.response?.data || err.message);
+    console.error("API Error:", err.response?.data || err.message);
     throw err;
   }
 });
 
 const citiesSlice = createSlice({
-  name: 'cities',
+  name: "cities",
   initialState: {
     cities: [
       {
         id: 0,
-        name: '',
-      }
+        name: "",
+      },
     ],
     city: {
       id: 0,
-      name: '',
+      name: "",
     },
     isLoading: false,
   },

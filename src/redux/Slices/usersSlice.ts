@@ -57,7 +57,7 @@ export const editUser = createAsyncThunk(
   async ({ id, data }: any) => {
     try {
       const response = await axios.put(
-        `${baseURL}/accounts/users/${id}/`,
+        `${baseURL}/api/accounts/users/${id}/`,
         data,
         {
           auth: {

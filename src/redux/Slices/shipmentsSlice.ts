@@ -7,7 +7,7 @@ export const getShipments = createAsyncThunk(
   "shipments/getShipments",
   async () => {
     try {
-      const response = await axios.get(`${baseURL}/shipments/api/`, {
+      const response = await axios.get(`${baseURL}/api/shipments/api/`, {
         auth: {
           username: "admin",
           password: "admin",
