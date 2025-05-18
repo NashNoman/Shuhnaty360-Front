@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { Toaster } from "sonner";
 import Layout from "./Layout";
 import { SidebarProvider } from "./context/SidebarContext";
 import DashboardPage from "./pages/Dashboard";
@@ -39,7 +38,6 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <div dir="rtl">
-      <Toaster />
       <QueryClientProvider client={queryClient}>
         <SidebarProvider>
           <BrowserRouter>

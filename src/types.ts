@@ -1,3 +1,20 @@
+export type ApiResponse<T> = {
+  status: string;
+  message: string;
+  data: T;
+};
+
+export type ApiListResponse<T> = {
+  status: string;
+  message: string;
+  data: {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: T[];
+  };
+};
+
 export type User = {
   id: number;
   username: string;
@@ -10,6 +27,8 @@ export type User = {
   phone?: string;
   company_branch?: string;
 };
+
+export type GetUsersResponse = ApiListResponse<User>;
 
 export type Driver = {
   id: number;
