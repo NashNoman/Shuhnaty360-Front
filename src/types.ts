@@ -29,6 +29,7 @@ export type User = {
 };
 
 export type GetUsersResponse = ApiListResponse<User>;
+export type GetUserDetailsResponse = ApiResponse<User>;
 
 export type Driver = {
   id: number;

@@ -5,17 +5,15 @@ import Pagination from "../../components/pagination/Pagination";
 import UserDriverDetailsTable from "../../components/usersDrivers/userDriverDetails/UserDriverDetailsTable";
 // import PieChart from '../../components/charts/PieChart';
 
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useParams } from "react-router-dom";
-import { baseURL } from "../../../config";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
 import mailIcon from "../../assets/images/users/sms.svg";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
 import { useSidebar } from "../../context/SidebarContext";
-import { User } from "../../types";
+import { useFetch } from "../../hooks/useApi";
+import { GetUserDetailsResponse, User } from "../../types";
 
 const userShipmentsData = [
   {
@@ -114,25 +112,14 @@ const UsersDetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { isSidebarOpen } = useSidebar();
-  const { isLoading, data: user } = useQuery<User>({
-    queryKey: ["user", userId],
-    queryFn: async () => {
-      const response = await axios.get(
-        baseURL + `/api/accounts/users/${userId}/`,
-        {
-          auth: {
-            username: "admin",
-            password: "admin",
-          },
-        }
-      );
+  const { isLoading, data } = useFetch<GetUserDetailsResponse>(
+    ["user", userId],
+    `/accounts/users/${userId}`,
+    undefined,
+    !!userId
+  );
 
-      console.log(response.data);
-
-      return response.data.data;
-    },
-    enabled: !!userId,
-  });
+  const user: User | undefined = data?.data;
 
   const moreInfoData = [
     {

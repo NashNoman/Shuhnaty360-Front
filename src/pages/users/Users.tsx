@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -8,8 +7,8 @@ import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import UsersTable from "../../components/usersDrivers/UsersTable";
 import { useSidebar } from "../../context/SidebarContext";
+import { useFetch } from "../../hooks/useApi";
 import { GetUsersResponse } from "../../types";
-import api from "../../utils/axios";
 
 const selectMenuOptions = [
   { label: "الكل", value: "all" },
@@ -25,16 +24,10 @@ const Users = () => {
   const [searchValue, setSearchValue] = useState("");
   const { isSidebarOpen } = useSidebar();
 
-  const { data: res, isLoading } = useQuery<GetUsersResponse>({
-    queryKey: ["users"],
-    queryFn: async () => {
-      const res = await api.get("/accounts/users");
-
-      console.log(res.data);
-
-      return res.data;
-    },
-  });
+  const { data: res, isLoading } = useFetch<GetUsersResponse>(
+    ["users"],
+    "/accounts/users"
+  );
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -47,26 +40,24 @@ const Users = () => {
 
   const fieldsToCheck = ["username", "first_name", "last_name", "email"];
 
-  console.log(res?.data);
-  const filteredData = res?.data?.results;
-  console.log("Filtered Data:", filteredData);
+  const filteredData = res?.data?.results.filter((user: any) => {
+    const matchesSearch = fieldsToCheck.some((field) => {
+      const fieldValue = user[field];
+      return (
+        typeof fieldValue === "string" &&
+        fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
+      );
+    });
+    const matchesStatus =
+      selectedUserStatus === "الكل" ||
+      (selectedUserStatus === "متاح" && user.status === "available") ||
+      (selectedUserStatus === "غير متاح" && user.status === "notAvailable");
+    return matchesSearch && matchesStatus;
+  });
 
-  // .filter((user: any) => {
-  //   const matchesSearch = fieldsToCheck.some((field) => {
-  //     const fieldValue = user[field];
-  //     return (
-  //       typeof fieldValue === "string" &&
-  //       fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
-  //     );
-  //   });
-  //   const matchesStatus =
-  //     selectedUserStatus === "الكل" ||
-  //     (selectedUserStatus === "متاح" && user.status === "available") ||
-  //     (selectedUserStatus === "غير متاح" && user.status === "notAvailable");
-  //   return matchesSearch && matchesStatus;
-  // });
-
-  // const sortedData = [...filteredData].sort((a: any, b: any) => a.id - b.id);
+  const sortedData = filteredData
+    ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
+    : [];
 
   return (
     <>
@@ -109,10 +100,10 @@ const Users = () => {
               setSelectedItem={setSelectedUserStatus}
             />
           </div>
-          {filteredData && (
+          {sortedData && (
             <UsersTable
               selectedStatus={selectedUserStatus}
-              data={filteredData}
+              data={sortedData}
               currentPage={currentPage}
               itemsPerPage={itemsPerPage}
               page="users"
