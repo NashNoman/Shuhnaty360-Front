@@ -1,105 +1,105 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import { IoMdMenu } from 'react-icons/io';
-import logo from '../../assets/images/logo.png';
-import { IoCloseOutline } from 'react-icons/io5';
-import NavbarAccordion from './NavbarAccordion';
-import { PiPackageDuotone } from 'react-icons/pi';
-import { useSidebar } from '../../context/SidebarContext';
-import statisticsIcon from '../../assets/images/statistics.svg';
-import usersIcon from '../../assets/images/people.svg';
-import truckIcon from '../../assets/images/truck.svg';
-import clientsIcon from '../../assets/images/clients.svg';
-import alertIcon from '../../assets/images/alert.svg';
-import logOutIcon from '../../assets/images/log-out.svg';
-import { Link } from 'react-router-dom';
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
+import { useEffect, useState } from "react";
+import { IoMdMenu } from "react-icons/io";
+import { IoCloseOutline } from "react-icons/io5";
+import { PiPackageDuotone } from "react-icons/pi";
+import { Link } from "react-router-dom";
+import alertIcon from "../../assets/images/alert.svg";
+import clientsIcon from "../../assets/images/clients.svg";
+import logOutIcon from "../../assets/images/log-out.svg";
+import logo from "../../assets/images/logo.png";
+import usersIcon from "../../assets/images/people.svg";
+import statisticsIcon from "../../assets/images/statistics.svg";
+import truckIcon from "../../assets/images/truck.svg";
+import { useSidebar } from "../../context/SidebarContext";
+import NavbarAccordion from "./NavbarAccordion";
 
-const iconsStyles = 'filter invert brightness-0';
+const iconsStyles = "filter invert brightness-0";
 
 const items = [
   {
-    nav: '/dashboard',
-    name: 'لوحة المعلومات',
+    nav: "/dashboard",
+    name: "لوحة المعلومات",
     icon: (selectedItem: string) => (
       <img
         src={statisticsIcon}
-        alt='statistics'
-        className={`${selectedItem === 'dashboard' ? iconsStyles : ''}`}
+        alt="statistics"
+        className={`${selectedItem === "dashboard" ? iconsStyles : ""}`}
       />
     ),
   },
   [
     {
-      nav: '/shipments/all',
-      name: 'كل الشحنات',
+      nav: "/shipments/all",
+      name: "كل الشحنات",
     },
     {
-      nav: '/shipments/in-shipping',
-      name: 'قيد الشحن',
+      nav: "/shipments/in-shipping",
+      name: "قيد الشحن",
     },
     {
-      nav: '/shipments/delivered',
-      name: 'تم التوصيل',
+      nav: "/shipments/delivered",
+      name: "تم التوصيل",
     },
     {
-      nav: '/shipments/completed',
-      name: 'مكتملة',
+      nav: "/shipments/completed",
+      name: "مكتملة",
     },
     {
-      nav: '/shipments/delayed',
-      name: 'متأخرة',
+      nav: "/shipments/delayed",
+      name: "متأخرة",
     },
     {
-      nav: '/shipments/Cancelled',
-      name: 'ملغية',
+      nav: "/shipments/Cancelled",
+      name: "ملغية",
     },
     {
-      nav: '/shipments/returned',
-      name: 'مرتجعة',
+      nav: "/shipments/returned",
+      name: "مرتجعة",
     },
   ],
   {
-    nav: '/users',
-    name: 'المناديب',
+    nav: "/users",
+    name: "المناديب",
     icon: (selectedItem: string) => (
       <img
         src={usersIcon}
-        alt='users'
-        className={`${selectedItem === 'users' ? iconsStyles : ''}`}
+        alt="users"
+        className={`${selectedItem === "users" ? iconsStyles : ""}`}
       />
     ),
   },
   {
-    nav: '/drivers',
-    name: 'السائقين',
+    nav: "/drivers",
+    name: "السائقين",
     icon: (selectedItem: string) => (
       <img
         src={truckIcon}
-        alt='drivers'
-        className={`${selectedItem === 'drivers' ? iconsStyles : ''}`}
+        alt="drivers"
+        className={`${selectedItem === "drivers" ? iconsStyles : ""}`}
       />
     ),
   },
   {
-    nav: '/clients',
-    name: 'العملاء',
+    nav: "/clients",
+    name: "العملاء",
     icon: (selectedItem: string) => (
       <img
         src={clientsIcon}
-        alt='clients'
-        className={`${selectedItem === 'clients' ? iconsStyles : ''}`}
+        alt="clients"
+        className={`${selectedItem === "clients" ? iconsStyles : ""}`}
       />
     ),
   },
   {
-    nav: '/alert-messages',
-    name: 'رسائل التنبيه',
+    nav: "/alert-messages",
+    name: "رسائل التنبيه",
     icon: (selectedItem: string) => (
       <img
         src={alertIcon}
-        alt='alert-messages'
-        className={`${selectedItem === 'alert-messages' ? iconsStyles : ''}`}
+        alt="alert-messages"
+        className={`${selectedItem === "alert-messages" ? iconsStyles : ""}`}
       />
     ),
   },
@@ -107,7 +107,7 @@ const items = [
 
 const Sidebar = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
-  const [selectedItem, setSelectedItem] = useState('dashboard');
+  const [selectedItem, setSelectedItem] = useState("dashboard");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
 
   useEffect(() => {
@@ -118,26 +118,26 @@ const Sidebar = () => {
     const debouncedCheckView = debounce(checkView, 100);
 
     checkView();
-    window.addEventListener('resize', debouncedCheckView);
-    return () => window.removeEventListener('resize', debouncedCheckView);
+    window.addEventListener("resize", debouncedCheckView);
+    return () => window.removeEventListener("resize", debouncedCheckView);
   }, []);
 
   useEffect(() => {
     if (isMobileScreen && isSidebarOpen) {
-      document.body.style.height = '100vh';
-      document.body.style.overflow = 'hidden';
+      document.body.style.height = "100vh";
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.height = '';
-      document.body.style.overflow = 'auto';
+      document.body.style.height = "";
+      document.body.style.overflow = "auto";
     }
     return () => {
-      document.body.style.height = '';
-      document.body.style.overflow = 'auto';
+      document.body.style.height = "";
+      document.body.style.overflow = "auto";
     };
   }, [isMobileScreen, isSidebarOpen]);
 
   return (
-    <div className='h-full'>
+    <div className="h-full">
       {isMobileScreen && !isSidebarOpen ? (
         <button
           onClick={() => {
@@ -149,13 +149,19 @@ const Sidebar = () => {
         </button>
       ) : (
         <>
-          {isSidebarOpen && <div className='fixed lg:hidden inset-0 bg-black bg-opacity-50 z-40' />}
+          {isSidebarOpen && (
+            <div className="fixed lg:hidden inset-0 bg-black bg-opacity-50 z-40" />
+          )}
           <aside
             className={`bg-[#E6E6E6] transition-all duration-300 flex flex-col justify-between p-8 ${
-              isSidebarOpen ? 'w-[278px] items-end' : 'w-[104px] items-center'
+              isSidebarOpen ? "w-[278px] items-end" : "w-[104px] items-center"
             } fixed lg:static z-50 h-full overflow-y-auto`}
           >
-            <div className={`w-full flex flex-col ${isSidebarOpen ? 'items-end' : 'items-center'}`}>
+            <div
+              className={`w-full flex flex-col ${
+                isSidebarOpen ? "items-end" : "items-center"
+              }`}
+            >
               {isSidebarOpen ? (
                 <button
                   onClick={() => {
@@ -170,20 +176,14 @@ const Sidebar = () => {
                 </button>
               )}
 
-              {isSidebarOpen && (
-                <img
-                  src={logo}
-                  alt='logo'
-                  className='mt-10'
-                />
-              )}
-              <div className='w-full mt-10'>
+              {isSidebarOpen && <img src={logo} alt="logo" className="mt-10" />}
+              <div className="w-full mt-10">
                 {items.map((item, index) =>
                   Array.isArray(item) ? (
                     <NavbarAccordion
                       key={index}
                       icon={<PiPackageDuotone size={24} />}
-                      title='الشحنات'
+                      title="الشحنات"
                       items={item}
                       isSidebarOpen={isSidebarOpen}
                       setIsSidebarOpen={setIsSidebarOpen}
@@ -196,35 +196,32 @@ const Sidebar = () => {
                       key={item.name}
                       onClick={() => setSelectedItem(item.nav.substring(1))}
                       className={`flex items-center w-full gap-2 mb-4 ${
-                        isSidebarOpen ? 'p-3' : 'p-2'
+                        isSidebarOpen ? "p-3" : "p-2"
                       } transition-all duration-300 ${
-                        isSidebarOpen ? 'justify-start' : 'justify-center'
+                        isSidebarOpen ? "justify-start" : "justify-center"
                       } ${
                         selectedItem === item.nav.substring(1)
-                          ? 'bg-[#DD7E1F] rounded-lg text-[#FCFCFC]'
-                          : ''
+                          ? "bg-[#DD7E1F] rounded-lg text-[#FCFCFC]"
+                          : ""
                       }`}
                     >
                       <span>{item.icon(selectedItem)}</span>
                       {isSidebarOpen && <span>{item.name}</span>}
                     </Link>
-                  ),
+                  )
                 )}
               </div>
             </div>
             <Link
-              to='/log-out'
+              to="/log-out"
               className={`flex items-center w-full gap-2 ${
-                isSidebarOpen ? 'p-3' : 'p-2'
+                isSidebarOpen ? "p-3" : "p-2"
               } transition-all duration-300 mb-4 ${
-                isSidebarOpen ? 'justify-start' : 'justify-center'
+                isSidebarOpen ? "justify-start" : "justify-center"
               }`}
             >
               <span>
-                <img
-                  src={logOutIcon}
-                  alt='log-out'
-                />
+                <img src={logOutIcon} alt="log-out" />
               </span>
               {isSidebarOpen && <span>تسجيل الخروج</span>}
             </Link>

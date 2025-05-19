@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import UsersTable from "../../components/usersDrivers/UsersTable";
 import { useSidebar } from "../../context/SidebarContext";
-import { getUsers } from "../../redux/Slices/usersSlice";
-import { AppDispatch, RootState } from "../../redux/store";
+import { useFetch } from "../../hooks/useApi";
+import { GetUsersResponse } from "../../types";
 
 const selectMenuOptions = [
   { label: "الكل", value: "all" },
@@ -23,14 +22,12 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const dispatch = useDispatch<AppDispatch>();
-  const users = useSelector((state: RootState) => state.users.users);
-  const isLoading = useSelector((state: RootState) => state.users.isLoading);
   const { isSidebarOpen } = useSidebar();
 
-  useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+  const { data: res, isLoading } = useFetch<GetUsersResponse>(
+    ["users"],
+    "/accounts/users"
+  );
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -43,7 +40,7 @@ const Users = () => {
 
   const fieldsToCheck = ["username", "first_name", "last_name", "email"];
 
-  const filteredData = users.filter((user: any) => {
+  const filteredData = res?.data?.results.filter((user: any) => {
     const matchesSearch = fieldsToCheck.some((field) => {
       const fieldValue = user[field];
       return (
@@ -58,7 +55,9 @@ const Users = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const sortedData = [...filteredData].sort((a: any, b: any) => a.id - b.id);
+  const sortedData = filteredData
+    ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
+    : [];
 
   return (
     <>
@@ -101,15 +100,17 @@ const Users = () => {
               setSelectedItem={setSelectedUserStatus}
             />
           </div>
-          <UsersTable
-            selectedStatus={selectedUserStatus}
-            data={sortedData}
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-            page="users"
-          />
+          {sortedData && (
+            <UsersTable
+              selectedStatus={selectedUserStatus}
+              data={sortedData}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              page="users"
+            />
+          )}
           <Pagination
-            totalItems={sortedData.length}
+            totalItems={res?.data?.count || 0}
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
