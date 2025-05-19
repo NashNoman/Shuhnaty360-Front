@@ -57,3 +57,52 @@ export type TruckType = {
 };
 
 export type GetTruckTypesResponse = ApiListResponse<TruckType>;
+
+export type Shipment = {
+  id: number;
+  tracking_number: string;
+  user: string;
+  driver: string;
+  client: string;
+  client_branch: string;
+  client_invoice_number: string;
+  notes_customer: string | null;
+  recipient: string;
+  notes_recipient: string | null;
+  origin_city: string;
+  destination_city: string;
+  fare: number;
+  premium: number | null;
+  fare_return: number | null;
+  days_stayed: number | null;
+  stay_cost: number;
+  deducted: number;
+  total_cost: number;
+  days_to_arrive: number;
+  expected_arrival_date: string;
+  actual_delivery_date: string;
+  notes: string | null;
+  weight: number;
+  contents: string | null;
+  status: string;
+  loading_at: string;
+  updated_at: string;
+  history: ShipmentHistory[];
+};
+
+export type ShipmentHistory = {
+  id: number;
+  updated_at: string;
+  notes: string | null;
+  shipment: number;
+  status: number;
+  user: number;
+};
+
+export type GetShipmentsResponse = {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: Shipment[];
+  };
+export type GetShipmentDetailsResponse = ApiResponse<Shipment>;

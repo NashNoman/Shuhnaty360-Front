@@ -7,14 +7,8 @@ import DriverForm, {
   driverSchema,
 } from "../../components/DriverForm";
 import { useSidebar } from "../../context/SidebarContext";
-import { useCreate } from "../../hooks/useApi";
-
-// Example truck types, replace with your actual data source if needed
-const truckTypeOptions = [
-  { value: 1, label: "سطحة" },
-  { value: 2, label: "مبردة" },
-  { value: 3, label: "صهريج" },
-];
+import { useCreate, useFetch } from "../../hooks/useApi";
+import { GetTruckTypesResponse } from "../../types";
 
 const AddDriver = () => {
   const { isSidebarOpen } = useSidebar();
@@ -28,12 +22,20 @@ const AddDriver = () => {
     resolver: zodResolver(driverSchema),
   });
 
+  const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
+    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
+
   const { mutate, isPending: isLoading } = useCreate("/drivers/api", [
     ["drivers"],
   ]);
 
+  const truckTypeOptions =
+    truckTypesRes?.data?.results.map((truckType) => ({
+      value: truckType.id,
+      label: truckType.name_ar,
+    })) || [];
+
   const onSubmit = handleSubmit((formData: DriverFormData) => {
-    // Adapt formData to your API shape if needed
     mutate(formData, {
       onSuccess: () => {
         navigate("/drivers");
@@ -49,7 +51,7 @@ const AddDriver = () => {
 
   return (
     <>
-      {isLoading && (
+      {(isLoading || isTruckTypesLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"

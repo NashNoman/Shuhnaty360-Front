@@ -23,19 +23,18 @@ const DriverDetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { driverId } = useParams();
-  // const dispatch = useDispatch<AppDispatch>();
-  // const driver = useSelector((state: RootState) => state.drivers.driver);
-  // const isLoading = useSelector((state: RootState) => state.drivers.isLoading);
   const { isSidebarOpen } = useSidebar();
+
+  console.log("Driver Detail:", driverId);
 
   const { data: driverDetailsRes, isLoading } =
     useFetch<GetDriverDetailsResponse>(
       ["drivers", driverId],
-      `/drivers/api/${driverId}/`
+      `/drivers/api/${driverId}`
     );
 
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
-    useFetch<GetTruckTypesResponse>(["truckTypes"], "drivers/api/TruckTypes");
+    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
 
   const driver = driverDetailsRes?.data;
   const truckTypes = truckTypesRes?.data;

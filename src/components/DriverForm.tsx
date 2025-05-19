@@ -19,7 +19,7 @@ export const driverSchema = z.object({
     })
     .or(z.literal("")),
   is_active: z.boolean(),
-  truck_type: z.coerce.number().or(z.literal("")),
+  truck_type: z.coerce.number().optional(),
 });
 
 export type DriverFormData = z.infer<typeof driverSchema>;
