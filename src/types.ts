@@ -33,8 +33,6 @@ export type GetUserDetailsResponse = ApiResponse<User>;
 
 export type Driver = {
   id: number;
-  created_at: string;
-  updated_at: string;
   name: string;
   phone_number: string;
   nationality: string;
@@ -44,6 +42,8 @@ export type Driver = {
   status: "available" | "offline" | "busy";
   is_active: boolean;
   truck_type?: number;
+  created_at: string;
+  updated_at: string;
 };
 
 export type GetDriversResponse = ApiListResponse<Driver>;

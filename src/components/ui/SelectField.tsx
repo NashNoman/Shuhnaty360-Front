@@ -8,7 +8,7 @@ export type SelectFieldProps = {
   description?: string | string[];
   name?: string;
   error?: string;
-  options: { value: string; label: string }[];
+  options: { value: string | number; label: string }[];
 } & React.SelectHTMLAttributes<HTMLSelectElement>;
 
 const SelectField = ({
@@ -34,7 +34,7 @@ const SelectField = ({
         name={name}
         value={value}
         onChange={onChange}
-        className={`p-2 text-lg border ${
+        className={`p-3 text-lg border ${
           error ? "border-red-500" : "border-[#CCCCCC]"
         } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] bg-white`}
         {...props}
