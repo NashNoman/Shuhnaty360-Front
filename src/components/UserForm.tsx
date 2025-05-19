@@ -101,6 +101,7 @@ const UserForm = ({ onSubmit, isLoading, errors, register }: UserFormProps) => {
             {...register("company_branch")}
           />
         </div>
+        <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
         <button
           disabled={isLoading}
           className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"

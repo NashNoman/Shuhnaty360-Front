@@ -1,19 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../components/pagination/Pagination";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import DriversTable from "../../components/usersDrivers/DriversTable";
 import { useSidebar } from "../../context/SidebarContext";
-import { AppDispatch, RootState } from "../../redux/store";
+import { useFetch } from "../../hooks/useApi";
+import { GetDriversResponse } from "../../types";
 
 const selectMenuOptions = [
   { label: "الكل" },
   { label: "متاح" },
   { label: "غير متاح" },
+  { label: "مشغول" },
+];
+
+const fieldsToCheck = [
+  "name",
+  "language",
+  "nationality",
+  "identity_number",
+  "phone_number",
+  "vehicle_number",
+  "status",
 ];
 
 const Drivers = () => {
@@ -22,10 +33,12 @@ const Drivers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const drivers = useSelector((state: RootState) => state.drivers.drivers);
-  const dispatch = useDispatch<AppDispatch>();
-  const isLoading = useSelector((state: RootState) => state.drivers.isLoading);
   const { isSidebarOpen } = useSidebar();
+
+  const { data: driversRes, isLoading } = useFetch<GetDriversResponse>(
+    ["drivers"],
+    "/drivers/api"
+  );
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -36,17 +49,7 @@ const Drivers = () => {
     setCurrentPage(1);
   };
 
-  const fieldsToCheck = [
-    "name",
-    "language",
-    "nationality",
-    "identity_number",
-    "phone_number",
-    "vehicle_number",
-    "status",
-  ];
-
-  const filteredData = drivers.filter((user: any) =>
+  const filteredData = driversRes?.data.results.filter((user: any) =>
     fieldsToCheck.some((field) => {
       const fieldValue = user[field];
       return (
@@ -56,11 +59,9 @@ const Drivers = () => {
     })
   );
 
-  // useEffect(() => {
-  //   dispatch(getDrivers());
-  // }, [dispatch]);
-
-  const sortedData = [...filteredData].sort((a: any, b: any) => a.id - b.id);
+  const sortedData = filteredData
+    ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
+    : [];
 
   return (
     <>
@@ -109,7 +110,6 @@ const Drivers = () => {
             data={sortedData}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
-            page="drivers"
           />
           <Pagination
             totalItems={sortedData.length}

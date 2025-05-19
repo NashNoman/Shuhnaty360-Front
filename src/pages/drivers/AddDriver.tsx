@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
+import { useState } from "react";
 // import FileUploadInput from '../../components/usersDrivers/FileUploadInput';
 // import uploadImage from '../../assets/images/upload.svg';
 // import infoIcon from '../../assets/images/info-circle.svg';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
-import { useNavigate } from 'react-router-dom';
-import { addDriver, getTruckTypes } from '../../redux/Slices/driversSlice';
-import { toast } from 'sonner';
-import { useSidebar } from '../../context/SidebarContext';
-import AddEditInfoSection from '../../components/shipments/addShipment/AddEditInfoSection';
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import AddEditInfoSection from "../../components/shipments/addShipment/AddEditInfoSection";
+import { useSidebar } from "../../context/SidebarContext";
+import { addDriver } from "../../redux/Slices/driversSlice";
+import { AppDispatch, RootState } from "../../redux/store";
 
 const AddDriver = () => {
   const { isSidebarOpen } = useSidebar();
@@ -17,25 +17,26 @@ const AddDriver = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const truckTypes = useSelector((state: RootState) => state.drivers.truckTypes);
+  const truckTypes = useSelector(
+    (state: RootState) => state.drivers.truckTypes
+  );
 
-  
-  useEffect(() => {
-    dispatch(getTruckTypes());
-  }, [dispatch])
+  // useEffect(() => {
+  //   dispatch(getTruckTypes());
+  // }, [dispatch])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       const response = await dispatch(addDriver(getApiDataFormat(formData)));
-      if (response.meta.requestStatus === 'fulfilled') {
+      if (response.meta.requestStatus === "fulfilled") {
         setIsLoading(false);
-        toast.success('تم إضافة السائق بنجاح');
-        navigate('/drivers');
+        toast.success("تم إضافة السائق بنجاح");
+        navigate("/drivers");
       }
     } catch (error) {
-      console.error('Error adding driver:', error);
+      console.error("Error adding driver:", error);
     } finally {
       setIsLoading(false);
     }
@@ -46,10 +47,10 @@ const AddDriver = () => {
       name: formData.name,
       phone_number: formData.phone,
       nationality: formData.nationality,
-      language: 'ar',
+      language: "ar",
       identity_number: formData.nationalId,
       vehicle_number: formData.vehicleNumber,
-      status: 'available',
+      status: "available",
       is_active: true,
       truck_type: formData.vehicleType,
     };
@@ -57,39 +58,41 @@ const AddDriver = () => {
 
   const driverSectionInputsData = [
     {
-      label: 'الاسم',
-      name: 'name',
+      label: "الاسم",
+      name: "name",
     },
     {
-      label: 'رقم الهوية/الإقامة',
-      name: 'nationalId',
+      label: "رقم الهوية/الإقامة",
+      name: "nationalId",
     },
     {
-      label: 'رقم الهاتف',
-      name: 'phone',
+      label: "رقم الهاتف",
+      name: "phone",
     },
     {
-      label: 'الجنسية',
-      name: 'nationality',
+      label: "الجنسية",
+      name: "nationality",
     },
     {
-      label: 'رقم الشاحنة',
-      name: 'vehicleNumber',
+      label: "رقم الشاحنة",
+      name: "vehicleNumber",
     },
   ];
 
   const [formData, setFormData] = useState({
-    name: '',
-    nationalId: '',
-    id: '',
-    phone: '',
-    nationality: '',
-    branch: '',
+    name: "",
+    nationalId: "",
+    id: "",
+    phone: "",
+    nationality: "",
+    branch: "",
     vehicleType: null,
-    vehicleNumber: '',
+    vehicleNumber: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -99,23 +102,23 @@ const AddDriver = () => {
       {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && 'lg:transform -translate-x-[5%]'
+            isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className='loader'></span>
+          <span className="loader"></span>
         </div>
       )}
 
       <form
         onSubmit={handleSubmit}
-        className='border border-[#DD7E1F] rounded-lg p-8 mx-4 md:mx-0'
+        className="border border-[#DD7E1F] rounded-lg p-8 mx-4 md:mx-0"
       >
         {/* <FileUploadInput /> */}
         <AddEditInfoSection
           inputs={driverSectionInputsData}
           value={formData}
           onChange={handleChange}
-          isDriver= {true}
+          isDriver={true}
           truckTypeOptions={truckTypes}
         />
 
@@ -179,8 +182,8 @@ const AddDriver = () => {
             />
           </button>
         </div> */}
-        <hr className='border-0 border-t-2 border-dashed border-[#666] my-12' />
-        <button className='w-full py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4'>
+        <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
+        <button className="w-full py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4">
           إضافة السائق
         </button>
       </form>

@@ -12,7 +12,7 @@ const Layout = React.memo(({ children }: any) => {
     <div className="flex h-screen">
       <Sidebar />
       <div
-        className={`flex flex-col grow overflow-y-auto ${
+        className={`flex relative flex-col grow overflow-y-auto ${
           isSidebarOpen
             ? "lg:w-[calc(100vw-278px)]"
             : "lg:w-[calc(100vw-104px)]"

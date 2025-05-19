@@ -1,24 +1,27 @@
-export type TextInputFieldProps = {
+import React from "react";
+
+export type SelectFieldProps = {
   value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   placeholder?: string;
   label?: string;
-  description?: string;
+  description?: string | string[];
   name?: string;
   error?: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+  options: { value: string; label: string }[];
+} & React.SelectHTMLAttributes<HTMLSelectElement>;
 
-const TextInputField = ({
-  type = "text",
+const SelectField = ({
+  value,
+  onChange,
   placeholder = "",
   label,
   description,
-  value,
-  onChange,
   name,
   error,
+  options,
   ...props
-}: TextInputFieldProps) => {
+}: SelectFieldProps) => {
   return (
     <div className="col-span-1 flex flex-col gap-1">
       {label && (
@@ -26,18 +29,27 @@ const TextInputField = ({
           {label}
         </label>
       )}
-      <input
+      <select
         id={props.id}
-        type={type}
-        placeholder={placeholder}
-        className={`p-2 text-lg border ${
-          error ? "border-red-500" : "border-[#CCCCCC]"
-        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]`}
+        name={name}
         value={value}
         onChange={onChange}
-        name={name}
+        className={`p-2 text-lg border ${
+          error ? "border-red-500" : "border-[#CCCCCC]"
+        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] bg-white`}
         {...props}
-      />
+      >
+        {placeholder && (
+          <option value="" disabled>
+            {placeholder}
+          </option>
+        )}
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       {error && <span className="text-red-500 mt-1 text-sm">{error}</span>}
       {description && (
         <div className="text-[#999] font-Rubik text-sm">
@@ -58,4 +70,4 @@ const TextInputField = ({
   );
 };
 
-export default TextInputField;
+export default SelectField;

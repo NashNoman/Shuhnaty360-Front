@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import truckIcon from "../../assets/images/truck.svg";
@@ -13,59 +13,36 @@ import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetai
 // import ImageModal from './ImageModal';
 // import frontDrivingLicenseImage from '../../assets/images/front.jpg';
 // import backDrivingLicenseImage from '../../assets/images/back.jpg';
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { baseURL } from "../../../config";
 import { useSidebar } from "../../context/SidebarContext";
-import { getDriver, getTruckTypes } from "../../redux/Slices/driversSlice";
-import { AppDispatch, RootState } from "../../redux/store";
-import { Driver } from "../../types";
+import { useFetch } from "../../hooks/useApi";
+import { GetDriverDetailsResponse, GetTruckTypesResponse } from "../../types";
 
 const DriverDetails = () => {
   const [selectedOption, setSelectedOption] = useState("الكل");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const { driverId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  const driver = useSelector((state: RootState) => state.drivers.driver);
-  const isLoading = useSelector((state: RootState) => state.drivers.isLoading);
+  // const dispatch = useDispatch<AppDispatch>();
+  // const driver = useSelector((state: RootState) => state.drivers.driver);
+  // const isLoading = useSelector((state: RootState) => state.drivers.isLoading);
   const { isSidebarOpen } = useSidebar();
-  const {} = useQuery<Driver>({
-    queryKey: ["driver", driverId],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${baseURL}/api/drivers/api/${driverId}/`,
-        {
-          auth: {
-            username: "admin",
-            password: "admin",
-          },
-        }
-      );
-      return response.data;
-    },
-    enabled: !!driverId,
-  });
 
-  const truckTypes = useSelector(
-    (state: RootState) => state.drivers.truckTypes
-  );
+  const { data: driverDetailsRes, isLoading } =
+    useFetch<GetDriverDetailsResponse>(
+      ["drivers", driverId],
+      `/drivers/api/${driverId}/`
+    );
 
-  const truckType = truckTypes.find(
+  const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
+    useFetch<GetTruckTypesResponse>(["truckTypes"], "drivers/api/TruckTypes");
+
+  const driver = driverDetailsRes?.data;
+  const truckTypes = truckTypesRes?.data;
+
+  const truckType = truckTypes?.results.find(
     (truckType: any) => truckType.id === driver?.truck_type
   );
-
-  useEffect(() => {
-    if (driverId) {
-      dispatch(getDriver(driverId));
-    }
-  }, [dispatch, driverId]);
-
-  useEffect(() => {
-    dispatch(getTruckTypes());
-  }, [dispatch]);
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -218,38 +195,9 @@ const DriverDetails = () => {
     },
   ];
 
-  // const licenseInfo = [
-  //   {
-  //     label: 'تاريخ الإصدار',
-  //     value: '15 مارس 2022',
-  //   },
-  //   {
-  //     label: 'تاريخ الانتهاء',
-  //     value: '15 مارس 2027',
-  //   },
-  //   {
-  //     label: 'وجه أمامي',
-  //     value: (
-  //       <ImageModal
-  //         image={frontDrivingLicenseImage}
-  //         fileName='driver_123_front.jpg'
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     label: 'وجه خلفي',
-  //     value: (
-  //       <ImageModal
-  //         image={backDrivingLicenseImage}
-  //         fileName='driver_123_back.jpg'
-  //       />
-  //     ),
-  //   },
-  // ];
-
   return (
     <>
-      {isLoading && (
+      {(isLoading || isTruckTypesLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"

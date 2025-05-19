@@ -45,3 +45,15 @@ export type Driver = {
   is_active: boolean;
   truck_type?: number;
 };
+
+export type GetDriversResponse = ApiListResponse<Driver>;
+export type GetDriverDetailsResponse = ApiResponse<Driver>;
+
+export type TruckType = {
+  id: number;
+  name_ar: string;
+  name_en: string;
+  description?: string;
+};
+
+export type GetTruckTypesResponse = ApiListResponse<TruckType>;
