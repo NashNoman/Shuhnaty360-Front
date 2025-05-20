@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 import { SidebarProvider } from "./context/SidebarContext";
 import DashboardPage from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -39,121 +41,139 @@ function App() {
   return (
     <div dir="rtl">
       <QueryClientProvider client={queryClient}>
-        <SidebarProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Login />} />
+        <BrowserRouter>
+          <AuthProvider>
+            <SidebarProvider>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <Layout>
+                        <DashboardPage />
+                      </Layout>
+                    }
+                  />
 
-              <Route
-                path="dashboard"
-                element={
-                  <Layout>
-                    <DashboardPage />
-                  </Layout>
-                }
-              />
-
-              <Route
-                path="/shipments"
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route index element={<AllShipments />} />{" "}
-                <Route path="all" element={<AllShipments />} />
-                <Route path="delivered" element={<DeliveredShipments />} />
-                <Route path="completed" element={<CompletedShipments />} />
-                <Route path="in-shipping" element={<InShippingShipments />} />
-                <Route path="delayed" element={<DelayedShipments />} />
-                <Route path="Cancelled" element={<CancelledShipments />} />
-                <Route path="returned" element={<ReturnedShipments />} />
-                <Route
-                  path="shipment-details/:shipmentId"
-                  element={<ShipmentDetails />}
-                />
-                <Route path="add-shipment" element={<AddShipment />} />
-                <Route
-                  path="edit-shipment/:shipmentId"
-                  element={<EditShipment />}
-                />
-                <Route
-                  path="delete-shipment/:shipmentId"
-                  element={<DeleteShipment />}
-                />
-              </Route>
-              <Route
-                path="/users"
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route index element={<Users />} />{" "}
-                <Route path="user-details/:userId" element={<UserDetails />} />
-                <Route path="add-user" element={<AddUser />} />
-                <Route path="edit-user/:userId" element={<EditUser />} />
-                <Route path="delete-user/:userId" element={<DeleteUser />} />
-              </Route>
-              <Route
-                path="/drivers"
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route index element={<Drivers />} />
-                <Route
-                  path="driver-details/:driverId"
-                  element={<DriverDetails />}
-                />
-                <Route path="add-driver" element={<AddDriver />} />
-                <Route path="edit-driver/:driverId" element={<EditDriver />} />
-                <Route
-                  path="delete-driver/:driverId"
-                  element={<DeleteDriver />}
-                />
-              </Route>
-              <Route
-                path="/clients"
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route index element={<Clients />} />
-                <Route
-                  path="client-details/:clientId"
-                  element={<ClientDetails />}
-                />
-                <Route path="add-client" element={<AddClient />} />
-                <Route path="edit-client/:clientId" element={<EditClient />} />
-                <Route
-                  path="delete-client/:clientId"
-                  element={<DeleteClient />}
-                />
-              </Route>
-              <Route
-                path="/alert-messages"
-                element={
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                }
-              >
-                <Route index element={<AlertMessages />} />
-                <Route
-                  path="select-recipients"
-                  element={<SelectRecipients />}
-                />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </SidebarProvider>
+                  <Route
+                    path="/shipments"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<AllShipments />} />{" "}
+                    <Route path="all" element={<AllShipments />} />
+                    <Route path="delivered" element={<DeliveredShipments />} />
+                    <Route path="completed" element={<CompletedShipments />} />
+                    <Route
+                      path="in-shipping"
+                      element={<InShippingShipments />}
+                    />
+                    <Route path="delayed" element={<DelayedShipments />} />
+                    <Route path="Cancelled" element={<CancelledShipments />} />
+                    <Route path="returned" element={<ReturnedShipments />} />
+                    <Route
+                      path="shipment-details/:shipmentId"
+                      element={<ShipmentDetails />}
+                    />
+                    <Route path="add-shipment" element={<AddShipment />} />
+                    <Route
+                      path="edit-shipment/:shipmentId"
+                      element={<EditShipment />}
+                    />
+                    <Route
+                      path="delete-shipment/:shipmentId"
+                      element={<DeleteShipment />}
+                    />
+                  </Route>
+                  <Route
+                    path="/users"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<Users />} />{" "}
+                    <Route
+                      path="user-details/:userId"
+                      element={<UserDetails />}
+                    />
+                    <Route path="add-user" element={<AddUser />} />
+                    <Route path="edit-user/:userId" element={<EditUser />} />
+                    <Route
+                      path="delete-user/:userId"
+                      element={<DeleteUser />}
+                    />
+                  </Route>
+                  <Route
+                    path="/drivers"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<Drivers />} />
+                    <Route
+                      path="driver-details/:driverId"
+                      element={<DriverDetails />}
+                    />
+                    <Route path="add-driver" element={<AddDriver />} />
+                    <Route
+                      path="edit-driver/:driverId"
+                      element={<EditDriver />}
+                    />
+                    <Route
+                      path="delete-driver/:driverId"
+                      element={<DeleteDriver />}
+                    />
+                  </Route>
+                  <Route
+                    path="/clients"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<Clients />} />
+                    <Route
+                      path="client-details/:clientId"
+                      element={<ClientDetails />}
+                    />
+                    <Route path="add-client" element={<AddClient />} />
+                    <Route
+                      path="edit-client/:clientId"
+                      element={<EditClient />}
+                    />
+                    <Route
+                      path="delete-client/:clientId"
+                      element={<DeleteClient />}
+                    />
+                  </Route>
+                  <Route
+                    path="/alert-messages"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<AlertMessages />} />
+                    <Route
+                      path="select-recipients"
+                      element={<SelectRecipients />}
+                    />
+                  </Route>
+                </Route>
+              </Routes>
+            </SidebarProvider>
+          </AuthProvider>
+        </BrowserRouter>
       </QueryClientProvider>
     </div>
   );

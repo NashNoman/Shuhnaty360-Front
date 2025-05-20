@@ -1,3 +1,17 @@
+export type LoginCredentials = {
+  username: string;
+  password: string;
+};
+
+export type LoginResponse = {
+  access: string;
+  refresh: string;
+};
+
+export type RefreshTokenResponse = {
+  access: string;
+};
+
 export type ApiResponse<T> = {
   status: string;
   message: string;
@@ -100,9 +114,9 @@ export type ShipmentHistory = {
 };
 
 export type GetShipmentsResponse = {
-    count: number;
-    next: string | null;
-    previous: string | null;
-    results: Shipment[];
-  };
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Shipment[];
+};
 export type GetShipmentDetailsResponse = ApiResponse<Shipment>;
