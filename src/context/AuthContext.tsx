@@ -143,14 +143,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     [state, loginMutation]
   );
 
-  console.log("AuthContext state:", {
-    accessToken: state.accessToken,
-    refreshToken: state.refreshToken,
-    isAuthenticated: state.isAuthenticated,
-    isLoading: state.isLoading,
-    error: state.error,
-  });
-
   return (
     <AuthContext.Provider value={authContextValue}>
       {children}

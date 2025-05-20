@@ -13,6 +13,7 @@ import usersIcon from "../../assets/images/people.svg";
 import statisticsIcon from "../../assets/images/statistics.svg";
 import truckIcon from "../../assets/images/truck.svg";
 import { useSidebar } from "../../context/SidebarContext";
+import { useAuth } from "../../hooks/useAuth";
 import NavbarAccordion from "./NavbarAccordion";
 
 const iconsStyles = "filter invert brightness-0";
@@ -109,6 +110,7 @@ const Sidebar = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   const [selectedItem, setSelectedItem] = useState("dashboard");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const { logout } = useAuth();
 
   useEffect(() => {
     const checkView = () => {
@@ -212,8 +214,8 @@ const Sidebar = () => {
                 )}
               </div>
             </div>
-            <Link
-              to="/log-out"
+            <button
+              onClick={logout}
               className={`flex items-center w-full gap-2 ${
                 isSidebarOpen ? "p-3" : "p-2"
               } transition-all duration-300 mb-4 ${
@@ -224,7 +226,7 @@ const Sidebar = () => {
                 <img src={logOutIcon} alt="log-out" />
               </span>
               {isSidebarOpen && <span>تسجيل الخروج</span>}
-            </Link>
+            </button>
           </aside>
         </>
       )}

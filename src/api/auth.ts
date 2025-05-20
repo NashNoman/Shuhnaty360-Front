@@ -1,4 +1,5 @@
 import axios from "axios";
+import { baseURL } from "../../config";
 import {
   LoginCredentials,
   LoginResponse,
@@ -8,15 +9,21 @@ import {
 export const loginUser = async (
   credentials: LoginCredentials
 ): Promise<LoginResponse> => {
-  const response = await axios.post("/accounts/api/token", credentials);
+  const response = await axios.post(
+    `${baseURL}/api/accounts/api/token/`,
+    credentials
+  );
   return response.data;
 };
 
 export const refreshAccessToken = async (
   token: string
 ): Promise<RefreshTokenResponse> => {
-  const response = await axios.post("/accounts/api/token/refresh", {
-    refresh: token,
-  });
+  const response = await axios.post(
+    `${baseURL}/api/accounts/api/token/refresh`,
+    {
+      refresh: token,
+    }
+  );
   return response.data;
 };
