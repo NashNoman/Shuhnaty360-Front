@@ -107,6 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setRefreshToken(data.refresh);
       dispatch({ type: "LOGIN_SUCCESS", payload: data });
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      navigate("/dashboard");
     },
     onError: (error: any) => {
       dispatch({
