@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import api from "../utils/axios";
+import api from "../utils/api";
 
 export function useFetch<T>(
   queryKey: QueryKey,

@@ -1,0 +1,22 @@
+import axios from "axios";
+import {
+  LoginCredentials,
+  LoginResponse,
+  RefreshTokenResponse,
+} from "../types";
+
+export const loginUser = async (
+  credentials: LoginCredentials
+): Promise<LoginResponse> => {
+  const response = await axios.post("/accounts/api/token", credentials);
+  return response.data;
+};
+
+export const refreshAccessToken = async (
+  token: string
+): Promise<RefreshTokenResponse> => {
+  const response = await axios.post("/accounts/api/token/refresh", {
+    refresh: token,
+  });
+  return response.data;
+};

@@ -35,10 +35,7 @@ const EditDriver = () => {
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
     useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
 
-  const { mutate, isPending: isUpdating } = useUpdate(
-    `/drivers/api/${driverId}`,
-    [["drivers"]]
-  );
+  const { mutate } = useUpdate(`/drivers/api/${driverId}`, [["drivers"]]);
 
   const truckTypeOptions =
     truckTypesRes?.data?.results.map((truckType) => ({
