@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import boxSearch from "../assets/images/box-search.svg";
 import boxTime from "../assets/images/box-time.svg";
 import message from "../assets/images/message.svg";
@@ -8,7 +8,7 @@ import HorizontalChart from "../components/charts/HorizontalChart";
 import LineChartComponent from "../components/charts/LineChart";
 import PieChart from "../components/charts/PieChart";
 import { useSidebar } from "../context/SidebarContext";
-import { AppDispatch, RootState } from "../redux/store";
+import { RootState } from "../redux/store";
 
 function parseShipmentDate(dateStr: string): Date {
   return new Date(dateStr?.replace(" ", "T"));
@@ -165,7 +165,6 @@ function formatDate(date: Date) {
 const Dashboard = React.memo(() => {
   const { isSidebarOpen } = useSidebar();
   const [selectedRange, setSelectedRange] = useState("أسبوعي");
-  const dispatch = useDispatch<AppDispatch>();
   const shipments = useSelector(
     (state: RootState) => state.shipments.shipments
   );
