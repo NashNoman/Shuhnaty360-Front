@@ -48,6 +48,15 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route element={<ProtectedRoute />}>
                   <Route
+                    path="/"
+                    element={
+                      <Layout>
+                        <DashboardPage />
+                      </Layout>
+                    }
+                  />
+
+                  <Route
                     path="/dashboard"
                     element={
                       <Layout>
