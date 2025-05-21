@@ -1,19 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import AddEditInfoSection from '../../../components/shipments/addShipment/AddEditInfoSection';
-import AddEditFullInfoSection from '../../../components/shipments/addShipment/AddEditFullInfoSection';
-import AddEditCostSection from '../../../components/shipments/addShipment/AddEditCostSection';
-import { addShipment, getShipment, getShipmentsStatus } from '../../../redux/Slices/shipmentsSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { useSidebar } from '../../../context/SidebarContext';
-import { getDriver, getDrivers, getTruckTypes } from '../../../redux/Slices/driversSlice';
-import { getCities } from '../../../redux/Slices/citiesSlice';
-import { getClient, getClients } from '../../../redux/Slices/clientsSlice';
-import { getRecipient, getRecipients } from '../../../redux/Slices/recipientsSlice';
-import { toast } from 'sonner';
-import { useNavigate, useParams } from 'react-router-dom';
-import { formatDate } from '../../../utils/formatDate';
+import { useEffect, useState } from "react";
+import AddEditInfoSection from "../../../components/shipments/addShipment/AddEditInfoSection";
+import AddEditFullInfoSection from "../../../components/shipments/addShipment/AddEditFullInfoSection";
+import AddEditCostSection from "../../../components/shipments/addShipment/AddEditCostSection";
+import {
+  addShipment,
+  getShipment,
+  getShipmentsStatus,
+} from "../../../redux/Slices/shipmentsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { useSidebar } from "../../../context/SidebarContext";
+import {
+  getDriver,
+  getDrivers,
+  getTruckTypes,
+} from "../../../redux/Slices/driversSlice";
+import { getCities } from "../../../redux/Slices/citiesSlice";
+import { getClient, getClients } from "../../../redux/Slices/clientsSlice";
+import {
+  getRecipient,
+  getRecipients,
+} from "../../../redux/Slices/recipientsSlice";
+import { toast } from "sonner";
+import { useNavigate, useParams } from "react-router-dom";
+import { formatDate } from "../../../utils/formatDate";
 
 const EditShipment = () => {
   const { shipmentId } = useParams();
@@ -23,27 +33,51 @@ const EditShipment = () => {
   const drivers = useSelector((state: RootState) => state.drivers.drivers);
   const cities = useSelector((state: RootState) => state.cities.cities);
   const clients = useSelector((state: RootState) => state.clients.clients);
-  const recipients = useSelector((state: RootState) => state.recipients.recipients);
-  const [selectedClientBranches, setSelectedClientBranches] = useState<any[]>([]);
+  const recipients = useSelector(
+    (state: RootState) => state.recipients.recipients,
+  );
+  const [selectedClientBranches, setSelectedClientBranches] = useState<any[]>(
+    [],
+  );
   const shipment = useSelector((state: RootState) => state.shipments.shipment);
   const client = useSelector((state: RootState) => state.clients.client);
   const driver = useSelector((state: RootState) => state.drivers.driver);
-  const recipient = useSelector((state: RootState) => state.recipients.recipient);
-  const isShipmentsDataLoading = useSelector((state: RootState) => state.shipments.isLoading);
-  const isDriverDataLoading = useSelector((state: RootState) => state.drivers.isLoading);
-  const isClientDataLoading = useSelector((state: RootState) => state.clients.isLoading);
-  const isRecipientDataLoading = useSelector((state: RootState) => state.recipients.isLoading);
-  const isCitiesDataLoading = useSelector((state: RootState) => state.cities.isLoading);
+  const recipient = useSelector(
+    (state: RootState) => state.recipients.recipient,
+  );
+  const isShipmentsDataLoading = useSelector(
+    (state: RootState) => state.shipments.isLoading,
+  );
+  const isDriverDataLoading = useSelector(
+    (state: RootState) => state.drivers.isLoading,
+  );
+  const isClientDataLoading = useSelector(
+    (state: RootState) => state.clients.isLoading,
+  );
+  const isRecipientDataLoading = useSelector(
+    (state: RootState) => state.recipients.isLoading,
+  );
+  const isCitiesDataLoading = useSelector(
+    (state: RootState) => state.cities.isLoading,
+  );
 
-  const truckTypes = useSelector((state: RootState) => state.drivers.truckTypes);
+  const truckTypes = useSelector(
+    (state: RootState) => state.drivers.truckTypes,
+  );
 
   const initiallySelectedTruckType = truckTypes.find((truckType: any) => {
     return truckType.id === driver?.truck_type;
   });
 
-  const originCity = cities.find((city: any) => city.ar_city === shipment?.origin_city);
-  const destinationCity = cities.find((city: any) => city.ar_city === shipment?.destination_city);
-  const shipmentsStatus = useSelector((state: RootState) => state.shipments.shipmentsStatus);
+  const originCity = cities.find(
+    (city: any) => city.ar_city === shipment?.origin_city,
+  );
+  const destinationCity = cities.find(
+    (city: any) => city.ar_city === shipment?.destination_city,
+  );
+  const shipmentsStatus = useSelector(
+    (state: RootState) => state.shipments.shipmentsStatus,
+  );
   const [isNotesAreaVisible, setIsNotesAreaVisible] = useState(false);
 
   useEffect(() => {
@@ -54,29 +88,29 @@ const EditShipment = () => {
 
   const [formData, setFormData] = useState<any>({
     driverId: 0,
-    driverPhone: '',
+    driverPhone: "",
     vehicleType: 0,
-    vehicleNumber: '',
-    pickupPointId: '',
-    dropOffPointId: '',
-    pickupDate: '',
-    deliveryDate: '',
+    vehicleNumber: "",
+    pickupPointId: "",
+    dropOffPointId: "",
+    pickupDate: "",
+    deliveryDate: "",
     daysToArrive: 0,
-    contents: '',
+    contents: "",
     weight: 0,
-    shipmentNotes: '',
+    shipmentNotes: "",
     clientId: 0,
-    clientAddress: '',
+    clientAddress: "",
     clientBranchId: 0,
-    clientInvoiceNumber: '',
-    clientPrimaryPhoneNumber: '',
-    clientSecondaryPhoneNumber: '',
-    clientFacilityDescription: '',
+    clientInvoiceNumber: "",
+    clientPrimaryPhoneNumber: "",
+    clientSecondaryPhoneNumber: "",
+    clientFacilityDescription: "",
     recipientId: 0,
-    recipientAddress: '',
-    recipientPrimaryPhoneNumber: '',
-    recipientSecondaryPhoneNumber: '',
-    recipientFacilityDescription: '',
+    recipientAddress: "",
+    recipientPrimaryPhoneNumber: "",
+    recipientSecondaryPhoneNumber: "",
+    recipientFacilityDescription: "",
     baseCost: 0,
     extraCost: 0,
     numberOfNights: 0,
@@ -125,7 +159,9 @@ const EditShipment = () => {
   }, [shipment, client, recipient, driver, originCity, destinationCity]);
 
   useEffect(() => {
-    const selectedClient = clients.find((client) => client.id === formData.clientId);
+    const selectedClient = clients.find(
+      (client) => client.id === formData.clientId,
+    );
     setSelectedClientBranches(selectedClient?.branches || []);
   }, [formData.clientId, clients, shipment]);
 
@@ -148,7 +184,11 @@ const EditShipment = () => {
 
   useEffect(() => {
     const accommodationCost = formData.numberOfNights * formData.costPerNight;
-    const total = formData.baseCost + formData.extraCost + accommodationCost - formData.discount;
+    const total =
+      formData.baseCost +
+      formData.extraCost +
+      accommodationCost -
+      formData.discount;
     setFormData((prev: any) => ({ ...prev, totalCost: total }));
   }, [
     formData.baseCost,
@@ -159,50 +199,50 @@ const EditShipment = () => {
   ]);
 
   const driverSectionInputsData = [
-    { label: 'الاسم' },
-    { label: 'نوع الشاحنة', name: 'vehicleType' },
-    { label: 'رقم الهاتف', name: 'driverPhone' },
-    { label: 'رقم الشاحنة', name: 'vehicleNumber' },
+    { label: "الاسم" },
+    { label: "نوع الشاحنة", name: "vehicleType" },
+    { label: "رقم الهاتف", name: "driverPhone" },
+    { label: "رقم الشاحنة", name: "vehicleNumber" },
   ];
 
   const shipmentSectionInputsData = [
     {
-      label: 'تحميل من',
+      label: "تحميل من",
     },
-    { label: 'توصيل إلى' },
+    { label: "توصيل إلى" },
     {
-      label: 'تاريخ التحميل',
-      name: 'pickupDate',
-      type: 'date',
+      label: "تاريخ التحميل",
+      name: "pickupDate",
+      type: "date",
       description:
-        'يتم تحديد تاريخ التحميل بشكل تلقائي حسب تاريخ اليوم، إذا كانت الشحنة تستلزم تاريخا محدددا للتحميل يمكنك التعديل بناء عليه.',
+        "يتم تحديد تاريخ التحميل بشكل تلقائي حسب تاريخ اليوم، إذا كانت الشحنة تستلزم تاريخا محدددا للتحميل يمكنك التعديل بناء عليه.",
     },
     {
-      label: 'تاريخ التسليم',
-      name: 'deliveryDate',
-      type: 'date',
-      description: 'أكّد مع المستلم التاريخ الدقيق للاستلام',
+      label: "تاريخ التسليم",
+      name: "deliveryDate",
+      type: "date",
+      description: "أكّد مع المستلم التاريخ الدقيق للاستلام",
     },
-    { label: 'المحتويات', name: 'contents' },
-    { label: 'الوزن بالطن', name: 'weight' },
+    { label: "المحتويات", name: "contents" },
+    { label: "الوزن بالطن", name: "weight" },
   ];
 
   const clientSectionInputsData = [
-    { label: 'الاسم' },
+    { label: "الاسم" },
     // { label: 'العنوان', name: 'clientAddress' },
-    { label: 'رقم الفاتورة', name: 'clientInvoiceNumber', isRequired: false },
+    { label: "رقم الفاتورة", name: "clientInvoiceNumber", isRequired: false },
     // { label: 'إحداثيات الموقع', name: 'clientLocationCoordinates' },
   ];
 
   const recipientSectionInputsData = [
-    { label: 'الاسم' },
-    { label: 'العنوان', name: 'recipientAddress' },
+    { label: "الاسم" },
+    { label: "العنوان", name: "recipientAddress" },
     // { label: 'إحداثيات الموقع', name: 'recipientLocationCoordinates' },
   ];
 
   const costSectionInputsData = [
-    { label: 'التكلفة الأساسية', name: 'baseCost', type: 'number' },
-    { label: 'الزيادة', name: 'extraCost', type: 'number' },
+    { label: "التكلفة الأساسية", name: "baseCost", type: "number" },
+    { label: "الزيادة", name: "extraCost", type: "number" },
   ];
 
   const getApiDataFormat = (formData: any) => {
@@ -237,14 +277,14 @@ const EditShipment = () => {
 
   const handleChange = (e: { target: { name: string; value: any } }) => {
     setFormData((prev: { pickupPointId: any; dropOffPointId: any }) => {
-      if (['driver', 'client', 'recipient'].includes(e.target.name)) {
+      if (["driver", "client", "recipient"].includes(e.target.name)) {
         return {
           ...prev,
           ...e.target.value,
         };
       }
 
-      if (e.target.name === 'city') {
+      if (e.target.name === "city") {
         return {
           ...prev,
           pickupPointId: e.target.value.pickupPointId ?? prev.pickupPointId,
@@ -265,23 +305,33 @@ const EditShipment = () => {
 
     try {
       const response = await dispatch(addShipment(getApiDataFormat(formData)));
-      if (response.meta.requestStatus === 'fulfilled') {
+      if (response.meta.requestStatus === "fulfilled") {
         setIsLoading(false);
-        toast.success('تم تعديل بيانات الشحنة بنجاح');
-        navigate('/shipments');
+        toast.success("تم تعديل بيانات الشحنة بنجاح");
+        navigate("/shipments");
       }
     } catch (error) {
-      console.error('Error adding shipment:', error);
+      console.error("Error adding shipment:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const selectedDriver = drivers.find((driver) => driver.id === formData.driverId);
-  const selectedClient = clients.find((client) => client.id === formData.clientId);
-  const selectedRecipient = recipients.find((recipient) => recipient.id === formData.recipientId);
-  const selectedOriginCity = cities.find((city) => city.id === formData.pickupPointId);
-  const selectedDestinationCity = cities.find((city) => city.id === formData.dropOffPointId);
+  const selectedDriver = drivers.find(
+    (driver) => driver.id === formData.driverId,
+  );
+  const selectedClient = clients.find(
+    (client) => client.id === formData.clientId,
+  );
+  const selectedRecipient = recipients.find(
+    (recipient) => recipient.id === formData.recipientId,
+  );
+  const selectedOriginCity = cities.find(
+    (city) => city.id === formData.pickupPointId,
+  );
+  const selectedDestinationCity = cities.find(
+    (city) => city.id === formData.dropOffPointId,
+  );
   const selectedShipmentStatus = shipmentsStatus.find(
     (shipmentStatus) => shipmentStatus.name_ar === shipment?.status,
   );
@@ -296,19 +346,19 @@ const EditShipment = () => {
         isShipmentsDataLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && 'lg:transform -translate-x-[5%]'
+            isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className='loader'></span>
+          <span className="loader"></span>
         </div>
       )}
       <form
         onSubmit={handleSubmit}
-        className='border border-[#DD7E1F] rounded-lg p-8 mx-4 md:mx-0'
+        className="border border-[#DD7E1F] rounded-lg p-8 mx-4 md:mx-0"
       >
         <AddEditInfoSection
-          title='السائق'
-          section='driver'
+          title="السائق"
+          section="driver"
           options={drivers}
           inputs={driverSectionInputsData}
           value={formData}
@@ -318,11 +368,11 @@ const EditShipment = () => {
           truckTypeOptions={truckTypes}
           initiallySelectedTruckType={initiallySelectedTruckType}
         />
-        <hr className='border-0 border-t-2 border-dashed border-[#666] my-12' />
+        <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
 
         <AddEditInfoSection
-          title='الشحنة'
-          section='shipment'
+          title="الشحنة"
+          section="shipment"
           options={cities}
           inputs={shipmentSectionInputsData}
           value={formData}
@@ -333,36 +383,36 @@ const EditShipment = () => {
           initiallySelectedShipmentStatus={selectedShipmentStatus}
         />
         {isNotesAreaVisible ? (
-          <div className='w-full flex flex-col items-start mb-12'>
+          <div className="w-full flex flex-col items-start mb-12">
             <span>ملاحظات</span>
             <textarea
-              name='shipmentNotes'
+              name="shipmentNotes"
               value={formData.shipmentNotes}
               onChange={handleChange}
-              placeholder='يمكنك هنا إضافة ملاحظات يجب أن ينتبه لها السائق'
-              className='w-full h-56 mt-4 mb-2 p-4 border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] resize-none font-Rubik'
+              placeholder="يمكنك هنا إضافة ملاحظات يجب أن ينتبه لها السائق"
+              className="w-full h-56 mt-4 mb-2 p-4 border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] resize-none font-Rubik"
             ></textarea>
-              <div className='w-full flex items-center justify-end'>
-            <button
-              onClick={() => setIsNotesAreaVisible(false)}
-              className='col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg'
-            >
-              إخفاء
-            </button>
-          </div>
+            <div className="w-full flex items-center justify-end">
+              <button
+                onClick={() => setIsNotesAreaVisible(false)}
+                className="col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg"
+              >
+                إخفاء
+              </button>
+            </div>
           </div>
         ) : (
           <button
             onClick={() => setIsNotesAreaVisible(true)}
-            className='col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg mb-6'
+            className="col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg mb-6"
           >
             إضافة ملاحظات
           </button>
         )}
-        <hr className='border-0 border-t-2 border-dashed border-[#666] mb-12' />
+        <hr className="border-0 border-t-2 border-dashed border-[#666] mb-12" />
         <AddEditFullInfoSection
-          title='المرسِل'
-          section='client'
+          title="المرسِل"
+          section="client"
           options={clients}
           inputs={clientSectionInputsData}
           value={formData}
@@ -372,8 +422,8 @@ const EditShipment = () => {
           selectedMenuItem={selectedClient}
         />
         <AddEditFullInfoSection
-          title='المستلِم'
-          section='recipient'
+          title="المستلِم"
+          section="recipient"
           options={recipients}
           inputs={recipientSectionInputsData}
           value={formData}
@@ -382,7 +432,7 @@ const EditShipment = () => {
         />
         <AddEditCostSection
           inputs={costSectionInputsData}
-          section='cost'
+          section="cost"
           setNights={(value: any) =>
             setFormData((prev: any) => ({ ...prev, numberOfNights: value }))
           }
@@ -392,10 +442,10 @@ const EditShipment = () => {
           value={formData}
           onChange={handleChange}
           totalCost={formData.totalCost}
-          page='editShipment'
+          page="editShipment"
         />
-        <hr className='border-0 border-t-2 border-dashed border-[#666] my-12' />
-        <button className='w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4'>
+        <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
+        <button className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4">
           تعديل الشحنة
         </button>
       </form>

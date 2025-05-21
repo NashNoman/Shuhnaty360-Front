@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import deleteShipmentIcon from "../../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../../assets/images/edit-shipment-icon.svg";
 import ShipmentDetailsInfoSection from "../../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
@@ -19,32 +18,32 @@ const ShipmentDetails = () => {
   const shipment = useSelector((state: RootState) => state.shipments.shipment);
   const driver = useSelector((state: RootState) => state.drivers.driver);
   const recipient = useSelector(
-    (state: RootState) => state.recipients.recipient
+    (state: RootState) => state.recipients.recipient,
   );
   const client = useSelector((state: RootState) => state.clients.client);
   const user = useSelector((state: RootState) => state.users.user);
   const isDriverDataLoading = useSelector(
-    (state: RootState) => state.drivers.isLoading
+    (state: RootState) => state.drivers.isLoading,
   );
   const isClientDataLoading = useSelector(
-    (state: RootState) => state.clients.isLoading
+    (state: RootState) => state.clients.isLoading,
   );
   const isRecipientDataLoading = useSelector(
-    (state: RootState) => state.recipients.isLoading
+    (state: RootState) => state.recipients.isLoading,
   );
   const isUsersDataLoading = useSelector(
-    (state: RootState) => state.users.isLoading
+    (state: RootState) => state.users.isLoading,
   );
   const isCitiesDataLoading = useSelector(
-    (state: RootState) => state.cities.isLoading
+    (state: RootState) => state.cities.isLoading,
   );
   const truckTypes = useSelector(
-    (state: RootState) => state.drivers.truckTypes
+    (state: RootState) => state.drivers.truckTypes,
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const truckType = truckTypes.find(
-    (truckType: any) => truckType.id === driver?.truck_type
+    (truckType: any) => truckType.id === driver?.truck_type,
   );
 
   // useEffect(() => {

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ShipmentPage from "../../components/shipments/shipmentPage/ShipmentPage";
@@ -11,13 +9,13 @@ import { Shipment } from "../../types";
 const CancelledShipments = () => {
   const dispatch = useDispatch<AppDispatch>();
   const shipments = useSelector(
-    (state: RootState) => state.shipments.shipments
+    (state: RootState) => state.shipments.shipments,
   ) as Shipment[];
   const shipmentsData = shipments.filter(
-    (shipment: any) => shipment.status === "ملغية"
+    (shipment: any) => shipment.status === "ملغية",
   );
   const isLoading = useSelector(
-    (state: RootState) => state.shipments.isLoading
+    (state: RootState) => state.shipments.isLoading,
   );
   const { isSidebarOpen } = useSidebar();
 

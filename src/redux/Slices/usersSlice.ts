@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseURL } from "../../../config";
@@ -64,14 +63,14 @@ export const editUser = createAsyncThunk(
             username: "admin",
             password: "admin",
           },
-        }
+        },
       );
       return response.data;
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
       throw err;
     }
-  }
+  },
 );
 
 export const deleteUser = createAsyncThunk(
@@ -85,14 +84,14 @@ export const deleteUser = createAsyncThunk(
             username: "admin",
             password: "admin",
           },
-        }
+        },
       );
       return response.data;
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
       throw err;
     }
-  }
+  },
 );
 
 const usersSlice = createSlice({

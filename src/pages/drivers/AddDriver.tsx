@@ -43,7 +43,7 @@ const AddDriver = () => {
       },
       onError: (error: any) => {
         toast.error(
-          error?.response?.data?.detail || "حدث خطأ أثناء إضافة السائق"
+          error?.response?.data?.detail || "حدث خطأ أثناء إضافة السائق",
         );
       },
     });

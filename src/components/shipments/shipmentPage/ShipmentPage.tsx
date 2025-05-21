@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -53,7 +52,7 @@ const ShipmentPage = ({ shipmentsData }: ShipmentPageProps) => {
   ];
 
   const sortedShipments = [...shipmentsData].sort(
-    (a: any, b: any) => a.id - b.id
+    (a: any, b: any) => a.id - b.id,
   );
 
   const filteredData = sortedShipments.filter((shipment: Shipment) =>
@@ -63,7 +62,7 @@ const ShipmentPage = ({ shipmentsData }: ShipmentPageProps) => {
         typeof fieldValue === "string" &&
         fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
       );
-    })
+    }),
   );
 
   const dataToRender = searchValue ? filteredData : sortedShipments;

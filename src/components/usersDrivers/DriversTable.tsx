@@ -83,12 +83,12 @@ const DriversTable = ({
         return filters[key].includes(item[key as keyof Driver]);
       }) &&
       (selectedStatus === "الكل" ||
-        driverStatus[item.status] === selectedStatus)
+        driverStatus[item.status] === selectedStatus),
   );
 
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const getLang = (lang: string) => {
@@ -122,7 +122,7 @@ const DriversTable = ({
                       type="button"
                       onClick={() =>
                         setShowFilter((prev: any) =>
-                          prev[col.key] ? {} : { [col.key]: true }
+                          prev[col.key] ? {} : { [col.key]: true },
                         )
                       }
                     >
@@ -181,7 +181,7 @@ const DriversTable = ({
                   <td className="py-2 px-4 text-center ">
                     <span
                       className={`p-2 inline-block rounded-md w-44 text-sm ${getStatusColor(
-                        item.status
+                        item.status,
                       )} ${getStatusBgColor(item.status)}`}
                     >
                       {driverStatus[item.status]}

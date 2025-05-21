@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseURL } from "../../../config";
@@ -18,7 +17,7 @@ export const getRecipients = createAsyncThunk(
       console.error("API Error:", err.response?.data || err.message);
       throw err;
     }
-  }
+  },
 );
 
 export const getRecipient = createAsyncThunk(
@@ -36,7 +35,7 @@ export const getRecipient = createAsyncThunk(
       console.error("API Error:", err.response?.data || err.message);
       throw err;
     }
-  }
+  },
 );
 
 const recipientsSlice = createSlice({

@@ -24,7 +24,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 let isRefreshing = false;
@@ -70,7 +70,7 @@ api.interceptors.response.use(
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
         removeTokens();
-        callGlobalLogout && callGlobalLogout();
+        callGlobalLogout();
         return Promise.reject(error);
       }
 
@@ -83,7 +83,7 @@ api.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         removeTokens();
-        callGlobalLogout && callGlobalLogout();
+        callGlobalLogout();
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
@@ -95,7 +95,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

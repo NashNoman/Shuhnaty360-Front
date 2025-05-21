@@ -1,21 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useState } from "react";
 // import AddEditFullInfoSection from '../../components/shipments/addShipment/AddEditFullInfoSection';
 // import AddEditInfoSection from '../../components/shipments/addShipment/AddEditInfoSection';
 // import PhoneNumberInput from '../../components/shipments/addShipment/addShipmentInputs/phoneNumberInput/PhoneNumberInput';
 // import addIcon from '../../assets/images/add.svg';
-import AddEditFullInfoSection from '../../components/shipments/addShipment/AddEditFullInfoSection';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../redux/store';
-import { useNavigate } from 'react-router-dom';
-import { useSidebar } from '../../context/SidebarContext';
-import { addClient } from '../../redux/Slices/clientsSlice';
-import { toast } from 'sonner';
+import AddEditFullInfoSection from "../../components/shipments/addShipment/AddEditFullInfoSection";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
+import { useSidebar } from "../../context/SidebarContext";
+import { addClient } from "../../redux/Slices/clientsSlice";
+import { toast } from "sonner";
 
 const clientSectionInputsData = [
-  { label: 'الاسم', name: 'name' },
-  { label: 'العنوان', name: 'address' },
-  { label: 'البريد الإلكتروني', name: 'email' },
+  { label: "الاسم", name: "name" },
+  { label: "العنوان", name: "address" },
+  { label: "البريد الإلكتروني", name: "email" },
 ];
 
 // const secondBranchSectionInputsData = [
@@ -30,15 +29,17 @@ const AddClient = () => {
   const { isSidebarOpen } = useSidebar();
 
   const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    PrimaryPhoneNumber: '',
-    SecondaryPhoneNumber: '',
-    email: '',
-    description: '',
+    name: "",
+    address: "",
+    PrimaryPhoneNumber: "",
+    SecondaryPhoneNumber: "",
+    email: "",
+    description: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -63,13 +64,13 @@ const AddClient = () => {
     setIsLoading(true);
     try {
       const response = await dispatch(addClient(getApiDataFormat(formData)));
-      if (response.meta.requestStatus === 'fulfilled') {
+      if (response.meta.requestStatus === "fulfilled") {
         setIsLoading(false);
-        toast.success('تم إضافة العميل بنجاح');
-        navigate('/clients');
+        toast.success("تم إضافة العميل بنجاح");
+        navigate("/clients");
       }
     } catch (error) {
-      console.error('Error adding client:', error);
+      console.error("Error adding client:", error);
     } finally {
       setIsLoading(false);
     }
@@ -80,22 +81,22 @@ const AddClient = () => {
       {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && 'lg:transform -translate-x-[5%]'
+            isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className='loader'></span>
+          <span className="loader"></span>
         </div>
       )}
       <form
         onSubmit={handleSubmit}
-        className='border border-[#DD7E1F] rounded-lg px-6 mx-4 md:mx-0'
+        className="border border-[#DD7E1F] rounded-lg px-6 mx-4 md:mx-0"
       >
         <AddEditFullInfoSection
-          title=''
+          title=""
           inputs={clientSectionInputsData}
           value={formData}
           onChange={handleChange}
-          page='client'
+          page="client"
           doesHaveBreakLine={false}
         />
         {/* <AddEditInfoSection
@@ -124,7 +125,7 @@ const AddClient = () => {
           alt='upload image'
         />
       </button> */}
-        <button className='w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mb-8'>
+        <button className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mb-8">
           إضافة العميل
         </button>
       </form>

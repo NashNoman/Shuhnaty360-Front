@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +36,7 @@ const Drivers = () => {
 
   const { data: driversRes, isLoading } = useFetch<GetDriversResponse>(
     ["drivers"],
-    "/drivers/api"
+    "/drivers/api",
   );
 
   const handlePageChange = (page: any) => {
@@ -56,7 +55,7 @@ const Drivers = () => {
         typeof fieldValue === "string" &&
         fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
       );
-    })
+    }),
   );
 
   const sortedData = filteredData

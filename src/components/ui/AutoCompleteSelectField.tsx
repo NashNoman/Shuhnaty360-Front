@@ -22,7 +22,7 @@ const AutocompleteSelectField = ({
   options,
 }: AutocompleteSelectFieldProps) => {
   const [inputValue, setInputValue] = useState(
-    options.find((o) => o.value === value)?.label || ""
+    options.find((o) => o.value === value)?.label || "",
   );
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState(options);
@@ -31,8 +31,8 @@ const AutocompleteSelectField = ({
   useEffect(() => {
     setFilteredOptions(
       options.filter((option) =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase())
-      )
+        option.label.toLowerCase().includes(inputValue.toLowerCase()),
+      ),
     );
   }, [inputValue, options]);
 
@@ -55,7 +55,7 @@ const AutocompleteSelectField = ({
       setInputValue(selected.label);
     }
     if (!value) setInputValue("");
-  }, [value, options]);
+  }, [value, options, inputValue]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);

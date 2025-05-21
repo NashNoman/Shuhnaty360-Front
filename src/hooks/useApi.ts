@@ -10,7 +10,7 @@ export function useFetch<T>(
   queryKey: QueryKey,
   url: string,
   params?: Record<string, any>,
-  enabled = true
+  enabled = true,
 ) {
   return useQuery<T>({
     queryKey: [queryKey, params],
@@ -24,7 +24,7 @@ export function useFetch<T>(
 
 export function useCreate<TData = any, TVariables = any>(
   url: string,
-  invalidateKey?: QueryKey
+  invalidateKey?: QueryKey,
 ) {
   const queryClient = useQueryClient();
   return useMutation<TData, unknown, TVariables>({
@@ -38,7 +38,7 @@ export function useCreate<TData = any, TVariables = any>(
 
 export function useUpdate<TData = any, TVariables = any>(
   url: string,
-  invalidateKey?: QueryKey
+  invalidateKey?: QueryKey,
 ) {
   const queryClient = useQueryClient();
   return useMutation<TData, unknown, TVariables>({

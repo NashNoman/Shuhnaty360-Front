@@ -1,10 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import shipmentsReducer from './Slices/shipmentsSlice';
-import recipientsSlice from './Slices/recipientsSlice';
-import clientsSlice from './Slices/clientsSlice';
-import driversSlice from './Slices/driversSlice';
-import citiesSlice from './Slices/citiesSlice';
-import usersSlice from './Slices/usersSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import shipmentsReducer from "./Slices/shipmentsSlice";
+import recipientsSlice from "./Slices/recipientsSlice";
+import clientsSlice from "./Slices/clientsSlice";
+import driversSlice from "./Slices/driversSlice";
+import citiesSlice from "./Slices/citiesSlice";
+import usersSlice from "./Slices/usersSlice";
 
 export const store = configureStore({
   reducer: {

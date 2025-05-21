@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
-import React from 'react';
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip } from "chart.js";
+import React from "react";
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -24,7 +23,7 @@ const PieChart = React.memo(({ data }: PieChartProps) => {
         },
       },
     },
-    cutout: '50%',
+    cutout: "50%",
     offset: 0,
     radius: 150,
     rotation: 45,
@@ -33,18 +32,18 @@ const PieChart = React.memo(({ data }: PieChartProps) => {
     spacing: -5,
   };
 
-  const total = data.datasets[0].data.reduce((a: number, b: number) => a + b, 0);
+  const total = data.datasets[0].data.reduce(
+    (a: number, b: number) => a + b,
+    0,
+  );
 
   return (
-    <div className='flex justify-center items-center'>
-      <div className='relative'>
-        <Doughnut
-          data={data}
-          options={options}
-        />
-        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-2xl font-Rubik text-[#333]'>
+    <div className="flex justify-center items-center">
+      <div className="relative">
+        <Doughnut data={data} options={options} />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-2xl font-Rubik text-[#333]">
           {total}
-          <div className='font-Rubik text-2xl'>شحنة</div>
+          <div className="font-Rubik text-2xl">شحنة</div>
         </div>
       </div>
     </div>

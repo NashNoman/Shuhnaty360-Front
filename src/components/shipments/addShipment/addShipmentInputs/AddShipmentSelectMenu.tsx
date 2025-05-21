@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
@@ -47,10 +46,10 @@ export default function AddShipmentSelectMenu({
           return section === "shipment"
             ? option.ar_city || "Unknown City"
             : isDriver
-            ? option.name_ar
-            : isShipmentStatus
-            ? option.name_ar
-            : option.name || "";
+              ? option.name_ar
+              : isShipmentStatus
+                ? option.name_ar
+                : option.name || "";
         }}
         value={value}
         onChange={(_, newValue) => onChange(newValue)}
@@ -61,10 +60,10 @@ export default function AddShipmentSelectMenu({
             {section === "shipment"
               ? option.ar_city
               : isDriver
-              ? option.name_ar
-              : isShipmentStatus
-              ? option.name_ar
-              : option.name}
+                ? option.name_ar
+                : isShipmentStatus
+                  ? option.name_ar
+                  : option.name}
           </li>
         )}
         renderInput={(params) => <TextField {...params} label={title} />}

@@ -41,7 +41,7 @@ const Login = () => {
     } else if (loginError) {
       resetField("password");
     }
-  }, [isAuthenticated, loginError, resetField]);
+  }, [isAuthenticated, navigate, loginError, resetField]);
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createContext,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useReducer,
@@ -91,9 +92,9 @@ type AuthContextType = {
   loginError: any;
 };
 
-export const AuthContext = createContext<AuthContextType>(
-  {} as AuthContextType
-);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+
+export default AuthContext;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
@@ -118,19 +119,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     removeTokens();
     dispatch({ type: "LOGOUT" });
     navigate("/login");
     queryClient.clear();
-  };
+  }, [navigate, queryClient]);
 
   useEffect(() => {
     setGlobalLogout(handleLogout);
-  }, []);
+  }, [handleLogout]);
 
-  const authContextValue = useMemo(
-    () => ({
+  const authContextValue = useMemo(() => {
+    console.log("From AuthContext");
+
+    return {
       accessToken: state.accessToken,
       refreshToken: state.refreshToken,
       isAuthenticated: state.isAuthenticated,
@@ -140,9 +143,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout: handleLogout,
       loginIsLoading: loginMutation.isPending,
       loginError: loginMutation.error,
-    }),
-    [state, loginMutation]
-  );
+    };
+  }, [state, loginMutation, handleLogout]);
 
   return (
     <AuthContext.Provider value={authContextValue}>

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Line } from 'react-chartjs-2';
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
@@ -10,12 +9,20 @@ import {
   Legend,
   ChartOptions,
   Filler,
-} from 'chart.js';
+} from "chart.js";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler);
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+  Filler,
+);
 
 const LineChartComponent = ({ data }: any) => {
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -38,26 +45,21 @@ const LineChartComponent = ({ data }: any) => {
           display: true,
         },
         ticks: {
-          align: 'center',
+          align: "center",
         },
       },
       y: {
         beginAtZero: true,
         grid: {
           display: true,
-          color: 'rgba(221, 126, 31, 0.1)',
+          color: "rgba(221, 126, 31, 0.1)",
         },
-        position: 'right',
+        position: "right",
       },
     },
   };
 
-  return (
-    <Line
-      data={data}
-      options={options}
-    />
-  );
+  return <Line data={data} options={options} />;
 };
 
 export default LineChartComponent;

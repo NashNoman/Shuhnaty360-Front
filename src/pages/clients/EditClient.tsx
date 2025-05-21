@@ -1,21 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import AddEditFullInfoSection from '../../components/shipments/addShipment/AddEditFullInfoSection';
+import { useEffect, useState } from "react";
+import AddEditFullInfoSection from "../../components/shipments/addShipment/AddEditFullInfoSection";
 // import AddEditInfoSection from '../../components/shipments/addShipment/AddEditInfoSection';
 // import PhoneNumberInput from '../../components/shipments/addShipment/addShipmentInputs/phoneNumberInput/PhoneNumberInput';
 // import addIcon from '../../assets/images/add.svg';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store';
-import { editClient, getClient } from '../../redux/Slices/clientsSlice';
-import { useSidebar } from '../../context/SidebarContext';
-import { toast } from 'sonner';
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { editClient, getClient } from "../../redux/Slices/clientsSlice";
+import { useSidebar } from "../../context/SidebarContext";
+import { toast } from "sonner";
 
 const EditClient = () => {
   const { clientId } = useParams();
   const client = useSelector((state: RootState) => state.clients.client);
   const [isLoading, setIsLoading] = useState(false);
-  const isUserDataLoading = useSelector((state: RootState) => state.clients.isLoading);
+  const isUserDataLoading = useSelector(
+    (state: RootState) => state.clients.isLoading,
+  );
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { isSidebarOpen } = useSidebar();
@@ -41,23 +42,25 @@ const EditClient = () => {
   }, [client]);
 
   const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    PrimaryPhoneNumber: '',
-    SecondaryPhoneNumber: '',
-    email: '',
-    description: '',
+    name: "",
+    address: "",
+    PrimaryPhoneNumber: "",
+    SecondaryPhoneNumber: "",
+    email: "",
+    description: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const clientSectionInputsData = [
-    { label: 'الاسم', name: 'name' },
-    { label: 'العنوان', name: 'address' },
-    { label: 'البريد الإلكتروني', name: 'email' },
+    { label: "الاسم", name: "name" },
+    { label: "العنوان", name: "address" },
+    { label: "البريد الإلكتروني", name: "email" },
   ];
 
   // const branchSectionInputsData = [
@@ -90,13 +93,13 @@ const EditClient = () => {
           data: getApiDataFormat(formData),
         }),
       );
-      if (response.meta.requestStatus === 'fulfilled') {
+      if (response.meta.requestStatus === "fulfilled") {
         setIsLoading(false);
-        toast.success('تم تعديل بيانات العميل بنجاح');
-        navigate('/clients');
+        toast.success("تم تعديل بيانات العميل بنجاح");
+        navigate("/clients");
       }
     } catch (error) {
-      console.error('Error editing client:', error);
+      console.error("Error editing client:", error);
     } finally {
       setIsLoading(false);
     }
@@ -107,22 +110,22 @@ const EditClient = () => {
       {(isLoading || isUserDataLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && 'lg:transform -translate-x-[5%]'
+            isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className='loader'></span>
+          <span className="loader"></span>
         </div>
       )}
       <form
         onSubmit={handleSubmit}
-        className='border border-[#DD7E1F] rounded-lg px-6 mx-4 md:mx-0'
+        className="border border-[#DD7E1F] rounded-lg px-6 mx-4 md:mx-0"
       >
         <AddEditFullInfoSection
-          title=''
+          title=""
           inputs={clientSectionInputsData}
           value={formData}
           onChange={handleChange}
-          page='client'
+          page="client"
           doesHaveBreakLine={false}
         />
         {/* <AddEditInfoSection
@@ -152,7 +155,7 @@ const EditClient = () => {
           alt='upload image'
         />
       </button> */}
-        <button className='w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mb-8'>
+        <button className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mb-8">
           تحديث البيانات
         </button>
       </form>

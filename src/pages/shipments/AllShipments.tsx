@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import ShipmentsFilterDialog from "../../components/shipments/filterDialog/ShipmentsFilterDialog";
 import ShipmentPage from "../../components/shipments/shipmentPage/ShipmentPage";
 import { useSidebar } from "../../context/SidebarContext";
@@ -9,7 +8,7 @@ const AllShipments = () => {
   const { isSidebarOpen } = useSidebar();
   const { data: shipmentsRes, isLoading } = useFetch<GetShipmentsResponse>(
     ["shipments"],
-    "/shipments/api"
+    "/shipments/api",
   );
 
   const shipments = shipmentsRes?.results || [];

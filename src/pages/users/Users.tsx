@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +25,7 @@ const Users = () => {
 
   const { data: res, isLoading } = useFetch<GetUsersResponse>(
     ["users"],
-    "/accounts/users"
+    "/accounts/users",
   );
 
   const handlePageChange = (page: any) => {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -30,7 +29,7 @@ const DriverDetails = () => {
   const { data: driverDetailsRes, isLoading } =
     useFetch<GetDriverDetailsResponse>(
       ["drivers", driverId],
-      `/drivers/api/${driverId}`
+      `/drivers/api/${driverId}`,
     );
 
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
@@ -40,7 +39,7 @@ const DriverDetails = () => {
   const truckTypes = truckTypesRes?.data;
 
   const truckType = truckTypes?.results.find(
-    (truckType: any) => truckType.id === driver?.truck_type
+    (truckType: any) => truckType.id === driver?.truck_type,
   );
 
   const handlePageChange = (page: any) => {

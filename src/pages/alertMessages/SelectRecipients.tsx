@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import leftArrowIcon from "../../assets/images/arrow-left.png";
@@ -149,7 +148,7 @@ const SelectRecipients = () => {
   // };
 
   const filteredData = DriversData.filter((driver) =>
-    driver.name.toLowerCase().includes(searchValue.toLowerCase().trim())
+    driver.name.toLowerCase().includes(searchValue.toLowerCase().trim()),
   );
 
   return (

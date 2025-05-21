@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // import FileUploadInput from '../../components/usersDrivers/FileUploadInput';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLayoutEffect } from "react";
@@ -28,7 +27,7 @@ const EditUser = () => {
     ["user", userId],
     `/accounts/users/${userId}`,
     undefined,
-    !!userId
+    !!userId,
   );
 
   const { mutate, isPending } = useUpdate(`/accounts/users/${userId}`, [
@@ -42,7 +41,7 @@ const EditUser = () => {
       },
       onError: (error: any) => {
         toast.error(
-          error?.response?.data?.detail || "حدث خطأ أثناء تعديل المستخدم"
+          error?.response?.data?.detail || "حدث خطأ أثناء تعديل المستخدم",
         );
       },
     });

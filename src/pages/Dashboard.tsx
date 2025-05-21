@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import boxSearch from "../assets/images/box-search.svg";
@@ -16,7 +15,7 @@ function parseShipmentDate(dateStr: string): Date {
 
 function getDeliveredShipmentsChartData(
   deliveredShipments: any[],
-  range: string
+  range: string,
 ) {
   const { start, end } = getRangeDates(range);
   let labels: string[] = [];
@@ -36,7 +35,7 @@ function getDeliveredShipmentsChartData(
 
     deliveredShipments.forEach((shipment: any) => {
       const date = parseShipmentDate(
-        shipment.expected_arrival_date || shipment.actual_delivery_date
+        shipment.expected_arrival_date || shipment.actual_delivery_date,
       );
       if (date >= start && date <= end) {
         let dayIdx = date.getDay();
@@ -52,7 +51,7 @@ function getDeliveredShipmentsChartData(
 
     deliveredShipments.forEach((shipment: any) => {
       const date = parseShipmentDate(
-        shipment.expected_arrival_date || shipment.actual_delivery_date
+        shipment.expected_arrival_date || shipment.actual_delivery_date,
       );
       if (date >= start && date <= end) {
         const day = date.getDate();
@@ -85,7 +84,7 @@ function getDeliveredShipmentsChartData(
 
     deliveredShipments.forEach((shipment: any) => {
       const date = parseShipmentDate(
-        shipment.expected_arrival_date || shipment.actual_delivery_date
+        shipment.expected_arrival_date || shipment.actual_delivery_date,
       );
       if (date >= start && date <= end) {
         const month = date.getMonth();
@@ -146,12 +145,12 @@ function getRangeDates(range: string): { start: Date; end: Date } {
 
 function getFilteredDeliveredShipments(
   deliveredShipments: any[],
-  range: string
+  range: string,
 ) {
   const { start, end } = getRangeDates(range);
   return deliveredShipments.filter((shipment: any) => {
     const date = parseShipmentDate(
-      shipment.expected_arrival_date || shipment.actual_delivery_date
+      shipment.expected_arrival_date || shipment.actual_delivery_date,
     );
     return date >= start && date <= end;
   });
@@ -166,14 +165,14 @@ const Dashboard = React.memo(() => {
   const { isSidebarOpen } = useSidebar();
   const [selectedRange, setSelectedRange] = useState("أسبوعي");
   const shipments = useSelector(
-    (state: RootState) => state.shipments.shipments
+    (state: RootState) => state.shipments.shipments,
   );
   const returnedShipments = shipments.filter(
-    (shipment: any) => shipment.status === "مرتجعة"
+    (shipment: any) => shipment.status === "مرتجعة",
   );
   const { start, end } = useMemo(
     () => getRangeDates(selectedRange),
-    [selectedRange]
+    [selectedRange],
   );
 
   const filteredShipments = useMemo(
@@ -182,13 +181,13 @@ const Dashboard = React.memo(() => {
         const date = parseShipmentDate(shipment.loading_at);
         return date >= start && date <= end;
       }),
-    [shipments, start, end]
+    [shipments, start, end],
   );
   const delayedShipments = shipments.filter(
-    (shipment: any) => shipment.status === "متأخرة"
+    (shipment: any) => shipment.status === "متأخرة",
   );
   const deliveredShipments = filteredShipments.filter(
-    (shipment: any) => shipment.status === "تم التوصيل"
+    (shipment: any) => shipment.status === "تم التوصيل",
   );
 
   // useEffect(() => {
@@ -197,12 +196,12 @@ const Dashboard = React.memo(() => {
 
   const chartData = useMemo(
     () => getDeliveredShipmentsChartData(deliveredShipments, selectedRange),
-    [deliveredShipments, selectedRange]
+    [deliveredShipments, selectedRange],
   );
 
   const filteredDelivered = useMemo(
     () => getFilteredDeliveredShipments(deliveredShipments, selectedRange),
-    [deliveredShipments, selectedRange]
+    [deliveredShipments, selectedRange],
   );
 
   const handleButtonClick = useCallback((item: string) => {
@@ -275,8 +274,8 @@ const Dashboard = React.memo(() => {
   const pieCounts = pieStatuses.map(
     (item) =>
       filteredShipments.filter(
-        (shipment: any) => shipment.status === item.status
-      ).length
+        (shipment: any) => shipment.status === item.status,
+      ).length,
   );
 
   const pieChartData = {
@@ -313,8 +312,8 @@ const Dashboard = React.memo(() => {
       data: uniqueCities.map(
         (city) =>
           filteredShipments.filter(
-            (s) => s.origin_city === city && s.status === status.name
-          ).length
+            (s) => s.origin_city === city && s.status === status.name,
+          ).length,
       ),
     }));
   }, [filteredShipments, uniqueCities]);
@@ -323,7 +322,7 @@ const Dashboard = React.memo(() => {
     return series.length
       ? series[0].data
           .map((_, cityIdx) =>
-            series.reduce((sum, s) => sum + s.data[cityIdx], 0)
+            series.reduce((sum, s) => sum + s.data[cityIdx], 0),
           )
           .reduce((a, b) => a + b, 0)
       : 0;
@@ -381,8 +380,8 @@ const Dashboard = React.memo(() => {
                       {selectedRange === "أسبوعي"
                         ? "الأسبوع"
                         : selectedRange === "شهري"
-                        ? "الشهر"
-                        : "العام"}
+                          ? "الشهر"
+                          : "العام"}
                     </span>{" "}
                     الماضي
                   </span>
@@ -393,8 +392,8 @@ const Dashboard = React.memo(() => {
                   selectedRange === "أسبوعي"
                     ? "ps-0"
                     : selectedRange === "سنوي"
-                    ? "pe-0"
-                    : ""
+                      ? "pe-0"
+                      : ""
                 }`}
               >
                 {["أسبوعي", "شهري", "سنوي"].map((item, index) => (

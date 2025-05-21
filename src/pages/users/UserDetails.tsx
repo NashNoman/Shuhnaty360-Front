@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import SelectMenu from "../../components/SelectMenu";
 import Pagination from "../../components/pagination/Pagination";
@@ -116,7 +115,7 @@ const UsersDetails = () => {
     ["user", userId],
     `/accounts/users/${userId}`,
     undefined,
-    !!userId
+    !!userId,
   );
 
   const user: User | undefined = data?.data;

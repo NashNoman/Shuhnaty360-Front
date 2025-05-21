@@ -29,7 +29,7 @@ const EditDriver = () => {
     ["drivers", driverId],
     `/drivers/api/${driverId}`,
     undefined,
-    !!driverId
+    !!driverId,
   );
 
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
@@ -51,7 +51,7 @@ const EditDriver = () => {
       },
       onError: (error: any) => {
         toast.error(
-          error?.response?.data?.detail || "حدث خطأ أثناء إضافة السائق"
+          error?.response?.data?.detail || "حدث خطأ أثناء إضافة السائق",
         );
       },
     });
@@ -69,7 +69,7 @@ const EditDriver = () => {
       setValue("nationality", driverData.data.nationality);
       setValue("vehicle_number", driverData.data.vehicle_number);
     }
-  }, [driverData, register]);
+  }, [driverData, register, setValue]);
 
   return (
     <>

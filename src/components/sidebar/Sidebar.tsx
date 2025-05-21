@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import debounce from "lodash.debounce";
 import { useEffect, useState } from "react";
 import { IoMdMenu } from "react-icons/io";
@@ -210,7 +209,7 @@ const Sidebar = () => {
                       <span>{item.icon(selectedItem)}</span>
                       {isSidebarOpen && <span>{item.name}</span>}
                     </Link>
-                  )
+                  ),
                 )}
               </div>
             </div>

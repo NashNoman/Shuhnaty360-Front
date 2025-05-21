@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const UserDriverDetailsTable = ({
   selectedOption,
   userShipmentsData,
@@ -7,12 +6,12 @@ const UserDriverDetailsTable = ({
 }: any) => {
   const filteredData = userShipmentsData.filter(
     (shipment: any) =>
-      selectedOption === "الكل" || shipment.date === selectedOption
+      selectedOption === "الكل" || shipment.date === selectedOption,
   );
 
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const tableRowStyles = "py-2 px-4 text-right text-nowrap";
@@ -76,7 +75,7 @@ const UserDriverDetailsTable = ({
                 <td className="py-2 px-4 text-center">
                   <span
                     className={`p-2.5 inline-block rounded-md w-44 text-sm ${getStatusColor(
-                      shipment.label
+                      shipment.label,
                     )} ${getStatusBgColor(shipment.label)}`}
                   >
                     {shipment.label}

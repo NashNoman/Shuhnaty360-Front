@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseURL } from "./../../../config";
@@ -18,7 +17,7 @@ export const getShipments = createAsyncThunk(
       console.error("API Error:", err.response?.data || err.message);
       throw err;
     }
-  }
+  },
 );
 
 export const getShipment = createAsyncThunk(
@@ -35,7 +34,7 @@ export const getShipment = createAsyncThunk(
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const getShipmentsStatus = createAsyncThunk(
@@ -52,7 +51,7 @@ export const getShipmentsStatus = createAsyncThunk(
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const addShipment = createAsyncThunk(
@@ -67,13 +66,13 @@ export const addShipment = createAsyncThunk(
             username: "admin",
             password: "admin",
           },
-        }
+        },
       );
       return response.data.data;
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const updateShipment = createAsyncThunk(
@@ -88,13 +87,13 @@ export const updateShipment = createAsyncThunk(
             username: "admin",
             password: "admin",
           },
-        }
+        },
       );
       return response.data.data;
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
     }
-  }
+  },
 );
 
 export const deleteShipment = createAsyncThunk(
@@ -108,13 +107,13 @@ export const deleteShipment = createAsyncThunk(
             username: "admin",
             password: "admin",
           },
-        }
+        },
       );
       return response.data.data;
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);
     }
-  }
+  },
 );
 
 const shipmentsSlice = createSlice({

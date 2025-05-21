@@ -1,18 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react';
-import AddEditInfoSection from '../../../components/shipments/addShipment/AddEditInfoSection';
-import AddEditCostSection from '../../../components/shipments/addShipment/AddEditCostSection';
-import { addShipment, getShipmentsStatus } from '../../../redux/Slices/shipmentsSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../redux/store';
-import { useSidebar } from '../../../context/SidebarContext';
-import { getDrivers, getTruckTypes } from '../../../redux/Slices/driversSlice';
-import { getCities } from '../../../redux/Slices/citiesSlice';
-import { getClients } from '../../../redux/Slices/clientsSlice';
-import { getRecipients } from '../../../redux/Slices/recipientsSlice';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
-import AddEditFullInfoSection from '../../../components/shipments/addShipment/AddEditFullInfoSection';
+import { useEffect, useState } from "react";
+import AddEditInfoSection from "../../../components/shipments/addShipment/AddEditInfoSection";
+import AddEditCostSection from "../../../components/shipments/addShipment/AddEditCostSection";
+import {
+  addShipment,
+  getShipmentsStatus,
+} from "../../../redux/Slices/shipmentsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../redux/store";
+import { useSidebar } from "../../../context/SidebarContext";
+import { getDrivers, getTruckTypes } from "../../../redux/Slices/driversSlice";
+import { getCities } from "../../../redux/Slices/citiesSlice";
+import { getClients } from "../../../redux/Slices/clientsSlice";
+import { getRecipients } from "../../../redux/Slices/recipientsSlice";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import AddEditFullInfoSection from "../../../components/shipments/addShipment/AddEditFullInfoSection";
 
 const AddShipment = () => {
   const navigate = useNavigate();
@@ -21,11 +23,19 @@ const AddShipment = () => {
   const drivers = useSelector((state: RootState) => state.drivers.drivers);
   const cities = useSelector((state: RootState) => state.cities.cities);
   const clients = useSelector((state: RootState) => state.clients.clients);
-  const recipients = useSelector((state: RootState) => state.recipients.recipients);
-  const [selectedClientBranches, setSelectedClientBranches] = useState<any[]>([]);
-  const shipmentsStatus = useSelector((state: RootState) => state.shipments.shipmentsStatus);
+  const recipients = useSelector(
+    (state: RootState) => state.recipients.recipients,
+  );
+  const [selectedClientBranches, setSelectedClientBranches] = useState<any[]>(
+    [],
+  );
+  const shipmentsStatus = useSelector(
+    (state: RootState) => state.shipments.shipmentsStatus,
+  );
 
-  const truckTypes = useSelector((state: RootState) => state.drivers.truckTypes);
+  const truckTypes = useSelector(
+    (state: RootState) => state.drivers.truckTypes,
+  );
   const [isNotesAreaVisible, setIsNotesAreaVisible] = useState(false);
 
   useEffect(() => {
@@ -35,28 +45,28 @@ const AddShipment = () => {
 
   const [formData, setFormData] = useState({
     driverId: null,
-    driverPhone: '',
-    vehicleType: '',
-    vehicleNumber: '',
-    pickupPointId: '',
-    dropOffPointId: '',
-    pickupDate: '',
-    deliveryDate: '',
-    contents: '',
-    weight: '',
-    shipmentNotes: '',
+    driverPhone: "",
+    vehicleType: "",
+    vehicleNumber: "",
+    pickupPointId: "",
+    dropOffPointId: "",
+    pickupDate: "",
+    deliveryDate: "",
+    contents: "",
+    weight: "",
+    shipmentNotes: "",
     clientId: null,
-    clientAddress: '',
+    clientAddress: "",
     clientBranchId: null,
-    clientInvoiceNumber: '',
-    clientPrimaryPhoneNumber: '',
-    clientSecondaryPhoneNumber: '',
-    clientFacilityDescription: '',
+    clientInvoiceNumber: "",
+    clientPrimaryPhoneNumber: "",
+    clientSecondaryPhoneNumber: "",
+    clientFacilityDescription: "",
     recipientId: null,
-    recipientAddress: '',
-    recipientPrimaryPhoneNumber: '',
-    recipientSecondaryPhoneNumber: '',
-    recipientFacilityDescription: '',
+    recipientAddress: "",
+    recipientPrimaryPhoneNumber: "",
+    recipientSecondaryPhoneNumber: "",
+    recipientFacilityDescription: "",
     baseCost: 0,
     extraCost: 0,
     numberOfNights: 0,
@@ -68,7 +78,9 @@ const AddShipment = () => {
   });
 
   useEffect(() => {
-    const selectedClient = clients.find((client) => client.id === formData.clientId);
+    const selectedClient = clients.find(
+      (client) => client.id === formData.clientId,
+    );
     setSelectedClientBranches(selectedClient?.branches || []);
     setFormData((prev) => ({
       ...prev,
@@ -85,7 +97,11 @@ const AddShipment = () => {
 
   useEffect(() => {
     const accommodationCost = formData.numberOfNights * formData.costPerNight;
-    const total = formData.baseCost + formData.extraCost + accommodationCost - formData.discount;
+    const total =
+      formData.baseCost +
+      formData.extraCost +
+      accommodationCost -
+      formData.discount;
     setFormData((prev) => ({ ...prev, totalCost: total }));
   }, [
     formData.baseCost,
@@ -96,50 +112,50 @@ const AddShipment = () => {
   ]);
 
   const driverSectionInputsData = [
-    { label: 'الاسم', name: 'driverName' },
-    { label: 'نوع الشاحنة', name: 'vehicleType' },
-    { label: 'رقم الهاتف', name: 'driverPhone' },
-    { label: 'رقم الشاحنة', name: 'vehicleNumber' },
+    { label: "الاسم", name: "driverName" },
+    { label: "نوع الشاحنة", name: "vehicleType" },
+    { label: "رقم الهاتف", name: "driverPhone" },
+    { label: "رقم الشاحنة", name: "vehicleNumber" },
   ];
 
   const shipmentSectionInputsData = [
     {
-      label: 'تحميل من',
+      label: "تحميل من",
     },
-    { label: 'توصيل إلى' },
+    { label: "توصيل إلى" },
     {
-      label: 'تاريخ التحميل',
-      name: 'pickupDate',
-      type: 'date',
+      label: "تاريخ التحميل",
+      name: "pickupDate",
+      type: "date",
       description:
-        'يتم تحديد تاريخ التحميل بشكل تلقائي حسب تاريخ اليوم، إذا كانت الشحنة تستلزم تاريخا محدددا للتحميل يمكنك التعديل بناء عليه.',
+        "يتم تحديد تاريخ التحميل بشكل تلقائي حسب تاريخ اليوم، إذا كانت الشحنة تستلزم تاريخا محدددا للتحميل يمكنك التعديل بناء عليه.",
     },
     {
-      label: 'تاريخ التسليم',
-      name: 'deliveryDate',
-      type: 'date',
-      description: 'أكّد مع المستلم التاريخ الدقيق للاستلام',
+      label: "تاريخ التسليم",
+      name: "deliveryDate",
+      type: "date",
+      description: "أكّد مع المستلم التاريخ الدقيق للاستلام",
     },
-    { label: 'المحتويات', name: 'contents' },
-    { label: 'الوزن بالطن', name: 'weight' },
+    { label: "المحتويات", name: "contents" },
+    { label: "الوزن بالطن", name: "weight" },
   ];
 
   const clientSectionInputsData = [
-    { label: 'الاسم' },
+    { label: "الاسم" },
     // { label: 'العنوان', name: 'clientAddress' },
-    { label: 'رقم الفاتورة', name: 'clientInvoiceNumber', isRequired: false },
+    { label: "رقم الفاتورة", name: "clientInvoiceNumber", isRequired: false },
     // { label: 'إحداثيات الموقع', name: 'clientLocationCoordinates' },
   ];
 
   const recipientSectionInputsData = [
-    { label: 'الاسم' },
-    { label: 'العنوان', name: 'recipientAddress' },
+    { label: "الاسم" },
+    { label: "العنوان", name: "recipientAddress" },
     // { label: 'إحداثيات الموقع', name: 'recipientLocationCoordinates' },
   ];
 
   const costSectionInputsData = [
-    { label: 'التكلفة الأساسية', name: 'baseCost', type: 'number' },
-    { label: 'الزيادة', name: 'extraCost', type: 'number' },
+    { label: "التكلفة الأساسية", name: "baseCost", type: "number" },
+    { label: "الزيادة", name: "extraCost", type: "number" },
   ];
 
   const getApiDataFormat = (formData: any) => {
@@ -173,7 +189,10 @@ const AddShipment = () => {
     };
   };
 
-  function calculateDateDifference(pickupDateStr: string, deliveryDateStr: string): number {
+  function calculateDateDifference(
+    pickupDateStr: string,
+    deliveryDateStr: string,
+  ): number {
     const pickupDate = new Date(pickupDateStr);
     const deliveryDate = new Date(deliveryDateStr);
 
@@ -186,14 +205,14 @@ const AddShipment = () => {
 
   const handleChange = (e: { target: { name: string; value: any } }) => {
     setFormData((prev) => {
-      if (['driver', 'client', 'recipient'].includes(e.target.name)) {
+      if (["driver", "client", "recipient"].includes(e.target.name)) {
         return {
           ...prev,
           ...e.target.value,
         };
       }
 
-      if (e.target.name === 'city') {
+      if (e.target.name === "city") {
         return {
           ...prev,
           pickupPointId: e.target.value.pickupPointId ?? prev.pickupPointId,
@@ -215,14 +234,14 @@ const AddShipment = () => {
 
     try {
       const response = await dispatch(addShipment(getApiDataFormat(formData)));
-      console.log('response: ', response);
-      if (response.meta.requestStatus === 'fulfilled') {
+      console.log("response: ", response);
+      if (response.meta.requestStatus === "fulfilled") {
         setIsLoading(false);
-        toast.success('تم إضافة الشحنة بنجاح');
-        navigate('/shipments');
+        toast.success("تم إضافة الشحنة بنجاح");
+        navigate("/shipments");
       }
     } catch (error) {
-      console.error('Error adding shipment:', error);
+      console.error("Error adding shipment:", error);
     } finally {
       setIsLoading(false);
     }
@@ -233,19 +252,19 @@ const AddShipment = () => {
       {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && 'lg:transform -translate-x-[5%]'
+            isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className='loader'></span>a
+          <span className="loader"></span>a
         </div>
       )}
       <form
         onSubmit={handleSubmit}
-        className='border border-[#DD7E1F] rounded-lg p-8 mx-4 md:mx-0'
+        className="border border-[#DD7E1F] rounded-lg p-8 mx-4 md:mx-0"
       >
         <AddEditInfoSection
-          title='السائق'
-          section='driver'
+          title="السائق"
+          section="driver"
           options={drivers}
           inputs={driverSectionInputsData}
           value={formData}
@@ -253,11 +272,11 @@ const AddShipment = () => {
           isDriver={true}
           truckTypeOptions={truckTypes}
         />
-        <hr className='border-0 border-t-2 border-dashed border-[#666] my-12' />
+        <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
 
         <AddEditInfoSection
-          title='الشحنة'
-          section='shipment'
+          title="الشحنة"
+          section="shipment"
           options={cities}
           inputs={shipmentSectionInputsData}
           value={formData}
@@ -265,19 +284,19 @@ const AddShipment = () => {
           shipmentsStatusOptions={shipmentsStatus}
         />
         {isNotesAreaVisible ? (
-          <div className='w-full flex flex-col items-start mb-12'>
+          <div className="w-full flex flex-col items-start mb-12">
             <span>ملاحظات</span>
             <textarea
-              name='shipmentNotes'
+              name="shipmentNotes"
               value={formData.shipmentNotes}
               onChange={handleChange}
-              placeholder='يمكنك هنا إضافة ملاحظات يجب أن ينتبه لها السائق'
-              className='w-full h-56 mt-4 mb-2 p-4 border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] resize-none font-Rubik'
+              placeholder="يمكنك هنا إضافة ملاحظات يجب أن ينتبه لها السائق"
+              className="w-full h-56 mt-4 mb-2 p-4 border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] resize-none font-Rubik"
             ></textarea>
-            <div className='w-full flex items-center justify-end'>
+            <div className="w-full flex items-center justify-end">
               <button
                 onClick={() => setIsNotesAreaVisible(false)}
-                className='col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg'
+                className="col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg"
               >
                 إخفاء
               </button>
@@ -286,16 +305,16 @@ const AddShipment = () => {
         ) : (
           <button
             onClick={() => setIsNotesAreaVisible(true)}
-            className='col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg mb-6'
+            className="col-span-1 bg-[#DD7E1F] text-[#FCFCFC] border border-[#DD7E1F] p-2 rounded-lg mb-6"
           >
             إضافة ملاحظات
           </button>
         )}
 
-        <hr className='border-0 border-t-2 border-dashed border-[#666] mb-12' />
+        <hr className="border-0 border-t-2 border-dashed border-[#666] mb-12" />
         <AddEditFullInfoSection
-          title='المرسِل'
-          section='client'
+          title="المرسِل"
+          section="client"
           options={clients}
           inputs={clientSectionInputsData}
           value={formData}
@@ -303,8 +322,8 @@ const AddShipment = () => {
           branchOptions={selectedClientBranches}
         />
         <AddEditFullInfoSection
-          title='المستلِم'
-          section='recipient'
+          title="المستلِم"
+          section="recipient"
           options={recipients}
           inputs={recipientSectionInputsData}
           value={formData}
@@ -312,18 +331,20 @@ const AddShipment = () => {
         />
         <AddEditCostSection
           inputs={costSectionInputsData}
-          section='cost'
-          setNights={(value: any) => setFormData((prev) => ({ ...prev, numberOfNights: value }))}
+          section="cost"
+          setNights={(value: any) =>
+            setFormData((prev) => ({ ...prev, numberOfNights: value }))
+          }
           setCostPerNight={(value: any) =>
             setFormData((prev) => ({ ...prev, costPerNight: value }))
           }
           value={formData}
           onChange={handleChange}
           totalCost={formData.totalCost}
-          page='addShipment'
+          page="addShipment"
         />
-        <hr className='border-0 border-t-2 border-dashed border-[#666] my-12' />
-        <button className='w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4'>
+        <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
+        <button className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4">
           إضافة الشحنة
         </button>
       </form>

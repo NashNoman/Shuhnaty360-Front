@@ -1,20 +1,21 @@
 @font-face {
-  font-family: 'Almarai';
-  src: url('../src/assets/fonts/Almarai/Almarai-Regular.ttf') format('truetype');
+  font-family: "Almarai";
+  src: url("../src/assets/fonts/Almarai/Almarai-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Almarai';
-  src: url('../src/assets/fonts/Almarai/Almarai-Bold.ttf') format('truetype');
+  font-family: "Almarai";
+  src: url("../src/assets/fonts/Almarai/Almarai-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Rubik';
-  src: url('../src/assets/fonts/Rubik/Rubik-VariableFont_wght.ttf') format('truetype');
+  font-family: "Rubik";
+  src: url("../src/assets/fonts/Rubik/Rubik-VariableFont_wght.ttf")
+    format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -24,7 +25,7 @@
 @tailwind utilities;
 
 body {
-  font-family: 'Almarai', sans-serif !important;
+  font-family: "Almarai", sans-serif !important;
   background-color: #f8f8f8 !important;
 }
 
@@ -39,7 +40,7 @@ body {
   animation: rotation 1s linear infinite;
 }
 .loader::after {
-  content: '';
+  content: "";
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -64,13 +65,13 @@ body {
   display: none;
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -86,7 +87,8 @@ html {
     size: A4 portrait;
     margin: 0 !important;
   }
-  body, html {
+  body,
+  html {
     width: 100vw !important;
     height: 100vh !important;
     margin: 0 !important;
@@ -120,7 +122,7 @@ html {
   }
   /* Specifically target the client/recipient section */
   .print-bg-gray {
-    background-color: #F2F2F2 !important;
+    background-color: #f2f2f2 !important;
   }
   .MuiDialog-root,
   .MuiDialog-container,

@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { HiDotsVertical } from 'react-icons/hi';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { HiDotsVertical } from "react-icons/hi";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ActionsMenu = ({ options, position }: any) => {
   const navigate = useNavigate();
-  const [isShipmentActionsMenuOpen, setIsShipmentActionsMenuOpen] = useState(false);
+  const [isShipmentActionsMenuOpen, setIsShipmentActionsMenuOpen] =
+    useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -23,11 +23,11 @@ const ActionsMenu = ({ options, position }: any) => {
     };
 
     if (isShipmentActionsMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isShipmentActionsMenuOpen]);
 
@@ -36,7 +36,7 @@ const ActionsMenu = ({ options, position }: any) => {
       <button
         ref={buttonRef}
         onClick={() => setIsShipmentActionsMenuOpen(!isShipmentActionsMenuOpen)}
-        className='relative'
+        className="relative"
       >
         <HiDotsVertical size={24} />
       </button>
@@ -48,17 +48,14 @@ const ActionsMenu = ({ options, position }: any) => {
           {options.map((item: any, index: any) => (
             <button
               key={index}
-              className='flex items-center gap-2'
+              className="flex items-center gap-2"
               onClick={() => {
                 navigate(item.path);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
-              <img
-                src={item.icon}
-                alt={item.label}
-              />
-              <span className='text-nowrap'>{item.label}</span>
+              <img src={item.icon} alt={item.label} />
+              <span className="text-nowrap">{item.label}</span>
             </button>
           ))}
         </div>

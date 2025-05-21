@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { TiFilter } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
@@ -47,12 +46,12 @@ const UsersTable = ({
         return filters[key].includes(item[key]);
       }) &&
       (selectedStatus === "الكل" ||
-        (item.is_active ? "متاح" : "غير متاح") === selectedStatus)
+        (item.is_active ? "متاح" : "غير متاح") === selectedStatus),
   );
 
   const paginatedData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const getStatusBgColor = (status: any) =>
@@ -80,7 +79,7 @@ const UsersTable = ({
                       type="button"
                       onClick={() =>
                         setShowFilter((prev: any) =>
-                          prev[col.key] ? {} : { [col.key]: true }
+                          prev[col.key] ? {} : { [col.key]: true },
                         )
                       }
                     >
@@ -139,7 +138,7 @@ const UsersTable = ({
                 <td className={tableRowStyles}>
                   <span
                     className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
-                      item.is_active
+                      item.is_active,
                     )} ${getStatusBgColor(item.is_active)}`}
                   >
                     {item.is_active ? "متاح" : "غير متاح"}

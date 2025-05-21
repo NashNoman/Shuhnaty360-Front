@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +31,7 @@ const AddUser = () => {
         console.log(error);
 
         toast.error(
-          error?.response?.data?.detail || "حدث خطأ أثناء إضافة المستخدم"
+          error?.response?.data?.detail || "حدث خطأ أثناء إضافة المستخدم",
         );
       },
     });

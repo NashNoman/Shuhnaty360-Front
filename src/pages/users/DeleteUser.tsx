@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import DeleteItem from "../../components/shipments/deleteItem/DeleteItem";
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,12 +17,12 @@ const DeleteUser = () => {
       ["user"],
       `/accounts/users/${userId}`,
       undefined,
-      !!userId
+      !!userId,
     );
 
   const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
     `/accounts/users/${userId}`,
-    ["users", userId]
+    ["users", userId],
   );
 
   const handleDeleteItemClick = () => {
@@ -38,7 +37,7 @@ const DeleteUser = () => {
         toast.error(
           e?.response?.data?.detail ||
             e?.message ||
-            "حدث خطأ أثناء حذف المستخدم"
+            "حدث خطأ أثناء حذف المستخدم",
         );
       },
     });
