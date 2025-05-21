@@ -1,3 +1,5 @@
+import { UrlString } from "./util.types";
+
 export type LoginCredentials = {
   username: string;
   password: string;
@@ -23,8 +25,8 @@ export type ApiListResponse<T> = {
   message: string;
   data: {
     count: number;
-    next: string | null;
-    previous: string | null;
+    next: UrlString | null;
+    previous: UrlString | null;
     results: T[];
   };
 };
@@ -115,8 +117,8 @@ export type ShipmentHistory = {
 
 export type GetShipmentsResponse = {
   count: number;
-  next: string | null;
-  previous: string | null;
+  next: UrlString | null;
+  previous: UrlString | null;
   results: Shipment[];
 };
 export type GetShipmentDetailsResponse = ApiResponse<Shipment>;
