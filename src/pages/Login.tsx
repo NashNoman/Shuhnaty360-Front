@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CgProfile } from "react-icons/cg";
 import { CiLock } from "react-icons/ci";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import logo from "../assets/images/truck-Logo.svg";
 import { useAuth } from "../hooks/useAuth";
@@ -18,7 +19,8 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { login, loginIsLoading, loginError } = useAuth();
+  const { isAuthenticated, login, loginIsLoading, loginError } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -33,11 +35,13 @@ const Login = () => {
     login(data);
   };
 
-  useEffect(() => {
-    if (loginError) {
+  useLayoutEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    } else if (loginError) {
       resetField("password");
     }
-  }, [loginError, resetField]);
+  }, [isAuthenticated, loginError, resetField]);
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">
