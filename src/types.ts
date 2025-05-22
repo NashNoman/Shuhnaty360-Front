@@ -37,9 +37,10 @@ export type User = {
   email: string;
   first_name: string;
   last_name: string;
-  is_staff: string;
+  is_staff: boolean;
   is_active: boolean;
-  date_joined?: Date;
+  is_superuser: boolean;
+  date_joined?: string;
   phone?: string;
   company_branch?: string;
 };
@@ -122,3 +123,28 @@ export type GetShipmentsResponse = {
   results: Shipment[];
 };
 export type GetShipmentDetailsResponse = ApiResponse<Shipment>;
+
+export type Branch = {
+  id: number;
+  name: string;
+  address: string;
+  name_address: string | null;
+  phone_number: string;
+  second_phone_number: string | null;
+  client: number;
+  city: number;
+};
+
+export type Client = {
+  id: number;
+  branches: Branch[];
+  name: string;
+  address: string;
+  phone_number: string;
+  second_phone_number: string;
+  email: string;
+  Commercial_registration_number: string | null;
+  dicription: string;
+};
+
+export type GetClientsResponse = ApiListResponse<Client>;

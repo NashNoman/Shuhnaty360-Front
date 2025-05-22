@@ -113,7 +113,7 @@ const UsersDetails = () => {
   const { isSidebarOpen } = useSidebar();
   const { isLoading, data } = useFetch<GetUserDetailsResponse>(
     ["user", userId],
-    `/accounts/users/${userId}`,
+    `/accounts/users/${userId}/`,
     undefined,
     !!userId,
   );

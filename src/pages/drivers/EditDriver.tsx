@@ -35,7 +35,7 @@ const EditDriver = () => {
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
     useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
 
-  const { mutate } = useUpdate(`/drivers/api/${driverId}`, [["drivers"]]);
+  const { mutate } = useUpdate(`/drivers/api/${driverId}`, ["drivers"]);
 
   const truckTypeOptions =
     truckTypesRes?.data?.results.map((truckType) => ({
@@ -47,11 +47,11 @@ const EditDriver = () => {
     mutate(formData, {
       onSuccess: () => {
         navigate("/drivers");
-        toast.success("تم إضافة السائق بنجاح");
+        toast.success("تم تعديل السائق بنجاح");
       },
       onError: (error: any) => {
         toast.error(
-          error?.response?.data?.detail || "حدث خطأ أثناء إضافة السائق",
+          error?.response?.data?.detail || "حدث خطأ أثناء تعديل السائق",
         );
       },
     });
@@ -83,6 +83,7 @@ const EditDriver = () => {
         </div>
       )}
       <DriverForm
+        isEdit
         onSubmit={onSubmit}
         isLoading={isLoading}
         register={register}

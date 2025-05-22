@@ -15,13 +15,13 @@ const DeleteUser = () => {
   const { data: userData, isLoading: isUserDataLoading } =
     useFetch<GetUserDetailsResponse>(
       ["user"],
-      `/accounts/users/${userId}`,
+      `/accounts/users/${userId}/`,
       undefined,
       !!userId,
     );
 
   const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
-    `/accounts/users/${userId}`,
+    `/accounts/users/${userId}/`,
     ["users", userId],
   );
 

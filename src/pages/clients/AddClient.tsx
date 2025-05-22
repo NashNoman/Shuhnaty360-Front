@@ -1,26 +1,17 @@
 import { useState } from "react";
-// import AddEditFullInfoSection from '../../components/shipments/addShipment/AddEditFullInfoSection';
-// import AddEditInfoSection from '../../components/shipments/addShipment/AddEditInfoSection';
-// import PhoneNumberInput from '../../components/shipments/addShipment/addShipmentInputs/phoneNumberInput/PhoneNumberInput';
-// import addIcon from '../../assets/images/add.svg';
-import AddEditFullInfoSection from "../../components/shipments/addShipment/AddEditFullInfoSection";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import AddEditFullInfoSection from "../../components/shipments/addShipment/AddEditFullInfoSection";
 import { useSidebar } from "../../context/SidebarContext";
 import { addClient } from "../../redux/Slices/clientsSlice";
-import { toast } from "sonner";
+import { AppDispatch } from "../../redux/store";
 
 const clientSectionInputsData = [
   { label: "الاسم", name: "name" },
   { label: "العنوان", name: "address" },
   { label: "البريد الإلكتروني", name: "email" },
 ];
-
-// const secondBranchSectionInputsData = [
-//   { label: 'عنوان الفرع', name: 'secondBranchAddress' },
-//   { label: 'الموقع على الخريطة', name: 'secondBranchLocationCoordinates' },
-// ];
 
 const AddClient = () => {
   const [isLoading, setIsLoading] = useState(false);

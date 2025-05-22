@@ -24,8 +24,8 @@ const Users = () => {
   const { isSidebarOpen } = useSidebar();
 
   const { data: res, isLoading } = useFetch<GetUsersResponse>(
-    ["users"],
-    "/accounts/users",
+    ["users", Math.ceil(currentPage / 3)],
+    "/accounts/users/",
   );
 
   const handlePageChange = (page: any) => {
@@ -39,24 +39,31 @@ const Users = () => {
 
   const fieldsToCheck = ["username", "first_name", "last_name", "email"];
 
-  const filteredData = res?.data?.results.filter((user: any) => {
-    const matchesSearch = fieldsToCheck.some((field) => {
-      const fieldValue = user[field];
-      return (
-        typeof fieldValue === "string" &&
-        fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
-      );
-    });
-    const matchesStatus =
-      selectedUserStatus === "الكل" ||
-      (selectedUserStatus === "متاح" && user.status === "available") ||
-      (selectedUserStatus === "غير متاح" && user.status === "notAvailable");
-    return matchesSearch && matchesStatus;
-  });
+  const filteredData =
+    selectedUserStatus === "الكل"
+      ? res?.data.results
+      : res?.data?.results.filter((user: any) => {
+          const matchesSearch = fieldsToCheck.some((field) => {
+            const fieldValue = user[field];
+            return (
+              typeof fieldValue === "string" &&
+              fieldValue
+                .toLowerCase()
+                .includes(searchValue.toLowerCase().trim())
+            );
+          });
+          const matchesStatus =
+            selectedUserStatus === "الكل" ||
+            (selectedUserStatus === "متاح" && user.status === "available") ||
+            (selectedUserStatus === "غير متاح" &&
+              user.status === "notAvailable");
+          return matchesSearch && matchesStatus;
+        });
 
-  const sortedData = filteredData
-    ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
-    : [];
+  const sortedData = filteredData;
+  // filteredData
+  //   ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
+  //   : [];
 
   return (
     <>
@@ -109,7 +116,7 @@ const Users = () => {
             />
           )}
           <Pagination
-            totalItems={res?.data?.count || 0}
+            totalItems={res?.data.count || 0}
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}

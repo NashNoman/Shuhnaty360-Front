@@ -30,6 +30,7 @@ type DriverFormProps = {
   register: UseFormRegister<DriverFormData>;
   errors: FieldErrors<DriverFormData>;
   truckTypeOptions: { value: number; label: string }[];
+  isEdit?: boolean;
 };
 
 const languageOptions = [
@@ -50,6 +51,7 @@ const DriverForm = ({
   register,
   errors,
   truckTypeOptions,
+  isEdit = false,
 }: DriverFormProps) => {
   return (
     <Card>
@@ -120,7 +122,7 @@ const DriverForm = ({
           disabled={isLoading}
           className="w-full py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
         >
-          إضافة السائق
+          {isEdit ? "تعديل السائق" : "إضافة سائق"}
         </button>
       </form>
     </Card>

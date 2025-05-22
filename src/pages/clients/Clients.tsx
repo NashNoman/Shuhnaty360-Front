@@ -1,27 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import Pagination from "../../components/pagination/Pagination";
-import SearchInput from "../../components/searchInput/SearchInput";
 import { useNavigate } from "react-router-dom";
 import ClientsTable from "../../components/clients/ClientsTable";
-import { AppDispatch, RootState } from "../../redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { getClients } from "../../redux/Slices/clientsSlice";
+import Pagination from "../../components/pagination/Pagination";
+import SearchInput from "../../components/searchInput/SearchInput";
 import { useSidebar } from "../../context/SidebarContext";
+import { useFetch } from "../../hooks/useApi";
+import { GetClientsResponse } from "../../types";
 
 const Clients = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const dispatch = useDispatch<AppDispatch>();
-  const clients = useSelector((state: RootState) => state.clients.clients);
-  const isLoading = useSelector((state: RootState) => state.clients.isLoading);
   const { isSidebarOpen } = useSidebar();
 
-  useEffect(() => {
-    dispatch(getClients());
-  }, [dispatch]);
+  const { data: res, isLoading } = useFetch<GetClientsResponse>(
+    ["clients", Math.ceil(currentPage / 3)],
+    "/clients/api/",
+  );
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -34,15 +31,16 @@ const Clients = () => {
 
   const fieldsToCheck = ["name", "address", "phone_number"];
 
-  const filteredData = clients.filter((client: any) =>
-    fieldsToCheck.some((field) => {
-      const fieldValue = client[field];
-      return (
-        typeof fieldValue === "string" &&
-        fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
-      );
-    }),
-  );
+  const filteredData =
+    res?.data?.results?.filter((client: any) =>
+      fieldsToCheck.some((field) => {
+        const fieldValue = client[field];
+        return (
+          typeof fieldValue === "string" &&
+          fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
+        );
+      }),
+    ) || [];
 
   const sortedData = [...filteredData].sort((a: any, b: any) => a.id - b.id);
 
@@ -86,7 +84,7 @@ const Clients = () => {
             itemsPerPage={itemsPerPage}
           />
           <Pagination
-            totalItems={sortedData.length}
+            totalItems={res?.data?.count || 0}
             itemsPerPage={itemsPerPage}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}

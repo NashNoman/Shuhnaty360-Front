@@ -1,30 +1,46 @@
 import DeleteItem from "../../components/shipments/deleteItem/DeleteItem";
 
-import userIdCardImage from "../../assets/images/users/personal-card.svg";
-import callIcon from "../../assets/images/users/call.svg";
-import flagIcon from "../../assets/images/users/flag.svg";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import image from "../../assets/images/avatar.jpg";
 import truckIcon from "../../assets/images/truck.svg";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
-import { deleteDriver, getDriver } from "../../redux/Slices/driversSlice";
-import { toast } from "sonner";
+import callIcon from "../../assets/images/users/call.svg";
+import flagIcon from "../../assets/images/users/flag.svg";
+import userIdCardImage from "../../assets/images/users/personal-card.svg";
+import { useDelete, useFetch } from "../../hooks/useApi";
 
 const DeleteDriver = () => {
-  const { driverId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  const driver = useSelector((state: RootState) => state.drivers.driver);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const isDriverDataLoading = useSelector(
-    (state: RootState) => state.drivers.isLoading,
+  const { driverId } = useParams();
+
+  const { data: driverData, isLoading: isDriverDataLoading } = useFetch<any>(
+    ["driver"],
+    `/drivers/api/${driverId}`,
+    undefined,
+    !!driverId,
   );
 
-  useEffect(() => {
-    dispatch(getDriver(driverId));
-  }, [dispatch, driverId]);
+  const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
+    `/drivers/api/${driverId}`,
+    ["drivers", driverId],
+  );
+
+  const handleDeleteItemClick = () => {
+    deleteMutate(undefined, {
+      onSuccess: () => {
+        toast.success("تم حذف السائق بنجاح");
+        navigate("/drivers");
+      },
+      onError: (e: any) => {
+        console.log(e);
+        toast.error(
+          e?.response?.data?.detail || e?.message || "حدث خطأ أثناء حذف السائق",
+        );
+      },
+    });
+  };
+
+  const driver = driverData?.data || {};
 
   const moreInfoData = [
     {
@@ -60,29 +76,15 @@ const DeleteDriver = () => {
   ];
 
   const personalData = {
-    name: driver.name,
+    name: driver.name || "",
     image: image,
-  };
-
-  const handleDeleteItemClick = async () => {
-    setIsLoading(true);
-    try {
-      const response = await dispatch(deleteDriver(driverId));
-      if (response.meta.requestStatus === "fulfilled") {
-        setIsLoading(false);
-        toast.success("تم حذف السائق بنجاح");
-        navigate("/drivers");
-      }
-    } catch (e) {
-      console.log(e);
-    }
   };
 
   return (
     <DeleteItem
       moreInfoData={moreInfoData}
       personalData={personalData}
-      isLoading={isLoading || isDriverDataLoading}
+      isLoading={isDeleting || isDriverDataLoading}
       handleDeleteItemClick={handleDeleteItemClick}
       page="driver"
     />
