@@ -1,27 +1,25 @@
 import React from "react";
 
-export type SelectFieldProps = {
+export type TextAreaFieldProps = {
   value?: string;
-  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder?: string;
   label?: string;
-  description?: string | string[];
+  description?: string;
   name?: string;
   error?: string;
-  options: { value: string | number; label: string }[];
-} & React.SelectHTMLAttributes<HTMLSelectElement>;
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
-const SelectField = ({
-  value,
-  onChange,
+const TextAreaField = ({
   placeholder = "",
   label,
   description,
+  value,
+  onChange,
   name,
   error,
-  options,
   ...props
-}: SelectFieldProps) => {
+}: TextAreaFieldProps) => {
   return (
     <div className="col-span-1 flex flex-col gap-1">
       {label && (
@@ -29,23 +27,17 @@ const SelectField = ({
           {label}
         </label>
       )}
-      <select
+      <textarea
         id={props.id}
-        name={name}
+        placeholder={placeholder}
+        className={`p-2 text-lg border ${
+          error ? "border-red-500" : "border-[#CCCCCC]"
+        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]`}
         value={value}
         onChange={onChange}
-        className={`p-3 text-lg border ${
-          error ? "border-red-500" : "border-[#CCCCCC]"
-        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] bg-white`}
+        name={name}
         {...props}
-      >
-        {placeholder && <option value="">{placeholder}</option>}
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      />
       {error && <span className="text-red-500 mt-1 text-sm">{error}</span>}
       {description && (
         <div className="text-[#999] font-Rubik text-sm">
@@ -66,4 +58,4 @@ const SelectField = ({
   );
 };
 
-export default SelectField;
+export default TextAreaField;

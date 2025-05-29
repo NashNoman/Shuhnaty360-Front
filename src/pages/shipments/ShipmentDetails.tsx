@@ -1,18 +1,17 @@
-import deleteShipmentIcon from "../../../assets/images/delete-shipment-icon.svg";
-import editShipmentIcon from "../../../assets/images/edit-shipment-icon.svg";
-import ShipmentDetailsInfoSection from "../../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
-import ShipmentStatus from "../../../components/shipments/shipmentDetails/shipmentStatus/ShipmentStatus";
+import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
+import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
+import ShipmentDetailsInfoSection from "../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
+import ShipmentStatus from "../../components/shipments/shipmentDetails/shipmentStatus/ShipmentStatus";
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import ActionsMenu from "../../../components/actionsMenu/ActionsMenu";
-import PrintWaybillDialog from "../../../components/shipments/shipment/PrintWaybillDialog";
-import { useSidebar } from "../../../context/SidebarContext";
-import { RootState } from "../../../redux/store";
+import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
+import PrintWaybillDialog from "../../components/shipments/shipment/PrintWaybillDialog";
+import { useSidebar } from "../../context/SidebarContext";
+import { RootState } from "../../redux/store";
 
 const ShipmentDetails = () => {
-  // const dispatch = useDispatch<AppDispatch>();
   const { isSidebarOpen } = useSidebar();
   const { shipmentId } = useParams();
   const shipment = useSelector((state: RootState) => state.shipments.shipment);
@@ -45,22 +44,6 @@ const ShipmentDetails = () => {
   const truckType = truckTypes.find(
     (truckType: any) => truckType.id === driver?.truck_type,
   );
-
-  // useEffect(() => {
-  //   if (shipmentId) {
-  //     dispatch(getShipment(shipmentId));
-  //   }
-  // }, [dispatch, shipmentId]);
-
-  // useEffect(() => {
-  //   if (shipment) {
-  //     dispatch(getDriver(shipment.driver));
-  //     dispatch(getRecipient(shipment.recipient));
-  //     dispatch(getClient(shipment.client));
-  //     dispatch(getTruckTypes());
-  //     dispatch(getUser(shipment.user));
-  //   }
-  // }, [dispatch, shipment]);
 
   const menuActions = [
     {

@@ -1,60 +1,72 @@
-import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import ClientsTable from "../../components/clients/ClientsTable";
-import Pagination from "../../components/pagination/Pagination";
+import { getClientList } from "../../api/clients";
+import locationIcon from "../../assets/images/location.svg";
 import SearchInput from "../../components/searchInput/SearchInput";
-import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { GetClientsResponse } from "../../types";
+import { Table, TableCell, TableRow } from "../../components/ui/Table";
+import { getUrlParams } from "../../utils/utils";
+
+const tableColumns = [
+  {
+    key: "id",
+    label: "(ID)",
+    isFilterable: false,
+  },
+  {
+    key: "name",
+    label: "اسم",
+    isFilterable: true,
+  },
+  {
+    key: "phone_number",
+    label: "رقم الجوال",
+    isFilterable: true,
+  },
+  {
+    key: "email",
+    label: "البريد الإلكتروني",
+    isFilterable: true,
+  },
+  {
+    key: "address",
+    label: "الموقع",
+    isFilterable: true,
+  },
+];
 
 const Clients = () => {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const { isSidebarOpen } = useSidebar();
+  const { ref, inView } = useInView();
 
-  const { data: res, isLoading } = useFetch<GetClientsResponse>(
-    ["clients", Math.ceil(currentPage / 3)],
-    "/clients/api/",
-  );
+  const {
+    data: clientsData,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["clients"],
+    queryFn: getClientList,
+    initialPageParam: 1,
+    getPreviousPageParam: (lastPage) =>
+      getUrlParams(lastPage.data.previous)?.page || undefined,
+    getNextPageParam: (lastPage) =>
+      getUrlParams(lastPage.data.next)?.page || undefined,
+  });
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView]);
 
-  const handleItemsPerPageChange = (itemsPerPageChange: any) => {
-    setItemsPerPage(itemsPerPageChange);
-    setCurrentPage(1);
-  };
-
-  const fieldsToCheck = ["name", "address", "phone_number"];
-
-  const filteredData =
-    res?.data?.results?.filter((client: any) =>
-      fieldsToCheck.some((field) => {
-        const fieldValue = client[field];
-        return (
-          typeof fieldValue === "string" &&
-          fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
-        );
-      }),
-    ) || [];
-
-  const sortedData = [...filteredData].sort((a: any, b: any) => a.id - b.id);
+  let rowIndex = 0;
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
       <div className="p-4">
         <div
           className={`flex flex-col items-start gap-2 md:flex-row md:items-center md:justify-between mb-10`}
@@ -78,17 +90,37 @@ const Clients = () => {
           <div className="w-full flex justify-between items-center mb-6">
             <h1 className="text-xl font-bold">قائمة العملاء</h1>
           </div>
-          <ClientsTable
-            data={sortedData}
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-          />
-          <Pagination
-            totalItems={res?.data?.count || 0}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <Table
+            className="w-full overflow-x-auto"
+            columns={tableColumns}
+            isLoading={isFetching || hasNextPage}
+            dataCount={clientsData?.pages?.length}
+          >
+            {clientsData?.pages &&
+              clientsData.pages.map((page) =>
+                page.data.results.map((client) => (
+                  <TableRow
+                    key={client.id}
+                    index={rowIndex++}
+                    onClick={() =>
+                      navigate("/clients/client-details/" + client.id)
+                    }
+                  >
+                    <TableCell>{client.id}</TableCell>
+                    <TableCell>{client.name}</TableCell>
+                    <TableCell>{client.phone_number}</TableCell>
+                    <TableCell>{client.email}</TableCell>
+                    <TableCell className="text-center flex items-center justify-center gap-4">
+                      <img src={locationIcon} alt="location icon" />
+                      <span className={`text-base text-[#DD7E1F]`}>
+                        {client.address}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                )),
+              )}
+          </Table>
+          <div ref={ref} className="h-0" />
         </div>
       </div>
     </>

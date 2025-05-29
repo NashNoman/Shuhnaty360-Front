@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../../components/pagination/Pagination";
+import { getDriverList } from "../../api/drivers";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
-import DriversTable from "../../components/usersDrivers/DriversTable";
-import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { GetDriversResponse } from "../../types";
+import { Table, TableCell, TableRow } from "../../components/ui/Table";
+import { getUrlParams } from "../../utils/utils";
 
 const selectMenuOptions = [
   { label: "الكل" },
@@ -16,64 +16,105 @@ const selectMenuOptions = [
   { label: "مشغول" },
 ];
 
-const fieldsToCheck = [
-  "name",
-  "language",
-  "nationality",
-  "identity_number",
-  "phone_number",
-  "vehicle_number",
-  "status",
+const tableColumns = [
+  {
+    key: "id",
+    label: "(ID)",
+    isFilterable: false,
+  },
+  {
+    key: "name",
+    label: "اسم",
+    isFilterable: true,
+  },
+  {
+    key: "language",
+    label: "اللغة",
+    isFilterable: true,
+  },
+  {
+    key: "nationality",
+    label: "الجنسية",
+    isFilterable: true,
+  },
+  {
+    key: "phone_number",
+    label: "رقم الجوال",
+    isFilterable: true,
+  },
+  {
+    key: "vehicle_number",
+    label: "رقم الشاحنة",
+    isFilterable: true,
+  },
+  {
+    key: "status",
+    label: "الحالة",
+    isFilterable: true,
+  },
 ];
 
+const getStatusBgColor = (status: string) => {
+  switch (status) {
+    case "available":
+      return "bg-[#B3E5BD]";
+    case "busy":
+      return "bg-[#CCCCCC]";
+  }
+};
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "available":
+      return "text-[#2E853F]";
+    case "busy":
+      return "text-[#333333]";
+  }
+};
+
+const getLang = (lang: string) => {
+  switch (lang) {
+    case "ar":
+      return "العربية";
+    case "en":
+      return "الانجليزية";
+    case "ur":
+      return "أردو";
+    default:
+      return lang;
+  }
+};
 const Drivers = () => {
   const navigate = useNavigate();
   const [selectedDriverStatus, setSelectedDriverStatus] = useState("الكل");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const { isSidebarOpen } = useSidebar();
+  const { ref, inView } = useInView();
 
-  const { data: driversRes, isLoading } = useFetch<GetDriversResponse>(
-    ["drivers"],
-    "/drivers/api",
-  );
+  const {
+    data: driversData,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["drivers"],
+    queryFn: getDriverList,
+    initialPageParam: 1,
+    getPreviousPageParam: (lastPage) =>
+      getUrlParams(lastPage.data.previous)?.page || undefined,
+    getNextPageParam: (lastPage) =>
+      getUrlParams(lastPage.data.next)?.page || undefined,
+  });
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView]);
 
-  const handleItemsPerPageChange = (itemsPerPageChange: any) => {
-    setItemsPerPage(itemsPerPageChange);
-    setCurrentPage(1);
-  };
-
-  const filteredData = driversRes?.data.results.filter((user: any) =>
-    fieldsToCheck.some((field) => {
-      const fieldValue = user[field];
-      return (
-        typeof fieldValue === "string" &&
-        fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())
-      );
-    }),
-  );
-
-  const sortedData = filteredData
-    ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
-    : [];
+  let rowIndex = 0;
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-
       <div className="p-4">
         <div
           className={`flex flex-col items-start gap-2 md:flex-row md:items-center md:justify-between mb-10`}
@@ -104,18 +145,41 @@ const Drivers = () => {
               setSelectedItem={setSelectedDriverStatus}
             />
           </div>
-          <DriversTable
-            selectedStatus={selectedDriverStatus}
-            data={sortedData}
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-          />
-          <Pagination
-            totalItems={sortedData.length}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <Table
+            columns={tableColumns}
+            isLoading={isFetching || hasNextPage}
+            dataCount={driversData?.pages?.length}
+          >
+            {driversData?.pages &&
+              driversData.pages.map((page) =>
+                page.data.results.map((driver) => (
+                  <TableRow
+                    key={driver.id}
+                    index={rowIndex++}
+                    onClick={() =>
+                      navigate("/drivers/driver-details/" + driver.id)
+                    }
+                  >
+                    <TableCell>{driver.id}</TableCell>
+                    <TableCell>{driver.name}</TableCell>
+                    <TableCell>{getLang(driver.language)}</TableCell>
+                    <TableCell>{driver.nationality}</TableCell>
+                    <TableCell>{driver.phone_number}</TableCell>
+                    <TableCell>{driver.vehicle_number}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
+                          driver.status,
+                        )} ${getStatusBgColor(driver.status)}`}
+                      >
+                        {driver.is_active ? "متاح" : "غير متاح"}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                )),
+              )}
+          </Table>
+          <div ref={ref} className="h-0" />
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@ export type AutocompleteSelectFieldProps = {
   name?: string;
   error?: string;
   options: { value: string; label: string }[];
-};
+} & React.HTMLAttributes<HTMLSelectElement>;
 
 const AutocompleteSelectField = ({
   value,

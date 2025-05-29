@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../../components/pagination/Pagination";
+import { getUserList } from "../../api/users";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
-import UsersTable from "../../components/usersDrivers/UsersTable";
-import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { GetUsersResponse } from "../../types";
+import { Table, TableCell, TableRow } from "../../components/ui/Table";
+import { getUrlParams } from "../../utils/utils";
 
 const selectMenuOptions = [
   { label: "الكل", value: "all" },
@@ -15,67 +15,75 @@ const selectMenuOptions = [
   { label: "غير متاح", value: "notAvailable" },
 ];
 
+const tableColumns = [
+  {
+    key: "id",
+    label: "(ID)",
+    isFilterable: false,
+  },
+  {
+    key: "username",
+    label: "اسم المستخدم",
+    isFilterable: true,
+  },
+  {
+    key: "first_name",
+    label: "الاسم الأول",
+    isFilterable: true,
+  },
+  {
+    key: "last_name",
+    label: "الاسم الأخير",
+    isFilterable: true,
+  },
+  {
+    key: "email",
+    label: "البريد الإلكتروني",
+    isFilterable: true,
+  },
+  {
+    key: "status",
+    label: "الحالة",
+    isFilterable: true,
+  },
+];
+
+const getStatusBgColor = (status: any) =>
+  status ? "bg-[#B3E5BD]" : "bg-[#CCCCCC]";
+const getStatusColor = (status: any) =>
+  status ? "text-[#2E853F]" : "text-[#333333]";
+
 const Users = () => {
   const navigate = useNavigate();
   const [selectedUserStatus, setSelectedUserStatus] = useState("الكل");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [searchValue, setSearchValue] = useState("");
-  const { isSidebarOpen } = useSidebar();
+  const { ref, inView } = useInView();
 
-  const { data: res, isLoading } = useFetch<GetUsersResponse>(
-    ["users", Math.ceil(currentPage / 3)],
-    "/accounts/users/",
-  );
+  const {
+    data: usersData,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["users"],
+    queryFn: getUserList,
+    initialPageParam: 1,
+    getPreviousPageParam: (lastPage) =>
+      getUrlParams(lastPage.data.previous)?.page || undefined,
+    getNextPageParam: (lastPage) =>
+      getUrlParams(lastPage.data.next)?.page || undefined,
+  });
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView]);
 
-  const handleItemsPerPageChange = (itemsPerPageChange: any) => {
-    setItemsPerPage(itemsPerPageChange);
-    setCurrentPage(1);
-  };
-
-  const fieldsToCheck = ["username", "first_name", "last_name", "email"];
-
-  const filteredData =
-    selectedUserStatus === "الكل"
-      ? res?.data.results
-      : res?.data?.results.filter((user: any) => {
-          const matchesSearch = fieldsToCheck.some((field) => {
-            const fieldValue = user[field];
-            return (
-              typeof fieldValue === "string" &&
-              fieldValue
-                .toLowerCase()
-                .includes(searchValue.toLowerCase().trim())
-            );
-          });
-          const matchesStatus =
-            selectedUserStatus === "الكل" ||
-            (selectedUserStatus === "متاح" && user.status === "available") ||
-            (selectedUserStatus === "غير متاح" &&
-              user.status === "notAvailable");
-          return matchesSearch && matchesStatus;
-        });
-
-  const sortedData = filteredData;
-  // filteredData
-  //   ? [...filteredData].sort((a: any, b: any) => a.id - b.id)
-  //   : [];
+  let rowIndex = 0;
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
       <div className="p-4">
         <div
           className={`flex flex-col items-start gap-2 md:flex-row md:items-center md:justify-between mb-10`}
@@ -106,21 +114,38 @@ const Users = () => {
               setSelectedItem={setSelectedUserStatus}
             />
           </div>
-          {sortedData && (
-            <UsersTable
-              selectedStatus={selectedUserStatus}
-              data={sortedData}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              page="users"
-            />
-          )}
-          <Pagination
-            totalItems={res?.data.count || 0}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <Table
+            columns={tableColumns}
+            isLoading={isFetching || hasNextPage}
+            dataCount={usersData?.pages?.length}
+          >
+            {usersData?.pages &&
+              usersData.pages.map((page) =>
+                page.data.results.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    index={rowIndex++}
+                    onClick={() => navigate("/users/user-details/" + user.id)}
+                  >
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{user.first_name}</TableCell>
+                    <TableCell>{user.last_name}</TableCell>
+                    <TableCell>{user.email || "-"}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
+                          user.is_active,
+                        )} ${getStatusBgColor(user.is_active)}`}
+                      >
+                        {user.is_active ? "متاح" : "غير متاح"}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                )),
+              )}
+          </Table>
+          <div ref={ref} className="h-0" />
         </div>
       </div>
     </>

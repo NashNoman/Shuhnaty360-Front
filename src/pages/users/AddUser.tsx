@@ -102,8 +102,6 @@ const AddUser = () => {
     resolver: zodResolver(userSchema),
   });
 
-  console.log(errors);
-
   const { mutate, isPending: isLoading } = useCreate(
     "/accounts/users/create/",
     ["users"],

@@ -15,7 +15,7 @@ import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetai
 import { useParams } from "react-router-dom";
 import { useSidebar } from "../../context/SidebarContext";
 import { useFetch } from "../../hooks/useApi";
-import { GetDriverDetailsResponse, GetTruckTypesResponse } from "../../types";
+import { GetDriverDetailsResponse } from "../../types";
 
 const DriverDetails = () => {
   const [selectedOption, setSelectedOption] = useState("الكل");
@@ -29,18 +29,13 @@ const DriverDetails = () => {
   const { data: driverDetailsRes, isLoading } =
     useFetch<GetDriverDetailsResponse>(
       ["drivers", driverId],
-      `/drivers/api/${driverId}`,
+      `/drivers/${driverId}`,
     );
 
-  const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
-    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
+  // const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
+  //   useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
 
   const driver = driverDetailsRes?.data;
-  const truckTypes = truckTypesRes?.data;
-
-  const truckType = truckTypes?.results.find(
-    (truckType: any) => truckType.id === driver?.truck_type,
-  );
 
   const handlePageChange = (page: any) => {
     setCurrentPage(page);
@@ -80,7 +75,7 @@ const DriverDetails = () => {
     {
       image: truckIcon,
       label: "نوع الشاحنة",
-      value: truckType?.name_ar,
+      value: driver?.truck_type?.name_ar,
     },
     {
       image: callIcon,
@@ -195,7 +190,7 @@ const DriverDetails = () => {
 
   return (
     <>
-      {(isLoading || isTruckTypesLoading) && (
+      {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"

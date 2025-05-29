@@ -1,22 +1,32 @@
 import { useEffect, useState } from "react";
-import AddEditInfoSection from "../../../components/shipments/addShipment/AddEditInfoSection";
-import AddEditCostSection from "../../../components/shipments/addShipment/AddEditCostSection";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import AddEditCostSection from "../../components/shipments/addShipment/AddEditCostSection";
+import AddEditFullInfoSection from "../../components/shipments/addShipment/AddEditFullInfoSection";
+import AddEditInfoSection from "../../components/shipments/addShipment/AddEditInfoSection";
+import { useSidebar } from "../../context/SidebarContext";
+import { getCities } from "../../redux/Slices/citiesSlice";
+import { getClient, getClients } from "../../redux/Slices/clientsSlice";
+import {
+  getDriver,
+  getDrivers,
+  getTruckTypes,
+} from "../../redux/Slices/driversSlice";
+import {
+  getRecipient,
+  getRecipients,
+} from "../../redux/Slices/recipientsSlice";
 import {
   addShipment,
+  getShipment,
   getShipmentsStatus,
-} from "../../../redux/Slices/shipmentsSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../redux/store";
-import { useSidebar } from "../../../context/SidebarContext";
-import { getDrivers, getTruckTypes } from "../../../redux/Slices/driversSlice";
-import { getCities } from "../../../redux/Slices/citiesSlice";
-import { getClients } from "../../../redux/Slices/clientsSlice";
-import { getRecipients } from "../../../redux/Slices/recipientsSlice";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import AddEditFullInfoSection from "../../../components/shipments/addShipment/AddEditFullInfoSection";
+} from "../../redux/Slices/shipmentsSlice";
+import { AppDispatch, RootState } from "../../redux/store";
+import { formatDate } from "../../utils/formatDate";
 
-const AddShipment = () => {
+const EditShipment = () => {
+  const { shipmentId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { isSidebarOpen } = useSidebar();
@@ -29,40 +39,74 @@ const AddShipment = () => {
   const [selectedClientBranches, setSelectedClientBranches] = useState<any[]>(
     [],
   );
-  const shipmentsStatus = useSelector(
-    (state: RootState) => state.shipments.shipmentsStatus,
+  const shipment = useSelector((state: RootState) => state.shipments.shipment);
+  const client = useSelector((state: RootState) => state.clients.client);
+  const driver = useSelector((state: RootState) => state.drivers.driver);
+  const recipient = useSelector(
+    (state: RootState) => state.recipients.recipient,
+  );
+  const isShipmentsDataLoading = useSelector(
+    (state: RootState) => state.shipments.isLoading,
+  );
+  const isDriverDataLoading = useSelector(
+    (state: RootState) => state.drivers.isLoading,
+  );
+  const isClientDataLoading = useSelector(
+    (state: RootState) => state.clients.isLoading,
+  );
+  const isRecipientDataLoading = useSelector(
+    (state: RootState) => state.recipients.isLoading,
+  );
+  const isCitiesDataLoading = useSelector(
+    (state: RootState) => state.cities.isLoading,
   );
 
   const truckTypes = useSelector(
     (state: RootState) => state.drivers.truckTypes,
   );
+
+  const initiallySelectedTruckType = truckTypes.find((truckType: any) => {
+    return truckType.id === driver?.truck_type;
+  });
+
+  const originCity = cities.find(
+    (city: any) => city.ar_city === shipment?.origin_city,
+  );
+  const destinationCity = cities.find(
+    (city: any) => city.ar_city === shipment?.destination_city,
+  );
+  const shipmentsStatus = useSelector(
+    (state: RootState) => state.shipments.shipmentsStatus,
+  );
   const [isNotesAreaVisible, setIsNotesAreaVisible] = useState(false);
 
   useEffect(() => {
-    dispatch(getTruckTypes());
-    dispatch(getShipmentsStatus());
-  }, [dispatch]);
+    if (shipmentId) {
+      dispatch(getShipment(shipmentId));
+    }
+  }, [dispatch, shipmentId]);
 
-  const [formData, setFormData] = useState({
-    driverId: null,
+  const [formData, setFormData] = useState<any>({
+    driverId: 0,
     driverPhone: "",
-    vehicleType: "",
+    vehicleType: 0,
     vehicleNumber: "",
     pickupPointId: "",
     dropOffPointId: "",
     pickupDate: "",
     deliveryDate: "",
+    daysToArrive: 0,
     contents: "",
-    weight: "",
+    weight: 0,
     shipmentNotes: "",
-    clientId: null,
+    clientId: 0,
     clientAddress: "",
-    clientBranchId: null,
+    clientBranchId: 0,
     clientInvoiceNumber: "",
     clientPrimaryPhoneNumber: "",
     clientSecondaryPhoneNumber: "",
     clientFacilityDescription: "",
-    recipientId: null,
+    recipientId: 0,
     recipientAddress: "",
     recipientPrimaryPhoneNumber: "",
     recipientSecondaryPhoneNumber: "",
@@ -74,25 +118,68 @@ const AddShipment = () => {
     discount: 0,
     returnFare: 0,
     totalCost: 0,
-    shipmentStatus: null,
   });
+
+  useEffect(() => {
+    if (!shipment || !client || !driver || !recipient) return;
+
+    setFormData((prev: any) => ({
+      ...prev,
+      shipmentNotes: shipment.notes,
+      driverId: shipment.driver,
+      driverPhone: driver.phone_number,
+      vehicleType: driver.truck_type,
+      vehicleNumber: driver.vehicle_number,
+      clientId: client.id,
+      clientAddress: client.address,
+      clientBranchId: shipment.client_branch,
+      clientInvoiceNumber: shipment.client_invoice_number,
+      clientPrimaryPhoneNumber: client.phone_number,
+      clientSecondaryPhoneNumber: client.second_phone_number,
+      clientFacilityDescription: client?.dicription,
+      recipientId: recipient.id,
+      recipientAddress: recipient.address,
+      recipientPrimaryPhoneNumber: recipient.phone_number,
+      recipientSecondaryPhoneNumber: recipient.second_phone_number,
+      pickupDate: formatDate(shipment.loading_at),
+      deliveryDate: formatDate(shipment.expected_arrival_date),
+      daysToArrive: shipment.days_to_arrive,
+      contents: shipment.contents,
+      weight: shipment.weight,
+      baseCost: shipment.fare || 0,
+      extraCost: shipment.premium || 0,
+      numberOfNights: shipment.days_stayed || 0,
+      costPerNight: shipment.stay_cost || 0,
+      discount: shipment.deducted || 0,
+      returnFare: shipment.fare_return || 0,
+      totalCost: shipment?.total_cost,
+      pickupPointId: originCity?.id,
+      dropOffPointId: destinationCity?.id,
+    }));
+  }, [shipment, client, recipient, driver, originCity, destinationCity]);
 
   useEffect(() => {
     const selectedClient = clients.find(
       (client) => client.id === formData.clientId,
     );
     setSelectedClientBranches(selectedClient?.branches || []);
-    setFormData((prev) => ({
-      ...prev,
-      clientBranchId: null,
-    }));
-  }, [formData.clientId, clients]);
+  }, [formData.clientId, clients, shipment]);
+
+  useEffect(() => {
+    if (shipment) {
+      dispatch(getDriver(shipment.driver));
+      dispatch(getRecipient(shipment.recipient));
+      dispatch(getClient(shipment.client));
+    }
+  }, [dispatch, shipment]);
 
   useEffect(() => {
     dispatch(getDrivers());
     dispatch(getCities());
     dispatch(getClients());
     dispatch(getRecipients());
+    dispatch(getTruckTypes());
+    dispatch(getShipmentsStatus());
   }, [dispatch]);
 
   useEffect(() => {
@@ -102,7 +189,7 @@ const AddShipment = () => {
       formData.extraCost +
       accommodationCost -
       formData.discount;
-    setFormData((prev) => ({ ...prev, totalCost: total }));
+    setFormData((prev: any) => ({ ...prev, totalCost: total }));
   }, [
     formData.baseCost,
     formData.extraCost,
@@ -112,7 +199,7 @@ const AddShipment = () => {
   ]);
 
   const driverSectionInputsData = [
-    { label: "الاسم", name: "driverName" },
+    { label: "الاسم" },
     { label: "نوع الشاحنة", name: "vehicleType" },
     { label: "رقم الهاتف", name: "driverPhone" },
     { label: "رقم الشاحنة", name: "vehicleNumber" },
@@ -165,10 +252,7 @@ const AddShipment = () => {
       origin_city: formData.pickupPointId,
       destination_city: formData.dropOffPointId,
       loading_date: formData.pickupDate,
-      days_to_arrive:
-        formData.pickupDate &&
-        formData.deliveryDate &&
-        calculateDateDifference(formData.pickupDate, formData.deliveryDate),
+      days_to_arrive: formData.daysToArrive,
       expected_arrival_date: formData.deliveryDate,
       contents: formData.contents,
       weight: Number(formData.weight),
@@ -176,7 +260,7 @@ const AddShipment = () => {
       client: formData.clientId,
       client_branch: formData.clientBranchId,
       client_invoice_number: formData.clientInvoiceNumber,
-      notes_customer: formData.clientFacilityDescription,
+      notes_client: formData.clientFacilityDescription,
       recipient: formData.recipientId,
       notes_recipient: formData.recipientFacilityDescription,
       fare: formData.baseCost,
@@ -189,22 +273,10 @@ const AddShipment = () => {
     };
   };
 
-  function calculateDateDifference(
-    pickupDateStr: string,
-    deliveryDateStr: string,
-  ): number {
-    const pickupDate = new Date(pickupDateStr);
-    const deliveryDate = new Date(deliveryDateStr);
-
-    const diffTime = deliveryDate.getTime() - pickupDate.getTime();
-
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  }
-
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: { target: { name: string; value: any } }) => {
-    setFormData((prev) => {
+    setFormData((prev: { pickupPointId: any; dropOffPointId: any }) => {
       if (["driver", "client", "recipient"].includes(e.target.name)) {
         return {
           ...prev,
@@ -230,14 +302,12 @@ const AddShipment = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log(getApiDataFormat(formData));
 
     try {
       const response = await dispatch(addShipment(getApiDataFormat(formData)));
-      console.log("response: ", response);
       if (response.meta.requestStatus === "fulfilled") {
         setIsLoading(false);
-        toast.success("تم إضافة الشحنة بنجاح");
+        toast.success("تم تعديل بيانات الشحنة بنجاح");
         navigate("/shipments");
       }
     } catch (error) {
@@ -247,15 +317,39 @@ const AddShipment = () => {
     }
   };
 
+  const selectedDriver = drivers.find(
+    (driver) => driver.id === formData.driverId,
+  );
+  const selectedClient = clients.find(
+    (client) => client.id === formData.clientId,
+  );
+  const selectedRecipient = recipients.find(
+    (recipient) => recipient.id === formData.recipientId,
+  );
+  const selectedOriginCity = cities.find(
+    (city) => city.id === formData.pickupPointId,
+  );
+  const selectedDestinationCity = cities.find(
+    (city) => city.id === formData.dropOffPointId,
+  );
+  const selectedShipmentStatus = shipmentsStatus.find(
+    (shipmentStatus) => shipmentStatus.name_ar === shipment?.status,
+  );
+
   return (
     <>
-      {isLoading && (
+      {(isLoading ||
+        isDriverDataLoading ||
+        isRecipientDataLoading ||
+        isClientDataLoading ||
+        isCitiesDataLoading ||
+        isShipmentsDataLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"
           }`}
         >
-          <span className="loader"></span>a
+          <span className="loader"></span>
         </div>
       )}
       <form
@@ -269,8 +363,10 @@ const AddShipment = () => {
           inputs={driverSectionInputsData}
           value={formData}
           onChange={handleChange}
+          selectMenuSelectedDriver={selectedDriver}
           isDriver={true}
           truckTypeOptions={truckTypes}
+          initiallySelectedTruckType={initiallySelectedTruckType}
         />
         <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
 
@@ -281,7 +377,10 @@ const AddShipment = () => {
           inputs={shipmentSectionInputsData}
           value={formData}
           onChange={handleChange}
+          selectedOriginCity={selectedOriginCity}
+          selectedDestinationCity={selectedDestinationCity}
           shipmentsStatusOptions={shipmentsStatus}
+          initiallySelectedShipmentStatus={selectedShipmentStatus}
         />
         {isNotesAreaVisible ? (
           <div className="w-full flex flex-col items-start mb-12">
@@ -310,7 +409,6 @@ const AddShipment = () => {
             إضافة ملاحظات
           </button>
         )}
-
         <hr className="border-0 border-t-2 border-dashed border-[#666] mb-12" />
         <AddEditFullInfoSection
           title="المرسِل"
@@ -320,6 +418,8 @@ const AddShipment = () => {
           value={formData}
           onChange={handleChange}
           branchOptions={selectedClientBranches}
+          initiallySelectedClientBranchId={formData.clientBranchId}
+          selectedMenuItem={selectedClient}
         />
         <AddEditFullInfoSection
           title="المستلِم"
@@ -328,28 +428,29 @@ const AddShipment = () => {
           inputs={recipientSectionInputsData}
           value={formData}
           onChange={handleChange}
+          selectedMenuItem={selectedRecipient}
         />
         <AddEditCostSection
           inputs={costSectionInputsData}
           section="cost"
           setNights={(value: any) =>
-            setFormData((prev) => ({ ...prev, numberOfNights: value }))
+            setFormData((prev: any) => ({ ...prev, numberOfNights: value }))
           }
           setCostPerNight={(value: any) =>
-            setFormData((prev) => ({ ...prev, costPerNight: value }))
+            setFormData((prev: any) => ({ ...prev, costPerNight: value }))
           }
           value={formData}
           onChange={handleChange}
           totalCost={formData.totalCost}
-          page="addShipment"
+          page="editShipment"
         />
         <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
         <button className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4">
-          إضافة الشحنة
+          تعديل الشحنة
         </button>
       </form>
     </>
   );
 };
 
-export default AddShipment;
+export default EditShipment;

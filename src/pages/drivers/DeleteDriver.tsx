@@ -15,7 +15,7 @@ const DeleteDriver = () => {
 
   const { data: driverData, isLoading: isDriverDataLoading } = useFetch<any>(
     ["driver"],
-    `/drivers/api/${driverId}`,
+    `/drivers/${driverId}`,
     undefined,
     !!driverId,
   );

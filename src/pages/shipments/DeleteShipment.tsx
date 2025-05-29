@@ -1,17 +1,14 @@
-import ShipmentStatusOverview from "../../../components/shipments/shipment/rejectShipment/ShipmentStatusOverview";
 import { useEffect, useState } from "react";
+import ShipmentStatusOverview from "../../components/shipments/shipment/rejectShipment/ShipmentStatusOverview";
 
-import { useNavigate, useParams } from "react-router-dom";
-import DeleteItemCard from "../../../components/shipments/deleteItem/DeleteItemCard";
-import {
-  deleteShipment,
-  getShipment,
-} from "../../../redux/Slices/shipmentsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../redux/store";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useSidebar } from "../../../context/SidebarContext";
-import DeleteItemDialog from "../../../components/shipments/deleteItem/deleteItemDialog";
+import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
+import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
+import { useSidebar } from "../../context/SidebarContext";
+import { deleteShipment, getShipment } from "../../redux/Slices/shipmentsSlice";
+import { AppDispatch, RootState } from "../../redux/store";
 
 const DeleteShipment = () => {
   const navigate = useNavigate();

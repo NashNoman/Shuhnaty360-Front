@@ -23,7 +23,7 @@ const AddDriver = () => {
   });
 
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
-    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
+    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/TruckType");
 
   const { mutate, isPending: isLoading } = useCreate("/drivers/api", [
     ["drivers"],

@@ -8,16 +8,12 @@ export const driverSchema = z.object({
   name: z.string().min(1, { message: "اسم السائق مطلوب" }),
   phone_number: z.string().min(1, { message: "رقم الهاتف مطلوب" }),
   nationality: z.string().min(1, { message: "الجنسية مطلوبة" }),
-  language: z
-    .enum(["ar", "en", "ur"], { required_error: "اللغة مطلوبة" })
-    .or(z.literal("")),
+  language: z.enum(["ar", "en", "ur"], { message: "اللغة مطلوبة" }),
   identity_number: z.string().min(1, { message: "رقم الهوية/الإقامة مطلوب" }),
   vehicle_number: z.string().min(1, { message: "رقم الشاحنة مطلوب" }),
-  status: z
-    .enum(["available", "offline", "busy"], {
-      required_error: "الحالة مطلوبة",
-    })
-    .or(z.literal("")),
+  status: z.enum(["available", "offline", "busy"], {
+    message: "الحالة مطلوبة",
+  }),
   is_active: z.boolean(),
   truck_type: z.coerce.number().optional(),
 });
@@ -74,6 +70,7 @@ const DriverForm = ({
           />
           <SelectField
             label="اللغة"
+            placeholder="اختر اللغة"
             error={errors.language?.message}
             options={languageOptions}
             {...register("language")}
@@ -90,12 +87,14 @@ const DriverForm = ({
           />
           <SelectField
             label="الحالة"
+            placeholder="اختر الحالة"
             error={errors.status?.message}
             options={statusOptions}
             {...register("status")}
           />
           <SelectField
             label="نوع الشاحنة"
+            placeholder="اختر نوع الشاحنة"
             error={errors.truck_type?.message}
             options={truckTypeOptions}
             {...register("truck_type")}

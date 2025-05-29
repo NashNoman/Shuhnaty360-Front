@@ -1,71 +1,43 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import AddEditFullInfoSection from "../../components/shipments/addShipment/AddEditFullInfoSection";
+import ClientForm, {
+  ClientFormData,
+  clientSchema,
+} from "../../components/ClientForm";
 import { useSidebar } from "../../context/SidebarContext";
-import { addClient } from "../../redux/Slices/clientsSlice";
-import { AppDispatch } from "../../redux/store";
-
-const clientSectionInputsData = [
-  { label: "الاسم", name: "name" },
-  { label: "العنوان", name: "address" },
-  { label: "البريد الإلكتروني", name: "email" },
-];
+import { useCreate } from "../../hooks/useApi";
 
 const AddClient = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
   const { isSidebarOpen } = useSidebar();
+  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    PrimaryPhoneNumber: "",
-    SecondaryPhoneNumber: "",
-    email: "",
-    description: "",
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<ClientFormData>({
+    resolver: zodResolver(clientSchema),
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const { mutate, isPending: isLoading } = useCreate("/clients/", [
+    ["clients"],
+  ]);
 
-  // const handlePhoneChange = (name: keyof FormData, value: string) => {
-  //   setFormData((prev) => ({ ...prev, [name]: value }));
-  // };
-
-  const getApiDataFormat = (formData: any) => {
-    return {
-      name: formData.name,
-      address: formData.address,
-      phone_number: formData.PrimaryPhoneNumber,
-      second_phone_number: formData.SecondaryPhoneNumber,
-      email: formData.email,
-      dicription: formData.description,
-    };
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const response = await dispatch(addClient(getApiDataFormat(formData)));
-      if (response.meta.requestStatus === "fulfilled") {
-        setIsLoading(false);
+  const onSubmit = handleSubmit((formData: ClientFormData) => {
+    mutate(formData, {
+      onSuccess: () => {
         toast.success("تم إضافة العميل بنجاح");
         navigate("/clients");
-      }
-    } catch (error) {
-      console.error("Error adding client:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      },
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.detail || "حدث خطأ أثناء إضافة العميل",
+        );
+      },
+    });
+  });
 
   return (
     <>
@@ -78,48 +50,12 @@ const AddClient = () => {
           <span className="loader"></span>
         </div>
       )}
-      <form
-        onSubmit={handleSubmit}
-        className="border border-[#DD7E1F] rounded-lg px-6 mx-4 md:mx-0"
-      >
-        <AddEditFullInfoSection
-          title=""
-          inputs={clientSectionInputsData}
-          value={formData}
-          onChange={handleChange}
-          page="client"
-          doesHaveBreakLine={false}
-        />
-        {/* <AddEditInfoSection
-        title='الفرع (2)'
-        inputs={secondBranchSectionInputsData}
-        value={formData}
-        onChange={handleChange}
-      /> */}
-        {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-        {['secondBranchPrimaryPhoneNumber', 'secondBranchSecondaryPhoneNumber'].map((type) => (
-          <PhoneNumberInput
-            key={type}
-            label={`رقم الهاتف (${
-              type === 'secondBranchPrimaryPhoneNumber' ? 'أساسي' : 'احتياطي'
-            })`}
-            value={formData[type as keyof FormData]}
-            onChange={(val: string) => handlePhoneChange(type as keyof FormData, val)}
-          />
-        ))}
-      </div> */}
-        {/* <hr className='border-0 border-t-2 border-dashed border-[#666] mt-12' />
-      <button className='flex items-center gap-2 text-[#DD7E1F] border-2 border-[#DD7E1F] py-2 px-3 text-sm rounded-lg font-Rubik my-8'>
-        <span>إضافة فرع آخر</span>
-        <img
-          src={addIcon}
-          alt='upload image'
-        />
-      </button> */}
-        <button className="w-full py-3 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mb-8">
-          إضافة العميل
-        </button>
-      </form>
+      <ClientForm
+        onSubmit={onSubmit}
+        isLoading={isLoading}
+        register={register}
+        errors={errors}
+      />
     </>
   );
 };

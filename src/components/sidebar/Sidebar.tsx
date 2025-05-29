@@ -51,7 +51,7 @@ const items = [
       name: "متأخرة",
     },
     {
-      nav: "/shipments/Cancelled",
+      nav: "/shipments/cancelled",
       name: "ملغية",
     },
     {

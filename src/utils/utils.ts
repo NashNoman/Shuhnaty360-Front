@@ -1,6 +1,10 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { UrlString } from "../util.types";
 
-export const getUrlParams: Record<string, any> = (url: UrlString) => {
+export const getUrlParams = (url: UrlString | null): Record<string, any> => {
+  if (!url) return {};
+
   const urlObj = new URL(url);
   const params: Record<string, any> = {};
   urlObj.searchParams.forEach((value, key) => {
@@ -8,3 +12,7 @@ export const getUrlParams: Record<string, any> = (url: UrlString) => {
   });
   return params;
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

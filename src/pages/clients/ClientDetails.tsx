@@ -13,7 +13,7 @@ const ClientDetails = () => {
 
   const { data: clientRes, isLoading } = useFetch<ApiResponse<Client>>(
     ["clients", clientId],
-    `/clients/api/${clientId}`,
+    `/clients/${clientId}`,
     undefined,
     !!clientId,
   );

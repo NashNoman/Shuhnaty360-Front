@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Shipment } from "../../../types";
+import { ShipmentListItem } from "../../../types";
 import Pagination from "../../pagination/Pagination";
 import SearchInput from "../../searchInput/SearchInput";
 import SelectMenu from "../../SelectMenu";
 import ShipmentsTable from "../shipmentsTable/ShipmentsTable";
 
 type ShipmentPageProps = {
-  shipmentsData: Shipment[];
+  shipmentsData: ShipmentListItem[];
 };
 
 const ShipmentPage = ({ shipmentsData }: ShipmentPageProps) => {
@@ -55,9 +55,9 @@ const ShipmentPage = ({ shipmentsData }: ShipmentPageProps) => {
     (a: any, b: any) => a.id - b.id,
   );
 
-  const filteredData = sortedShipments.filter((shipment: Shipment) =>
+  const filteredData = sortedShipments.filter((shipment: ShipmentListItem) =>
     fieldsToCheck.some((field) => {
-      const fieldValue = shipment[field as keyof Shipment];
+      const fieldValue = shipment[field as keyof ShipmentListItem];
       return (
         typeof fieldValue === "string" &&
         fieldValue.toLowerCase().includes(searchValue.toLowerCase().trim())

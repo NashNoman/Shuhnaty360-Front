@@ -18,17 +18,11 @@ import DeleteDriver from "./pages/drivers/DeleteDriver";
 import DriverDetails from "./pages/drivers/DriverDetails";
 import Drivers from "./pages/drivers/Drivers";
 import EditDriver from "./pages/drivers/EditDriver";
-import AllShipments from "./pages/shipments/AllShipments";
-import CancelledShipments from "./pages/shipments/CancelledShipments";
-import CompletedShipments from "./pages/shipments/CompletedShipments";
-import DelayedShipments from "./pages/shipments/DelayedShipments";
-import DeliveredShipments from "./pages/shipments/DeliveredShipments";
-import InShippingShipments from "./pages/shipments/InShippingShipments";
-import ReturnedShipments from "./pages/shipments/ReturnedShipments";
-import AddShipment from "./pages/shipments/shipment/AddShipment";
-import DeleteShipment from "./pages/shipments/shipment/DeleteShipment";
-import EditShipment from "./pages/shipments/shipment/EditShipment";
-import ShipmentDetails from "./pages/shipments/shipment/ShipmentDetails";
+import AddShipment from "./pages/shipments/AddShipment";
+import DeleteShipment from "./pages/shipments/DeleteShipment";
+import EditShipment from "./pages/shipments/EditShipment";
+import ShipmentDetails from "./pages/shipments/ShipmentDetails";
+import Shipments from "./pages/shipments/Shipments";
 import AddUser from "./pages/users/AddUser";
 import DeleteUser from "./pages/users/DeleteUser";
 import EditUser from "./pages/users/EditUser";
@@ -73,17 +67,14 @@ function App() {
                       </Layout>
                     }
                   >
-                    <Route index element={<AllShipments />} />{" "}
-                    <Route path="all" element={<AllShipments />} />
-                    <Route path="delivered" element={<DeliveredShipments />} />
-                    <Route path="completed" element={<CompletedShipments />} />
-                    <Route
-                      path="in-shipping"
-                      element={<InShippingShipments />}
-                    />
-                    <Route path="delayed" element={<DelayedShipments />} />
-                    <Route path="Cancelled" element={<CancelledShipments />} />
-                    <Route path="returned" element={<ReturnedShipments />} />
+                    <Route index element={<Shipments />} />{" "}
+                    <Route path="all" element={<Shipments />} />
+                    <Route path="delivered" element={<Shipments />} />
+                    <Route path="completed" element={<Shipments />} />
+                    <Route path="in-shipping" element={<Shipments />} />
+                    <Route path="delayed" element={<Shipments />} />
+                    <Route path="cancelled" element={<Shipments />} />
+                    <Route path="returned" element={<Shipments />} />
                     <Route
                       path="shipment-details/:shipmentId"
                       element={<ShipmentDetails />}
