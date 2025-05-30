@@ -1,3 +1,5 @@
+import { cn } from "../../utils/utils";
+
 export type TextInputFieldProps = {
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -17,12 +19,16 @@ const TextInputField = ({
   onChange,
   name,
   error,
+  disabled,
   ...props
 }: TextInputFieldProps) => {
   return (
     <div className="col-span-1 flex flex-col gap-1">
       {label && (
-        <label htmlFor={props.id} className="text-xl mb-2 text-[#1A1A1A]">
+        <label
+          htmlFor={props.id}
+          className="self-start text-xl mb-2 text-[#1A1A1A]"
+        >
           {label}
         </label>
       )}
@@ -30,12 +36,16 @@ const TextInputField = ({
         id={props.id}
         type={type}
         placeholder={placeholder}
-        className={`p-2 text-lg border ${
-          error ? "border-red-500" : "border-[#CCCCCC]"
-        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]`}
+        className={cn(
+          "p-2 text-lg border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]",
+          error && "border-red-500",
+          disabled && "bg-gray-100 cursor-not-allowed",
+        )}
         value={value}
         onChange={onChange}
         name={name}
+        autoComplete="off"
+        disabled={disabled}
         {...props}
       />
       {error && <span className="text-red-500 mt-1 text-sm">{error}</span>}

@@ -25,7 +25,10 @@ const SelectField = ({
   return (
     <div className="col-span-1 flex flex-col gap-1">
       {label && (
-        <label htmlFor={props.id} className="text-xl mb-2 text-[#1A1A1A]">
+        <label
+          htmlFor={props.id}
+          className="self-start text-xl mb-2 text-[#1A1A1A]"
+        >
           {label}
         </label>
       )}

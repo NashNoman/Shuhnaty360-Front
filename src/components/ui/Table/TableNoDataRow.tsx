@@ -7,8 +7,8 @@ type TableNoDataRowProps = {
 
 const TableNoDataRow = ({ span = 1 }: TableNoDataRowProps) => {
   return (
-    <TableRow index={0}>
-      <TableCell colSpan={span} className="text-center">
+    <TableRow index={1}>
+      <TableCell colSpan={span} className="text-center py-4">
         لا توجد بيانات لعرضها
       </TableCell>
     </TableRow>

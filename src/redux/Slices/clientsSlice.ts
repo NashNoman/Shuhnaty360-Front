@@ -39,7 +39,7 @@ export const addClient = createAsyncThunk(
   "clients/addClient",
   async (data: any) => {
     try {
-      const response = await axios.post(`${baseURL}/api/clients/api/`, data, {
+      const response = await axios.post(`${baseURL}/api/clients/`, data, {
         auth: {
           username: "admin",
           password: "admin",
@@ -57,16 +57,12 @@ export const editClient = createAsyncThunk(
   "clients/editClient",
   async ({ id, data }: any) => {
     try {
-      const response = await axios.put(
-        `${baseURL}/api/clients/api/${id}`,
-        data,
-        {
-          auth: {
-            username: "admin",
-            password: "admin",
-          },
+      const response = await axios.put(`${baseURL}/api/clients/${id}/`, data, {
+        auth: {
+          username: "admin",
+          password: "admin",
         },
-      );
+      });
       return response.data;
     } catch (err: any) {
       console.error("API Error:", err.response?.data || err.message);

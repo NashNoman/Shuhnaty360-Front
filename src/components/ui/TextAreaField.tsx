@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "../../utils/utils";
 
 export type TextAreaFieldProps = {
   value?: string;
@@ -8,6 +9,7 @@ export type TextAreaFieldProps = {
   description?: string;
   name?: string;
   error?: string;
+  containerClassName?: string;
 } & React.TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 const TextAreaField = ({
@@ -17,22 +19,29 @@ const TextAreaField = ({
   value,
   onChange,
   name,
+  containerClassName,
+  className,
   error,
   ...props
 }: TextAreaFieldProps) => {
   return (
-    <div className="col-span-1 flex flex-col gap-1">
+    <div className={cn("col-span-1 flex flex-col gap-1", containerClassName)}>
       {label && (
-        <label htmlFor={props.id} className="text-xl mb-2 text-[#1A1A1A]">
+        <label
+          htmlFor={props.id}
+          className="self-start text-xl mb-2 text-[#1A1A1A]"
+        >
           {label}
         </label>
       )}
       <textarea
         id={props.id}
         placeholder={placeholder}
-        className={`p-2 text-lg border ${
-          error ? "border-red-500" : "border-[#CCCCCC]"
-        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]`}
+        className={cn(
+          "p-2 text-lg border rounded-lg border-[#CCCCCC] !resize-none focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]",
+          error && "border-red-500",
+          className,
+        )}
         value={value}
         onChange={onChange}
         name={name}
