@@ -1,109 +1,177 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
+import {
+  Control,
+  Controller,
+  ControllerRenderProps,
+  FieldError,
+} from "react-hook-form";
+import { FiLoader } from "react-icons/fi";
+import { cn } from "../../utils/utils";
+
+export type AutocompleteOption = {
+  value: string | number;
+  label: string;
+};
 
 export type AutocompleteSelectFieldProps = {
-  value?: string;
-  onChange?: (value: string) => void;
-  placeholder?: string;
+  name: string;
+  control: Control<any>;
+  options: AutocompleteOption[];
   label?: string;
+  placeholder?: string;
+  error?: string | FieldError;
+  disabled?: boolean;
   description?: string | string[];
-  name?: string;
-  error?: string;
-  options: { value: string; label: string }[];
-} & React.HTMLAttributes<HTMLSelectElement>;
+  isLoading?: boolean;
+  onInputChange?: (value: string) => void;
+};
 
-const AutocompleteSelectField = ({
-  value,
-  onChange,
-  placeholder = "",
-  label,
-  description,
+const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
   name,
-  error,
+  control,
   options,
-}: AutocompleteSelectFieldProps) => {
-  const [inputValue, setInputValue] = useState(
-    options.find((o) => o.value === value)?.label || "",
+  label,
+  placeholder = "",
+  error,
+  disabled = false,
+  description,
+  isLoading,
+  onInputChange,
+}) => {
+  const [inputValue, setInputValue] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(inputValue.toLowerCase()),
   );
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [filteredOptions, setFilteredOptions] = useState(options);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setFilteredOptions(
-      options.filter((option) =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase()),
-      ),
-    );
-  }, [inputValue, options]);
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    field: ControllerRenderProps<any, string>,
+  ) => {
+    if (!showOptions || filteredOptions.length === 0) return;
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setShowDropdown(false);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev < filteredOptions.length - 1 ? prev + 1 : 0,
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredOptions.length - 1,
+      );
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const selected = filteredOptions[highlightedIndex];
+      if (selected) {
+        field.onChange(selected.value);
+        setInputValue(selected.label);
+        setShowOptions(false);
+        if (onInputChange) onInputChange(selected.label);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const selected = options.find((o) => o.value === value);
-    if (selected && selected.label !== inputValue) {
-      setInputValue(selected.label);
-    }
-    if (!value) setInputValue("");
-  }, [value, options, inputValue]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    setShowDropdown(true);
-  };
-
-  const handleOptionClick = (option: { value: string; label: string }) => {
-    setInputValue(option.label);
-    setShowDropdown(false);
-    if (onChange) onChange(option.value);
   };
 
   return (
-    <div className="col-span-1 flex flex-col gap-1" ref={containerRef}>
+    <div className="col-span-1 flex flex-col gap-1 relative">
       {label && (
-        <label className="text-xl mb-2 text-[#1A1A1A]" htmlFor={name}>
+        <label
+          htmlFor={name}
+          className="self-start text-xl mb-2 text-[#1A1A1A]"
+        >
           {label}
         </label>
       )}
-      <div className="relative">
-        <input
-          id={name}
-          name={name}
-          type="text"
-          autoComplete="off"
-          placeholder={placeholder}
-          className={`p-2 text-lg border ${
-            error ? "border-red-500" : "border-[#CCCCCC]"
-          } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] w-full bg-white`}
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={() => setShowDropdown(true)}
-        />
-        {showDropdown && filteredOptions.length > 0 && (
-          <ul className="absolute z-10 left-0 right-0 mt-1 bg-white border border-[#CCCCCC] rounded-lg shadow-lg max-h-56 overflow-auto">
-            {filteredOptions.map((option) => (
-              <li
-                key={option.value}
-                className="px-4 py-2 cursor-pointer hover:bg-[#F5F5F5] text-lg"
-                onClick={() => handleOptionClick(option)}
-              >
-                {option.label}
-              </li>
-            ))}
-          </ul>
+      <Controller
+        key={options.length}
+        name={name}
+        control={control}
+        shouldUnregister={!options.length}
+        render={({ field }) => (
+          <>
+            <div className="relative w-full">
+              <input
+                id={name}
+                type="text"
+                className={cn(
+                  "p-2 w-full text-lg border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]",
+                  error && "border-red-500",
+                  disabled && "bg-gray-100 cursor-not-allowed",
+                )}
+                // className={`p-2 pr-10 text-lg border ${
+                //   error ? "border-red-500" : "border-[#CCCCCC]"
+                // } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] w-full`}
+                placeholder={placeholder}
+                value={
+                  inputValue ||
+                  (field.value
+                    ? options.find((o) => o.value === field.value)?.label
+                    : "")
+                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setInputValue(val);
+                  setShowOptions(true);
+                  setHighlightedIndex(0);
+                  const matchedOption = options.find((o) => o.label === val);
+                  if (!matchedOption) {
+                    field.onChange(undefined);
+                  }
+                  if (onInputChange) onInputChange(val);
+                }}
+                onFocus={() => setShowOptions(true)}
+                onBlur={() => setTimeout(() => setShowOptions(false), 100)}
+                onKeyDown={(e) => handleKeyDown(e, field)}
+                disabled={disabled}
+                autoComplete="off"
+              />
+              <span className="pointer-events-none absolute end-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                {isLoading ? (
+                  <FiLoader className="animate-spin" />
+                ) : (
+                  <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+                    <path
+                      d="M6 8l4 4 4-4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
+              </span>
+            </div>
+            {showOptions && filteredOptions.length > 0 && (
+              <ul className="absolute z-10 bg-white border border-[#CCCCCC] rounded-lg mt-24 w-full max-h-48 overflow-auto shadow-lg">
+                {filteredOptions.map((option, idx) => (
+                  <li
+                    key={option.value}
+                    className={`px-4 py-2 cursor-pointer hover:bg-[#F5F5F5] ${
+                      idx === highlightedIndex ? "bg-[#F5F5F5]" : ""
+                    }`}
+                    onMouseDown={() => {
+                      field.onChange(option.value);
+                      setInputValue(option.label);
+                      setShowOptions(false);
+                      if (onInputChange) onInputChange(option.label);
+                    }}
+                    onMouseEnter={() => setHighlightedIndex(idx)}
+                  >
+                    {option.label}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
-      </div>
-      {error && <span className="text-red-500 mt-1 text-sm">{error}</span>}
+      />
+      {error && (
+        <span className="text-red-500 mt-1 text-sm">
+          {typeof error === "string" ? error : error.message}
+        </span>
+      )}
       {description && (
         <div className="text-[#999] font-Rubik text-sm">
           {Array.isArray(description) ? (
@@ -123,4 +191,4 @@ const AutocompleteSelectField = ({
   );
 };
 
-export default AutocompleteSelectField;
+export default AutoCompleteSelectField;

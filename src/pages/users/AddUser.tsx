@@ -115,6 +115,8 @@ const AddUser = () => {
         navigate("/users");
       },
       onError: (error: any) => {
+        console.log(error);
+
         toast.error(
           error?.response?.data?.detail || "حدث خطأ أثناء إضافة المستخدم",
         );

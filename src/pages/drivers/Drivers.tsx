@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { getDriverList } from "../../api/drivers";
+import { getDriversList } from "../../api/drivers";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
@@ -97,7 +97,7 @@ const Drivers = () => {
     fetchNextPage,
   } = useInfiniteQuery({
     queryKey: ["drivers"],
-    queryFn: getDriverList,
+    queryFn: getDriversList,
     initialPageParam: 1,
     getPreviousPageParam: (lastPage) =>
       getUrlParams(lastPage.data.previous)?.page || undefined,

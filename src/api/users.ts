@@ -3,8 +3,14 @@ import api from "../utils/api";
 
 const usersEndpoint = "/accounts/users/";
 
-export const getUserList = async (): Promise<ApiListResponse<User>> => {
-  const response = await api.get(usersEndpoint);
+type GetUserListProps = {
+  page?: number;
+};
+
+export const getUserList = async ({
+  page = 1,
+}: GetUserListProps): Promise<ApiListResponse<User>> => {
+  const response = await api.get(usersEndpoint + `?page=${page}`);
   return response.data;
 };
 

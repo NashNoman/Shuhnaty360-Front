@@ -1,4 +1,5 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
+import { flatMap } from "lodash";
 import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
@@ -7,6 +8,7 @@ import { getShipmentsList } from "../../api/shipments";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
+import { ShipmentListItem } from "../../types";
 import { formatDate } from "../../utils/formatDate";
 import { getUrlParams } from "../../utils/utils";
 
@@ -85,7 +87,7 @@ const Shipments = () => {
   const [selectedShipmentStatus, setSelectedShipmentStatus] = useState("الكل");
   const [searchValue, setSearchValue] = useState("");
 
-  const { ref, inView } = useInView(); // ref is used for infinite scroll
+  const { ref, inView } = useInView();
 
   const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteQuery({
     queryKey: ["shipments"],
@@ -96,6 +98,7 @@ const Shipments = () => {
       getUrlParams(lastPage.data.previous)?.page || undefined,
     getNextPageParam: (lastPage) =>
       getUrlParams(lastPage.data.next)?.page || undefined,
+    placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
@@ -104,15 +107,14 @@ const Shipments = () => {
     }
   }, [fetchNextPage, hasNextPage, inView]);
 
-  const shipmentsData =
-    data?.pages.map((page) => page.data.results).flat() || [];
+  const shipmentsData = flatMap(
+    data?.pages || [],
+    "data.results",
+  ) as ShipmentListItem[];
 
   const pathParts = location.pathname.split("/").filter(Boolean);
   const lastPath = pathParts[pathParts.length - 1];
   const statusFromRoute = routeStatusMap[lastPath] || "الكل";
-
-  console.log("Next page: ");
-  console.log("Status from route:", statusFromRoute);
 
   let filteredShipments = shipmentsData;
   if (statusFromRoute !== "الكل") {
@@ -171,7 +173,7 @@ const Shipments = () => {
               >
                 <TableCell>{shipment.id}</TableCell>
                 <TableCell>{shipment.user?.username || "-"}</TableCell>
-                <TableCell>{shipment.recipient.username}</TableCell>
+                <TableCell>{shipment.recipient.username || "-"}</TableCell>
                 <TableCell>{shipment.driver?.username || "-"}</TableCell>
                 <TableCell>{shipment.client_branch?.username || "-"}</TableCell>
                 <TableCell>{shipment.origin_city.ar_city}</TableCell>

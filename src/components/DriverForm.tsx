@@ -1,9 +1,11 @@
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
+import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
 import Card from "./ui/Card";
 import SelectField from "./ui/SelectField";
 import TextInputField from "./ui/TextInputField";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const driverSchema = z.object({
   name: z.string().min(1, { message: "اسم السائق مطلوب" }),
   phone_number: z.string().min(1, { message: "رقم الهاتف مطلوب" }),
@@ -26,6 +28,7 @@ type DriverFormProps = {
   register: UseFormRegister<DriverFormData>;
   errors: FieldErrors<DriverFormData>;
   truckTypeOptions: { value: number; label: string }[];
+  control: Control<DriverFormData>;
   isEdit?: boolean;
 };
 
@@ -47,6 +50,7 @@ const DriverForm = ({
   register,
   errors,
   truckTypeOptions,
+  control,
   isEdit = false,
 }: DriverFormProps) => {
   return (
@@ -85,12 +89,13 @@ const DriverForm = ({
             error={errors.vehicle_number?.message}
             {...register("vehicle_number")}
           />
-          <SelectField
+          <AutoCompleteSelectField
+            name="status"
+            control={control}
+            options={statusOptions}
             label="الحالة"
             placeholder="اختر الحالة"
             error={errors.status?.message}
-            options={statusOptions}
-            {...register("status")}
           />
           <SelectField
             label="نوع الشاحنة"

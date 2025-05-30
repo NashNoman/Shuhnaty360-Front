@@ -193,6 +193,33 @@ export type ShipmentHistory = {
   user: number;
 };
 
+export type ShipmentSerializerCreate = {
+  user?: number | undefined;
+  driver?: number | undefined;
+  origin_city?: number | undefined;
+  destination_city?: number | undefined;
+  loading_date?: string | undefined;
+  days_to_arrive?: number | undefined;
+  expected_arrival_date?: string | undefined;
+  actual_delivery_date?: string | undefined;
+  contents?: string | undefined;
+  weight?: number | undefined;
+  notes?: string | undefined;
+  client?: number | undefined;
+  client_branch?: number | undefined;
+  client_invoice_number?: string | undefined;
+  notes_customer?: string | undefined;
+  recipient?: number | undefined;
+  notes_recipient?: string | undefined;
+  fare: number;
+  premium?: number | undefined;
+  fare_return?: number | undefined;
+  days_stayed?: number | undefined;
+  stay_cost?: number | undefined;
+  deducted?: number | undefined;
+  status?: number | undefined;
+};
+
 export type GetShipmentsResponse = ApiListResponse<ShipmentListItem>;
 export type GetShipmentDetailsResponse = ApiResponse<ShipmentListItem>;
 
@@ -209,7 +236,7 @@ export type Branch = {
 
 export type Client = {
   id: number;
-  branches: Branch[];
+  branches?: Branch[];
   name: string;
   address: string;
   phone_number: string;

@@ -20,6 +20,7 @@ const EditDriver = () => {
     handleSubmit,
     register,
     setValue,
+    control,
     formState: { errors },
   } = useForm<DriverFormData>({
     resolver: zodResolver(driverSchema),
@@ -27,15 +28,15 @@ const EditDriver = () => {
 
   const { data: driverData, isLoading } = useFetch<GetDriverDetailsResponse>(
     ["drivers", driverId],
-    `/drivers/api/${driverId}`,
+    `/drivers/${driverId}/`,
     undefined,
     !!driverId,
   );
 
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
-    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
+    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/TruckType");
 
-  const { mutate } = useUpdate(`/drivers/${driverId}`, ["drivers"]);
+  const { mutate } = useUpdate(`/drivers/${driverId}/`, ["drivers"]);
 
   const truckTypeOptions =
     truckTypesRes?.data?.results.map((truckType) => ({
@@ -89,6 +90,7 @@ const EditDriver = () => {
         register={register}
         errors={errors}
         truckTypeOptions={truckTypeOptions}
+        control={control}
       />
     </>
   );

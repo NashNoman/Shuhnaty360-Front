@@ -66,7 +66,7 @@ const Users = () => {
     fetchNextPage,
   } = useInfiniteQuery({
     queryKey: ["users"],
-    queryFn: getUserList,
+    queryFn: async ({ pageParam }) => getUserList({ page: pageParam }),
     initialPageParam: 1,
     getPreviousPageParam: (lastPage) =>
       getUrlParams(lastPage.data.previous)?.page || undefined,

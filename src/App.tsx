@@ -29,7 +29,13 @@ import EditUser from "./pages/users/EditUser";
 import UserDetails from "./pages/users/UserDetails";
 import Users from "./pages/users/Users";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
