@@ -81,6 +81,7 @@ api.interceptors.response.use(
         processQueue(null, data.access);
         return api(originalRequest);
       } catch (err) {
+        console.error("Refresh token failed:", err);
         processQueue(err, null);
         removeTokens();
         callGlobalLogout();

@@ -1,9 +1,9 @@
-import debounce from "lodash.debounce";
+import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { IoMdMenu } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
 import { PiPackageDuotone } from "react-icons/pi";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import alertIcon from "../../assets/images/alert.svg";
 import clientsIcon from "../../assets/images/clients.svg";
 import logOutIcon from "../../assets/images/log-out.svg";
@@ -25,7 +25,7 @@ const items = [
       <img
         src={statisticsIcon}
         alt="statistics"
-        className={`${selectedItem === "dashboard" ? iconsStyles : ""}`}
+        className={`${selectedItem === "/dashboard" ? iconsStyles : ""}`}
       />
     ),
   },
@@ -66,7 +66,7 @@ const items = [
       <img
         src={usersIcon}
         alt="users"
-        className={`${selectedItem === "users" ? iconsStyles : ""}`}
+        className={`${selectedItem === "/users" ? iconsStyles : ""}`}
       />
     ),
   },
@@ -77,7 +77,7 @@ const items = [
       <img
         src={truckIcon}
         alt="drivers"
-        className={`${selectedItem === "drivers" ? iconsStyles : ""}`}
+        className={`${selectedItem === "/drivers" ? iconsStyles : ""}`}
       />
     ),
   },
@@ -88,7 +88,7 @@ const items = [
       <img
         src={clientsIcon}
         alt="clients"
-        className={`${selectedItem === "clients" ? iconsStyles : ""}`}
+        className={`${selectedItem === "/clients" ? iconsStyles : ""}`}
       />
     ),
   },
@@ -99,7 +99,7 @@ const items = [
       <img
         src={alertIcon}
         alt="alert-messages"
-        className={`${selectedItem === "alert-messages" ? iconsStyles : ""}`}
+        className={`${selectedItem === "/alert-messages" ? iconsStyles : ""}`}
       />
     ),
   },
@@ -107,8 +107,8 @@ const items = [
 
 const Sidebar = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
-  const [selectedItem, setSelectedItem] = useState("dashboard");
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const location = useLocation();
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -188,25 +188,25 @@ const Sidebar = () => {
                       items={item}
                       isSidebarOpen={isSidebarOpen}
                       setIsSidebarOpen={setIsSidebarOpen}
-                      selectedItem={selectedItem}
-                      setSelectedItem={setSelectedItem}
+                      selectedItem={location.pathname}
+                      // setSelectedItem={setSelectedItem}
                     />
                   ) : (
                     <Link
                       to={item.nav}
                       key={item.name}
-                      onClick={() => setSelectedItem(item.nav.substring(1))}
+                      // onClick={() => setSelectedItem(item.nav.substring(1))}
                       className={`flex items-center w-full gap-2 mb-4 ${
                         isSidebarOpen ? "p-3" : "p-2"
                       } transition-all duration-300 ${
                         isSidebarOpen ? "justify-start" : "justify-center"
                       } ${
-                        selectedItem === item.nav.substring(1)
+                        location.pathname === item.nav
                           ? "bg-[#DD7E1F] rounded-lg text-[#FCFCFC]"
                           : ""
                       }`}
                     >
-                      <span>{item.icon(selectedItem)}</span>
+                      <span>{item.icon(location.pathname)}</span>
                       {isSidebarOpen && <span>{item.name}</span>}
                     </Link>
                   ),

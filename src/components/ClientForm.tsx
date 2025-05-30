@@ -4,6 +4,7 @@ import Card from "./ui/Card";
 import TextAreaField from "./ui/TextAreaField";
 import TextInputField from "./ui/TextInputField";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const clientSchema = z.object({
   name: z.string().min(1, { message: "اسم العميل مطلوب" }),
   address: z.string().min(1, { message: "العنوان مطلوب" }),

@@ -17,6 +17,7 @@ const AddDriver = () => {
   const {
     handleSubmit,
     register,
+    control,
     formState: { errors },
   } = useForm<DriverFormData>({
     resolver: zodResolver(driverSchema),
@@ -25,7 +26,7 @@ const AddDriver = () => {
   const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
     useFetch<GetTruckTypesResponse>(["truckType"], "drivers/TruckType");
 
-  const { mutate, isPending: isLoading } = useCreate("/drivers/api", [
+  const { mutate, isPending: isLoading } = useCreate("/drivers/", [
     ["drivers"],
   ]);
 
@@ -36,12 +37,19 @@ const AddDriver = () => {
     })) || [];
 
   const onSubmit = handleSubmit((formData: DriverFormData) => {
+    // const req = {
+    //   ...formData,
+    //   truck_type: truckTypesRes?.data?.results.find(
+    //     (truckType) => truckType.id === formData.truck_type,
+    //   ),
+    // };
     mutate(formData, {
       onSuccess: () => {
         navigate("/drivers");
         toast.success("تم إضافة السائق بنجاح");
       },
       onError: (error: any) => {
+        console.error(error);
         toast.error(
           error?.response?.data?.detail || "حدث خطأ أثناء إضافة السائق",
         );
@@ -66,6 +74,7 @@ const AddDriver = () => {
         register={register}
         errors={errors}
         truckTypeOptions={truckTypeOptions}
+        control={control}
       />
     </>
   );
