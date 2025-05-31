@@ -236,7 +236,7 @@ export type Branch = {
 
 export type Client = {
   id: number;
-  branches?: Branch[];
+  branches: Branch[] | null;
   name: string;
   address: string;
   phone_number: string;

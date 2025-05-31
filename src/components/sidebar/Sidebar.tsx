@@ -93,6 +93,17 @@ const items = [
     ),
   },
   {
+    nav: "/recipients",
+    name: "المستلمين",
+    icon: (selectedItem: string) => (
+      <img
+        src={clientsIcon}
+        alt="recipients"
+        className={`${selectedItem === "/recipients" ? iconsStyles : ""}`}
+      />
+    ),
+  },
+  {
     nav: "/alert-messages",
     name: "رسائل التنبيه",
     icon: (selectedItem: string) => (

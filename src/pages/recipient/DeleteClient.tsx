@@ -1,48 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
-import { useSidebar } from "../../context/SidebarContext";
-import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
-import { deleteClient, getClient } from "../../redux/Slices/clientsSlice";
 import { toast } from "sonner";
-import { AppDispatch, RootState } from "../../redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
+import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
+import { useSidebar } from "../../context/SidebarContext";
+import { useDelete, useFetch } from "../../hooks/useApi";
+import { ApiResponse, Client } from "../../types";
 
 const DeleteClient = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const isClientDataLoading = useSelector(
-    (state: RootState) => state.clients.isLoading,
-  );
   const { isSidebarOpen } = useSidebar();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
   const { clientId } = useParams();
-  const client = useSelector((state: RootState) => state.clients.client);
 
-  useEffect(() => {
-    if (clientId) {
-      dispatch(getClient(clientId));
-    }
-  }, [clientId, dispatch]);
+  const { data: clientRes, isLoading: isClientDataLoading } = useFetch<
+    ApiResponse<Client>
+  >(["clients", clientId], `/clients/api/${clientId}`, undefined, !!clientId);
 
-  const handleDeleteItemClick = async () => {
-    setIsLoading(true);
-    try {
-      const response = await dispatch(deleteClient(clientId));
-      if (response.meta.requestStatus === "fulfilled") {
-        setIsLoading(false);
+  const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
+    `/clients/api/${clientId}`,
+    ["clients", clientId],
+  );
+
+  const client = clientRes?.data;
+
+  const handleDeleteItemClick = () => {
+    deleteMutate(undefined, {
+      onSuccess: () => {
         toast.success("تم حذف العميل بنجاح");
         navigate("/clients");
-      }
-    } catch (e) {
-      console.log(e);
-    }
+      },
+      onError: (e: any) => {
+        console.log(e);
+        toast.error(
+          e?.response?.data?.detail || e?.message || "حدث خطأ أثناء حذف العميل",
+        );
+      },
+    });
   };
 
   return (
     <>
-      {(isLoading || isClientDataLoading) && (
+      {(isDeleting || isClientDataLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"

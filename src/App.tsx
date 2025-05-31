@@ -18,6 +18,8 @@ import DeleteDriver from "./pages/drivers/DeleteDriver";
 import DriverDetails from "./pages/drivers/DriverDetails";
 import Drivers from "./pages/drivers/Drivers";
 import EditDriver from "./pages/drivers/EditDriver";
+import AddRecipient from "./pages/recipient/AddRecipient";
+import Recipients from "./pages/recipient/Recipients";
 import AddShipment from "./pages/shipments/AddShipment";
 import DeleteShipment from "./pages/shipments/DeleteShipment";
 import EditShipment from "./pages/shipments/EditShipment";
@@ -47,6 +49,7 @@ function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route element={<ProtectedRoute />}>
+                  {/* Dashboard */}
                   <Route
                     path="/"
                     element={
@@ -55,7 +58,6 @@ function App() {
                       </Layout>
                     }
                   />
-
                   <Route
                     path="/dashboard"
                     element={
@@ -65,6 +67,7 @@ function App() {
                     }
                   />
 
+                  {/* Shipments */}
                   <Route
                     path="/shipments"
                     element={
@@ -95,6 +98,8 @@ function App() {
                       element={<DeleteShipment />}
                     />
                   </Route>
+
+                  {/* Users */}
                   <Route
                     path="/users"
                     element={
@@ -115,6 +120,8 @@ function App() {
                       element={<DeleteUser />}
                     />
                   </Route>
+
+                  {/* Drivers */}
                   <Route
                     path="/drivers"
                     element={
@@ -138,6 +145,8 @@ function App() {
                       element={<DeleteDriver />}
                     />
                   </Route>
+
+                  {/* Clients */}
                   <Route
                     path="/clients"
                     element={
@@ -161,6 +170,21 @@ function App() {
                       element={<DeleteClient />}
                     />
                   </Route>
+
+                  {/* Recipients */}
+                  <Route
+                    path="/recipients"
+                    element={
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    }
+                  >
+                    <Route index element={<Recipients />} />
+                    <Route path="create" element={<AddRecipient />} />
+                  </Route>
+
+                  {/* Alerts */}
                   <Route
                     path="/alert-messages"
                     element={

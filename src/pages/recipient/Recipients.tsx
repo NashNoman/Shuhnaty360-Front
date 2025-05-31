@@ -1,69 +1,54 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { getClientList } from "../../api/clients.api";
+import { useRecipientsInfinityQuery } from "../../api/recipients.api";
 import locationIcon from "../../assets/images/location.svg";
 import SearchInput from "../../components/searchInput/SearchInput";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
-import { getUrlParams } from "../../utils/utils";
+import { TableColumn } from "../../components/ui/Table/TableHead";
 
-const tableColumns = [
+const tableColumns: TableColumn[] = [
   {
     key: "id",
     label: "(ID)",
-    isFilterable: false,
   },
   {
     key: "name",
     label: "اسم",
-    isFilterable: true,
   },
   {
     key: "phone_number",
     label: "رقم الجوال",
-    isFilterable: true,
   },
   {
     key: "email",
     label: "البريد الإلكتروني",
-    isFilterable: true,
   },
   {
     key: "address",
     label: "الموقع",
-    isFilterable: true,
+    className: "text-center flex items-center justify-center gap-4",
   },
 ];
 
-const Clients = () => {
+const Recipients = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const { ref, inView } = useInView();
 
   const {
-    data: clientsData,
+    data: recipientsData,
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["clients"],
-    queryFn: getClientList,
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.next)?.page || undefined,
-  });
+  } = useRecipientsInfinityQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView]);
-
-  let rowIndex = 0;
 
   return (
     <>
@@ -74,11 +59,11 @@ const Clients = () => {
           <button
             className="flex items-center py-2 px-6 gap-2 rounded-lg bg-[#DD7E1F] text-[#FCFCFC] text-lg"
             onClick={() => {
-              navigate("/clients/add-client");
+              navigate("/recipients/create");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
-            إضافة عميل
+            إضافة مستلم
             <FiPlus size={24} />
           </button>
           <SearchInput
@@ -88,37 +73,33 @@ const Clients = () => {
         </div>
         <div className="shadow-xl rounded-3xl px-8 py-4">
           <div className="w-full flex justify-between items-center mb-6">
-            <h1 className="text-xl font-bold">قائمة العملاء</h1>
+            <h1 className="text-xl font-bold">قائمة المستلمين</h1>
           </div>
           <Table
             className="w-full overflow-x-auto"
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
-            dataCount={clientsData?.pages?.length}
+            dataCount={recipientsData?.count}
           >
-            {clientsData?.pages &&
-              clientsData.pages.map((page) =>
-                page.data.results.map((client) => (
-                  <TableRow
-                    key={client.id}
-                    index={rowIndex++}
-                    onClick={() =>
-                      navigate("/clients/client-details/" + client.id)
-                    }
-                  >
-                    <TableCell>{client.id}</TableCell>
-                    <TableCell>{client.name}</TableCell>
-                    <TableCell>{client.phone_number}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell className="text-center flex items-center justify-center gap-4">
-                      <img src={locationIcon} alt="location icon" />
-                      <span className={`text-base text-[#DD7E1F]`}>
-                        {client.address}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                )),
-              )}
+            {recipientsData?.items &&
+              recipientsData.items.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  index={index}
+                  onClick={() => navigate("/recipients/" + item.id)}
+                >
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.phone_number}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell className="text-center flex items-center justify-center gap-4">
+                    <img src={locationIcon} alt="location icon" />
+                    <span className={`text-base text-[#DD7E1F]`}>
+                      {item.address}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
           </Table>
           <div ref={ref} className="h-0" />
         </div>
@@ -127,4 +108,4 @@ const Clients = () => {
   );
 };
 
-export default Clients;
+export default Recipients;

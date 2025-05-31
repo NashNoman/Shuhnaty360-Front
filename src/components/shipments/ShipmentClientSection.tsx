@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { useClientQuery, useClientsInfinityQuery } from "../../api/clients";
+import { useClientQuery, useClientsInfinityQuery } from "../../api/clients.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
 import { ClientListItem } from "../../types/clients.types";
 import AutoCompleteSelectField, {

@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
+import { useLocation, useNavigate } from "react-router-dom";
 import avatar from "../../assets/images/avatar.jpg";
 import notification from "../../assets/images/notification.svg";
 
@@ -25,6 +25,8 @@ const PAGE_TITLES = [
   { path: "/clients/client-details", title: "بيانات العميل" },
   { path: "/clients/edit-client", title: "تحديث بيانات العميل" },
   { path: "/clients/delete-client", title: "حذف العميل", exact: true },
+  { path: "/recipients", title: "المستلمين", exact: true },
+  { path: "/recipients/create", title: "إضافة المستلم", exact: true },
   { path: "/alert-messages", title: "رسائل النظام", exact: true },
   {
     path: "/alert-messages/select-recipients",

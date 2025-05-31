@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useCreateShipment } from "../../api/shipments";
+import { useCreateShipment } from "../../api/shipments.api";
 import ShipmentClientSection from "../../components/shipments/ShipmentClientSection";
 import ShipmentCostSection from "../../components/shipments/ShipmentCostSection";
 import ShipmentDriverSection from "../../components/shipments/ShipmentDriverSection";

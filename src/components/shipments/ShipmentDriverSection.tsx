@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Control, FieldErrors } from "react-hook-form";
-import { getDriversListOptions } from "../../api/drivers";
+import { getDriversListOptions } from "../../api/drivers.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
 import { Driver } from "../../types";
 import AutoCompleteSelectField, {

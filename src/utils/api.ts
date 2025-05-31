@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "sonner";
 import { baseURL } from "../../config";
-import { refreshAccessToken } from "../api/auth";
+import { refreshAccessToken } from "../api/auth.api";
 import {
   callGlobalLogout,
   getAccessToken,

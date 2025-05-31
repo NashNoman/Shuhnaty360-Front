@@ -84,7 +84,7 @@ const ClientDetails = () => {
                 primaryPhone={branch.phone_number}
                 secondaryPhone={branch.second_phone_number}
               />
-              {index < client?.branches.length - 1 && (
+              {index < (client?.branches?.length || 0) - 1 && (
                 <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
               )}
             </div>

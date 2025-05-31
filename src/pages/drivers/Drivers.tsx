@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { getDriversList } from "../../api/drivers";
+import { getDriversList } from "../../api/drivers.api";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";

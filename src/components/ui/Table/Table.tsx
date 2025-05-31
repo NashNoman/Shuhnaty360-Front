@@ -9,6 +9,7 @@ type TableColumn = {
   key: string;
   label: string;
   isFilterable?: boolean;
+  className?: string;
 };
 
 type TableProps = {

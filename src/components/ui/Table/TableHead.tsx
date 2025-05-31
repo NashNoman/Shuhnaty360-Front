@@ -1,9 +1,11 @@
 import { TiFilter } from "react-icons/ti";
+import { cn } from "../../../utils/utils";
 
-type TableColumn = {
+export type TableColumn = {
   key: string;
   label: string;
   isFilterable?: boolean;
+  className?: string;
 };
 
 type TableHeadProps = {
@@ -16,7 +18,10 @@ const TableHead = ({ columns }: TableHeadProps) => {
       <tr className="py-2 px-4 text-right text-nowrap border-b-2 border-[#CCCCCC]">
         {columns.map((col, index) => {
           return (
-            <th key={col.key} className="px-4 py-2 text-left font-medium">
+            <th
+              key={col.key}
+              className={cn("px-4 py-2 text-left font-medium", col.className)}
+            >
               <div
                 className={`font-bold flex items-center gap-1 ${index === columns.length - 1 && "ms-16"}`}
               >

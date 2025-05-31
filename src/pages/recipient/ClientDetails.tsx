@@ -1,20 +1,24 @@
-import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
-import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
-import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
-import ClientBranchDetailsSection from "../../components/clients/ClientBranchDetailsSection";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { AppDispatch, RootState } from "../../redux/store";
-import { useDispatch, useSelector } from "react-redux";
-import { getClient } from "../../redux/Slices/clientsSlice";
+import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
+import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
+import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
+import ClientBranchDetailsSection from "../../components/clients/ClientBranchDetailsSection";
 import { useSidebar } from "../../context/SidebarContext";
+import { useFetch } from "../../hooks/useApi";
+import { ApiResponse, Client } from "../../types";
 
 const ClientDetails = () => {
   const { clientId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  const client = useSelector((state: RootState) => state.clients.client);
-  const isLoading = useSelector((state: RootState) => state.clients.isLoading);
   const { isSidebarOpen } = useSidebar();
+
+  const { data: clientRes, isLoading } = useFetch<ApiResponse<Client>>(
+    ["clients", clientId],
+    `/clients/${clientId}`,
+    undefined,
+    !!clientId,
+  );
+
+  const client = clientRes?.data;
 
   const menuActions = [
     {
@@ -28,12 +32,6 @@ const ClientDetails = () => {
       path: `/clients/delete-client/${clientId}`,
     },
   ];
-
-  useEffect(() => {
-    if (clientId) {
-      dispatch(getClient(clientId));
-    }
-  }, [dispatch, clientId]);
 
   return (
     <>
@@ -86,7 +84,7 @@ const ClientDetails = () => {
                 primaryPhone={branch.phone_number}
                 secondaryPhone={branch.second_phone_number}
               />
-              {index < client?.branches.length - 1 && (
+              {index < (client?.branches?.length || 0) - 1 && (
                 <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
               )}
             </div>
