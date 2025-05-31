@@ -39,7 +39,7 @@ export const addClient = createAsyncThunk(
   "clients/addClient",
   async (data: any) => {
     try {
-      const response = await axios.post(`${baseURL}/api/clients/api/`, data, {
+      const response = await axios.post(`${baseURL}/api/clients/`, data, {
         auth: {
           username: "admin",
           password: "admin",
