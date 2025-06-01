@@ -1,35 +1,30 @@
 import { useParams } from "react-router-dom";
+import { useRecipientQuery } from "../../api/recipients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
-import ClientBranchDetailsSection from "../../components/clients/ClientBranchDetailsSection";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { ApiResponse, Client } from "../../types";
 
-const ClientDetails = () => {
-  const { clientId } = useParams();
+const RecipientDetails = () => {
+  const { recipientId } = useParams();
   const { isSidebarOpen } = useSidebar();
 
-  const { data: clientRes, isLoading } = useFetch<ApiResponse<Client>>(
-    ["clients", clientId],
-    `/clients/${clientId}`,
-    undefined,
-    !!clientId,
+  const { data: recipientData, isLoading } = useRecipientQuery(
+    recipientId as number | undefined,
   );
 
-  const client = clientRes?.data;
+  const recipient = recipientData?.data;
 
   const menuActions = [
     {
       label: "تعديل البيانات",
       icon: editShipmentIcon,
-      path: `/clients/edit-client/${clientId}`,
+      path: `/recipients/${recipientId}/edit`,
     },
     {
       label: "حذف البيانات",
       icon: deleteShipmentIcon,
-      path: `/clients/delete-client/${clientId}`,
+      path: `/recipients/${recipientId}/delete`,
     },
   ];
 
@@ -46,11 +41,20 @@ const ClientDetails = () => {
       )}
 
       <div className="border border-[#DD7E1F] rounded-lg px-6 pt-10 pb-4 mx-4 md:mx-0">
-        <div className="w-full flex justify-between items-start sm:items-center relative">
+        <div className="w-full flex justify-between items-start relative">
           <div className="flex flex-col gap-2">
             {[
-              { label: "الاسم", value: client?.name },
-              { label: "العنوان", value: client?.address },
+              { label: "الاسم", value: recipient?.name },
+              { label: "العنوان", value: recipient?.address },
+              { label: "رقم الهاتف", value: recipient?.phone_number },
+              {
+                label: "رقم الهاتف الثانوي",
+                value: recipient?.second_phone_number || "لا يوجد",
+              },
+              {
+                label: "البريد الإلكتروني",
+                value: recipient?.email || "لا يوجد",
+              },
             ].map((item, index) => (
               <div
                 className="flex flex-col sm:flex-row gap-2 font-medium text-base font-Rubik"
@@ -67,14 +71,15 @@ const ClientDetails = () => {
           />{" "}
         </div>
         <h1 className="mt-10 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
-          {client?.dicription}
+          {recipient?.city}
         </h1>
-        {Array.isArray(client?.branches) && client?.branches.length > 0 && (
-          <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
-        )}
-        {Array.isArray(client?.branches) &&
-          client?.branches.length > 0 &&
-          client?.branches.map((branch, index) => (
+        {/* {Array.isArray(recipient?.branches) &&
+          recipient?.branches.length > 0 && (
+            <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
+          )}
+        {Array.isArray(recipient?.branches) &&
+          recipient?.branches.length > 0 &&
+          recipient?.branches.map((branch, index) => (
             <div>
               <ClientBranchDetailsSection
                 title={branch.name}
@@ -84,14 +89,14 @@ const ClientDetails = () => {
                 primaryPhone={branch.phone_number}
                 secondaryPhone={branch.second_phone_number}
               />
-              {index < (client?.branches?.length || 0) - 1 && (
+              {index < (recipient?.branches?.length || 0) - 1 && (
                 <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
               )}
             </div>
-          ))}
+          ))} */}
       </div>
     </>
   );
 };
 
-export default ClientDetails;
+export default RecipientDetails;

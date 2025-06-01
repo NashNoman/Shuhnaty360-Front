@@ -19,6 +19,9 @@ import DriverDetails from "./pages/drivers/DriverDetails";
 import Drivers from "./pages/drivers/Drivers";
 import EditDriver from "./pages/drivers/EditDriver";
 import AddRecipient from "./pages/recipient/AddRecipient";
+import DeleteRecipient from "./pages/recipient/DeleteRecipient";
+import EditRecipient from "./pages/recipient/EditRecipient";
+import RecipientDetails from "./pages/recipient/RecipientDetails";
 import Recipients from "./pages/recipient/Recipients";
 import AddShipment from "./pages/shipments/AddShipment";
 import DeleteShipment from "./pages/shipments/DeleteShipment";
@@ -182,6 +185,15 @@ function App() {
                   >
                     <Route index element={<Recipients />} />
                     <Route path="create" element={<AddRecipient />} />
+                    <Route path=":recipientId" element={<RecipientDetails />} />
+                    <Route
+                      path=":recipientId/delete"
+                      element={<DeleteRecipient />}
+                    />
+                    <Route
+                      path=":recipientId/edit"
+                      element={<EditRecipient />}
+                    />
                   </Route>
 
                   {/* Alerts */}

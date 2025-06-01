@@ -1,34 +1,33 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import {
+  useDeleteRecipient,
+  useRecipientQuery,
+} from "../../api/recipients.api";
 import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
 import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
 import { useSidebar } from "../../context/SidebarContext";
-import { useDelete, useFetch } from "../../hooks/useApi";
-import { ApiResponse, Client } from "../../types";
 
-const DeleteClient = () => {
+const DeleteRecipient = () => {
   const navigate = useNavigate();
   const { isSidebarOpen } = useSidebar();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { clientId } = useParams();
+  const { recipientId } = useParams();
 
-  const { data: clientRes, isLoading: isClientDataLoading } = useFetch<
-    ApiResponse<Client>
-  >(["clients", clientId], `/clients/api/${clientId}`, undefined, !!clientId);
-
-  const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
-    `/clients/api/${clientId}`,
-    ["clients", clientId],
+  const { data: recipientData, isLoading } = useRecipientQuery(
+    recipientId as number | undefined,
   );
 
-  const client = clientRes?.data;
+  const { mutate, isPending: isDeleting } = useDeleteRecipient();
+
+  const recipient = recipientData?.data;
 
   const handleDeleteItemClick = () => {
-    deleteMutate(undefined, {
+    mutate(recipientId ? parseInt(recipientId) : undefined, {
       onSuccess: () => {
         toast.success("تم حذف العميل بنجاح");
-        navigate("/clients");
+        navigate("/recipients");
       },
       onError: (e: any) => {
         console.log(e);
@@ -41,7 +40,7 @@ const DeleteClient = () => {
 
   return (
     <>
-      {(isDeleting || isClientDataLoading) && (
+      {(isDeleting || isLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"
@@ -55,8 +54,17 @@ const DeleteClient = () => {
           <div className="w-full flex justify-between items-center relative">
             <div className="flex flex-col gap-2">
               {[
-                { label: "الاسم", value: client?.name },
-                { label: "العنوان", value: client?.address },
+                { label: "الاسم", value: recipient?.name },
+                { label: "العنوان", value: recipient?.address },
+                { label: "رقم الهاتف", value: recipient?.phone_number },
+                {
+                  label: "رقم الهاتف الثانوي",
+                  value: recipient?.second_phone_number || "لا يوجد",
+                },
+                {
+                  label: "البريد الإلكتروني",
+                  value: recipient?.email || "لا يوجد",
+                },
               ].map((item, index) => (
                 <div
                   className="flex gap-2 font-medium text-base font-Rubik"
@@ -68,9 +76,9 @@ const DeleteClient = () => {
               ))}
             </div>
           </div>
-          <h1 className="mt-10 mb-4 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
-            {client?.dicription}
-          </h1>
+          {/* <h1 className="mt-10 mb-4 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
+            {recipient?.city}
+          </h1> */}
         </div>
         <div className="flex justify-center items-start h-[70vh] mx-4">
           <DeleteItemCard
@@ -88,4 +96,4 @@ const DeleteClient = () => {
   );
 };
 
-export default DeleteClient;
+export default DeleteRecipient;
