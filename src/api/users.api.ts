@@ -1,5 +1,7 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { ApiListResponse, RegisterUser, UpdateUser, User } from "../types";
 import api from "../utils/api";
+import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
 const usersEndpoint = "/accounts/users/";
 
@@ -35,3 +37,14 @@ export const updateUser = async (
 export const deleteUser = async (userId: Pick<User, "id">): Promise<void> => {
   await api.delete(`${usersEndpoint}${userId.id}/`);
 };
+
+export const useUsersInfinityQuery = () =>
+  useInfiniteQuery({
+    ...defaultInfinityQueryOptions<User>(["recipients"]),
+    queryFn: async ({ pageParam }) => {
+      const response = await api.get<ApiListResponse<User>>(
+        usersEndpoint + `?page=${pageParam}`,
+      );
+      return response.data;
+    },
+  });

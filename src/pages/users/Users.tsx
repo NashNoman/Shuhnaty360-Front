@@ -1,13 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { FiPlus } from "react-icons/fi";
+import { FiCheckCircle, FiPlus, FiXCircle } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { getUserList } from "../../api/users.api";
+import { useUsersInfinityQuery } from "../../api/users.api";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
-import { getUrlParams } from "../../utils/utils";
 
 const selectMenuOptions = [
   { label: "الكل", value: "all" },
@@ -17,28 +15,28 @@ const selectMenuOptions = [
 
 const tableColumns = [
   {
-    key: "id",
-    label: "(ID)",
-    isFilterable: false,
-  },
-  {
-    key: "username",
-    label: "اسم المستخدم",
+    key: "full_name",
+    label: "اسم",
     isFilterable: true,
   },
   {
-    key: "first_name",
-    label: "الاسم الأول",
+    key: "phone",
+    label: "رقم الهاتف",
     isFilterable: true,
   },
   {
-    key: "last_name",
-    label: "الاسم الأخير",
+    key: "company_branch",
+    label: "الفرع",
     isFilterable: true,
   },
   {
-    key: "email",
-    label: "البريد الإلكتروني",
+    key: "is_staff",
+    label: "موظف",
+    isFilterable: true,
+  },
+  {
+    key: "is_superuser",
+    label: "إداري",
     isFilterable: true,
   },
   {
@@ -64,23 +62,13 @@ const Users = () => {
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["users"],
-    queryFn: async ({ pageParam }) => getUserList({ page: pageParam }),
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.next)?.page || undefined,
-  });
+  } = useUsersInfinityQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, inView]);
-
-  let rowIndex = 0;
 
   return (
     <>
@@ -117,33 +105,45 @@ const Users = () => {
           <Table
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
-            dataCount={usersData?.pages?.length}
+            dataCount={usersData?.items?.length}
           >
-            {usersData?.pages &&
-              usersData.pages.map((page) =>
-                page.data.results.map((user) => (
-                  <TableRow
-                    key={user.id}
-                    index={rowIndex++}
-                    onClick={() => navigate("/users/user-details/" + user.id)}
-                  >
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{user.first_name}</TableCell>
-                    <TableCell>{user.last_name}</TableCell>
-                    <TableCell>{user.email || "-"}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
-                          user.is_active,
-                        )} ${getStatusBgColor(user.is_active)}`}
-                      >
-                        {user.is_active ? "متاح" : "غير متاح"}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                )),
-              )}
+            {usersData?.items &&
+              usersData.items.map((item, index) => (
+                <TableRow
+                  key={item.id}
+                  index={index}
+                  onClick={() => navigate("/users/user-details/" + item.id)}
+                >
+                  <TableCell>{`${item.first_name} ${item.last_name}`}</TableCell>
+                  <TableCell>{item.phone || "-"}</TableCell>
+                  <TableCell>
+                    {item.company_branch?.branch_name_ar || "-"}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    {item.is_staff ? (
+                      <FiCheckCircle className="text-green-500 size-6 ms-2" />
+                    ) : (
+                      <FiXCircle className="text-gray-500 size-6 ms-2" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {item.is_superuser ? (
+                      <FiCheckCircle className="text-green-500 size-6 ms-2" />
+                    ) : (
+                      <FiXCircle className="text-gray-500 size-6 ms-2" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
+                        item.is_active,
+                      )} ${getStatusBgColor(item.is_active)}`}
+                    >
+                      {item.is_active ? "متاح" : "غير متاح"}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
           </Table>
           <div ref={ref} className="h-0" />
         </div>
