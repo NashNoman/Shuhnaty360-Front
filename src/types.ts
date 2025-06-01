@@ -99,9 +99,14 @@ export type GetDriverDetailsResponse = ApiResponse<Driver>;
 
 export type GetTruckTypesResponse = ApiListResponse<TruckType>;
 
-type SerializerMini = {
+type UserSerializerMini = {
   id: number;
   username: string;
+};
+
+type SerializerMini = {
+  id: number;
+  name: string;
 };
 
 type CitySerializerMini = {
@@ -155,13 +160,13 @@ export type Shipment = {
 export type ShipmentListItem = {
   id: number;
   tracking_number: string;
-  user?: SerializerMini;
+  user?: UserSerializerMini;
   driver?: SerializerMini;
   client?: SerializerMini;
   client_branch: SerializerMini;
   client_invoice_number: string;
   notes_customer: string | null;
-  recipient: SerializerMini;
+  recipient?: SerializerMini;
   notes_recipient: string | null;
   origin_city: CitySerializerMini;
   destination_city: CitySerializerMini;

@@ -173,9 +173,9 @@ const Shipments = () => {
               >
                 <TableCell>{shipment.id}</TableCell>
                 <TableCell>{shipment.user?.username || "-"}</TableCell>
-                <TableCell>{shipment.recipient.username || "-"}</TableCell>
-                <TableCell>{shipment.driver?.username || "-"}</TableCell>
-                <TableCell>{shipment.client_branch?.username || "-"}</TableCell>
+                <TableCell>{shipment.recipient?.name || "-"}</TableCell>
+                <TableCell>{shipment.driver?.name || "-"}</TableCell>
+                <TableCell>{shipment.client_branch?.name || "-"}</TableCell>
                 <TableCell>{shipment.origin_city.ar_city}</TableCell>
                 <TableCell>{shipment.destination_city.ar_city}</TableCell>
                 <TableCell className="text-center flex items-center justify-center gap-4">
