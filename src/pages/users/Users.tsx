@@ -15,6 +15,11 @@ const selectMenuOptions = [
 
 const tableColumns = [
   {
+    key: "id",
+    label: "(ID)",
+    isFilterable: false,
+  },
+  {
     key: "full_name",
     label: "اسم",
     isFilterable: true,
@@ -114,6 +119,7 @@ const Users = () => {
                   index={index}
                   onClick={() => navigate("/users/user-details/" + item.id)}
                 >
+                  <TableCell>{item.id}</TableCell>
                   <TableCell>{`${item.first_name} ${item.last_name}`}</TableCell>
                   <TableCell>{item.phone || "-"}</TableCell>
                   <TableCell>

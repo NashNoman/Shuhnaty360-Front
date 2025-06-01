@@ -25,5 +25,4 @@ dist-ssr
 *.sw?
 
 # Dependency directories
-Api.ts
 swagger.json
