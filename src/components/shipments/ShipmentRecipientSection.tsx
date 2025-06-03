@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { ClientSerializerList } from "../../../Api";
 import { useClientQuery, useClientsInfinityQuery } from "../../api/clients.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
-import { ClientListItem } from "../../types/clients.types";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "../ui/AutoCompleteSelectField";
@@ -22,7 +22,7 @@ const ShipmentRecipientSection = ({
   control,
 }: ShipmentClientSectionProps) => {
   const [selectedClient, setSelectedClient] = useState<
-    ClientListItem | undefined
+    ClientSerializerList | undefined
   >(undefined);
   const [branchOptions, setBranchOptions] = useState<AutocompleteOption[]>([]);
 
@@ -32,14 +32,14 @@ const ShipmentRecipientSection = ({
 
   const clientOptions: AutocompleteOption[] =
     clientsData?.items.map((item) => ({
-      value: item.id,
+      value: item.id as number,
       label: item.name,
     })) || [];
 
   useEffect(() => {
     const options: AutocompleteOption[] =
       selectedClientData?.data?.branches?.map((item) => ({
-        value: item.id,
+        value: item.id as number,
         label: item.address,
       })) || [];
     setBranchOptions(() => options);

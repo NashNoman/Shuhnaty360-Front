@@ -11,6 +11,7 @@ export const shipmentSerializerSchema = z.object({
     required_error: "السائق مطلوب",
     invalid_type_error: "السائق يجب أن يكون رقمًا",
   }),
+  truck_type: z.number().optional(),
   origin_city: z.number({
     required_error: "مدينة التحميل مطلوبة",
     invalid_type_error: "مدينة التحميل يجب أن تكون رقمًا",

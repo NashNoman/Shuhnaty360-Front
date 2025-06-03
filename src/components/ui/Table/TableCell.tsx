@@ -1,7 +1,7 @@
 import { cn } from "../../../utils/utils";
 
 type TableCellProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   colSpan?: number;
   onClick?: () => void;
@@ -19,7 +19,7 @@ const TableCell = ({
       className={cn("py-2 px-4 text-right text-nowrap", className)}
       onClick={onClick}
     >
-      {children}
+      {children || "-"}
     </td>
   );
 };

@@ -1,9 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Control, FieldErrors } from "react-hook-form";
-import { getDriversListOptions } from "../../api/drivers.api";
+import { useEffect, useMemo, useState } from "react";
+import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { DriverList } from "../../../Api";
+import {
+  useDriversInfinityQuery,
+  useTruckTypesInfinityQuery,
+} from "../../api/drivers.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
-import { Driver } from "../../types";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "../ui/AutoCompleteSelectField";
@@ -11,27 +13,59 @@ import TextInputField from "../ui/TextInputField";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentDriverSectionProps = {
-  // register: UseFormRegister<ShipmentSerializerSchema>;
+  register: UseFormRegister<ShipmentSerializerSchema>;
   errors: FieldErrors<ShipmentSerializerSchema>;
   control: Control<ShipmentSerializerSchema>;
 };
 
 const ShipmentDriverSection = ({
-  // register,
+  register,
   errors,
   control,
 }: ShipmentDriverSectionProps) => {
-  const [selectedDriver, setSelectedDriver] = useState<Driver | undefined>(
+  const [selectedDriver, setSelectedDriver] = useState<DriverList | undefined>(
     undefined,
   );
 
-  const { data } = useInfiniteQuery(getDriversListOptions());
+  const { data, isLoading: isLoadingDrivers } = useDriversInfinityQuery();
+  const { data: truckTypesData, isLoading: isLoadingTruckTypes } =
+    useTruckTypesInfinityQuery();
 
   const driverOptions: AutocompleteOption[] =
-    data?.map((driver) => ({
-      value: driver.id,
+    data?.items.map((driver) => ({
+      value: driver.id as number,
       label: driver.name,
     })) || [];
+
+  const truckTypeOptions: AutocompleteOption[] = useMemo(
+    () =>
+      truckTypesData?.items.map((type) => ({
+        value: type.id as number,
+        label: type.name_ar,
+      })) || [],
+    [truckTypesData],
+  );
+
+  useEffect(() => {
+    if (selectedDriver) {
+      const option = truckTypeOptions.find(
+        (o) => o.label === selectedDriver.truck_type,
+      );
+      if (option) {
+        register("truck_type").onChange({
+          target: {
+            value: option.value,
+          },
+        });
+      } else {
+        register("truck_type").onChange({
+          target: {
+            value: "",
+          },
+        });
+      }
+    }
+  }, [register, selectedDriver, truckTypeOptions]);
 
   return (
     <ShipmentSectionWrapper title="السائق">
@@ -41,8 +75,9 @@ const ShipmentDriverSection = ({
         control={control}
         options={driverOptions}
         error={errors.driver?.message}
+        isLoading={isLoadingDrivers}
         onInputChange={(value) => {
-          const driver = data?.find((driver) => driver.name === value);
+          const driver = data?.items.find((driver) => driver.name === value);
           setSelectedDriver(driver);
         }}
       />
@@ -58,11 +93,15 @@ const ShipmentDriverSection = ({
         label="رقم الشاحنة"
         disabled
       />
-      <TextInputField
-        name="driver_vehicle_type"
-        value={selectedDriver?.truck_type?.name_ar || ""}
+      <AutoCompleteSelectField
+        key={selectedDriver?.id}
+        name="truck_type"
         label="نوع الشاحنة"
-        disabled
+        control={control}
+        options={truckTypeOptions}
+        placeholder={selectedDriver?.truck_type}
+        error={errors.truck_type?.message}
+        isLoading={isLoadingTruckTypes}
       />
     </ShipmentSectionWrapper>
   );

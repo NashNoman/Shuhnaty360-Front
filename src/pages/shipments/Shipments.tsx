@@ -1,16 +1,12 @@
-import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
-import { flatMap } from "lodash";
 import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getShipmentsList } from "../../api/shipments.api";
+import { useShipmentsInfinityQuery } from "../../api/shipments.api";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
-import { ShipmentListItem } from "../../types";
 import { formatDate } from "../../utils/formatDate";
-import { getUrlParams } from "../../utils/utils";
 
 const tableColumns = [
   { label: "رقم الشحنة", key: "id" },
@@ -89,17 +85,8 @@ const Shipments = () => {
 
   const { ref, inView } = useInView();
 
-  const { data, isFetching, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["shipments"],
-    queryFn: async ({ pageParam }) =>
-      await getShipmentsList({ page: pageParam }),
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.next)?.page || undefined,
-    placeholderData: keepPreviousData,
-  });
+  const { data, isFetching, hasNextPage, fetchNextPage } =
+    useShipmentsInfinityQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -107,10 +94,7 @@ const Shipments = () => {
     }
   }, [fetchNextPage, hasNextPage, inView]);
 
-  const shipmentsData = flatMap(
-    data?.pages || [],
-    "data.results",
-  ) as ShipmentListItem[];
+  const shipmentsData = data?.items || [];
 
   const pathParts = location.pathname.split("/").filter(Boolean);
   const lastPath = pathParts[pathParts.length - 1];
@@ -172,23 +156,23 @@ const Shipments = () => {
                 }
               >
                 <TableCell>{shipment.id}</TableCell>
-                <TableCell>{shipment.user?.username || "-"}</TableCell>
-                <TableCell>{shipment.recipient?.name || "-"}</TableCell>
-                <TableCell>{shipment.driver?.name || "-"}</TableCell>
-                <TableCell>{shipment.client_branch?.name || "-"}</TableCell>
-                <TableCell>{shipment.origin_city.ar_city}</TableCell>
-                <TableCell>{shipment.destination_city.ar_city}</TableCell>
+                <TableCell>{shipment.user?.username}</TableCell>
+                <TableCell>{shipment.recipient?.name}</TableCell>
+                <TableCell>{shipment.driver?.name}</TableCell>
+                <TableCell>{shipment.client_branch?.name}</TableCell>
+                <TableCell>{shipment.origin_city?.ar_city}</TableCell>
+                <TableCell>{shipment.destination_city?.ar_city}</TableCell>
                 <TableCell className="text-center flex items-center justify-center gap-4">
-                  {(shipment.loading_at && formatDate(shipment.loading_at)) ||
-                    "-"}
+                  {shipment.loading_date && formatDate(shipment.loading_date)}
                 </TableCell>
                 <TableCell>
                   <span
-                    className={`py-2 text-center font-medium inline-block rounded-md w-36 text-sm ${getStatusColor(
-                      shipment.status.name_ar,
-                    )} ${getStatusBgColor(shipment.status.name_ar)}`}
+                    className={`py-2 text-center font-medium inline-block rounded-md w-36 text-sm ${
+                      shipment.status?.name_ar &&
+                      getStatusColor(shipment.status?.name_ar)
+                    } ${shipment.status?.name_ar && getStatusBgColor(shipment.status.name_ar)}`}
                   >
-                    {shipment.status.name_ar}
+                    {shipment.status?.name_ar}
                   </span>
                 </TableCell>
               </TableRow>

@@ -1,13 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { getClientList } from "../../api/clients.api";
+import { useClientsInfinityQuery } from "../../api/clients.api";
 import locationIcon from "../../assets/images/location.svg";
 import SearchInput from "../../components/searchInput/SearchInput";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
-import { getUrlParams } from "../../utils/utils";
 
 const tableColumns = [
   {
@@ -47,15 +45,7 @@ const Clients = () => {
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["clients"],
-    queryFn: getClientList,
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.next)?.page || undefined,
-  });
+  } = useClientsInfinityQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -94,31 +84,27 @@ const Clients = () => {
             className="w-full overflow-x-auto"
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
-            dataCount={clientsData?.pages?.length}
+            dataCount={clientsData?.items?.length}
           >
-            {clientsData?.pages &&
-              clientsData.pages.map((page) =>
-                page.data.results.map((client) => (
-                  <TableRow
-                    key={client.id}
-                    index={rowIndex++}
-                    onClick={() =>
-                      navigate("/clients/client-details/" + client.id)
-                    }
-                  >
-                    <TableCell>{client.id}</TableCell>
-                    <TableCell>{client.name}</TableCell>
-                    <TableCell>{client.phone_number}</TableCell>
-                    <TableCell>{client.email}</TableCell>
-                    <TableCell className="text-center flex items-center justify-center gap-4">
-                      <img src={locationIcon} alt="location icon" />
-                      <span className={`text-base text-[#DD7E1F]`}>
-                        {client.address}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                )),
-              )}
+            {clientsData?.items &&
+              clientsData.items.map((item) => (
+                <TableRow
+                  key={item.id}
+                  index={rowIndex++}
+                  onClick={() => navigate("/clients/client-details/" + item.id)}
+                >
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.phone_number}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell className="text-center flex items-center justify-center gap-4">
+                    <img src={locationIcon} alt="location icon" />
+                    <span className={`text-base text-[#DD7E1F]`}>
+                      {item.address}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
           </Table>
           <div ref={ref} className="h-0" />
         </div>

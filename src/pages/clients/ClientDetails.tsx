@@ -1,22 +1,22 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useClientQuery } from "../../api/clients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
 import ClientBranchDetailsSection from "../../components/clients/ClientBranchDetailsSection";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { ApiResponse, Client } from "../../types";
 
 const ClientDetails = () => {
   const { clientId } = useParams();
   const { isSidebarOpen } = useSidebar();
+  const navigate = useNavigate();
 
-  const { data: clientRes, isLoading } = useFetch<ApiResponse<Client>>(
-    ["clients", clientId],
-    `/clients/${clientId}`,
-    undefined,
-    !!clientId,
-  );
+  const { data: clientRes, isLoading } = useClientQuery(clientId);
+
+  if (!clientId) {
+    navigate("/clients");
+    return;
+  }
 
   const client = clientRes?.data;
 

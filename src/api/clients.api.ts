@@ -1,42 +1,84 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { ApiListResponse, ApiResponse, Client, RegisterClient } from "../types";
-import { ClientListItem } from "../types/clients.types";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { ClientSerializerDetails, ClientSerializerList } from "../../Api";
+import { ApiListResponse, ApiResponse } from "../types";
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
-const clientsEndpoint = "/clients/";
-
-export const getClientList = async (): Promise<ApiListResponse<Client>> => {
-  const response = await api.get(clientsEndpoint);
-  return response.data;
-};
-
-export const createClient = async (
-  client: RegisterClient,
-): Promise<ApiResponse<Client>> => {
-  const response = await api.post(`${clientsEndpoint}create/`, client);
-  return response.data;
-};
+const ENDPOINT = "/clients/";
+const KEY = "clients";
 
 export const useClientsInfinityQuery = () =>
   useInfiniteQuery({
-    ...defaultInfinityQueryOptions<ClientListItem>(["clients"]),
+    ...defaultInfinityQueryOptions<ClientSerializerList>([KEY]),
     queryFn: async ({ pageParam }) => {
-      const response = await api.get<ApiListResponse<ClientListItem>>(
-        clientsEndpoint + `?page=${pageParam}`,
+      const response = await api.get<ApiListResponse<ClientSerializerList>>(
+        ENDPOINT + `?page=${pageParam}`,
       );
       return response.data;
     },
   });
 
-export const useClientQuery = (id?: number) =>
+export const useClientQuery = (id?: number | string) =>
   useQuery({
-    queryKey: ["clients", id],
+    queryKey: [KEY, id],
     queryFn: async () => {
-      const response = await api.get<ApiResponse<Client>>(
-        clientsEndpoint + `${id}`,
+      const response = await api.get<ApiResponse<ClientSerializerDetails>>(
+        ENDPOINT + `${id}`,
       );
       return response.data;
     },
     enabled: !!id,
   });
+
+export const useCreateClient = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (formData: ClientSerializerList) => {
+      const response = await api.post(ENDPOINT, formData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  return mutation;
+};
+
+export const useUpdateClient = (id?: number | string) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (formData: ClientSerializerDetails) => {
+      const response = await api.post(ENDPOINT + id, formData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  return mutation;
+};
+
+export const useDeleteClient = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (id?: number | string) => {
+      const response = await api.delete(ENDPOINT + id);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  return mutation;
+};

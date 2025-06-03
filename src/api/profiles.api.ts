@@ -4,7 +4,7 @@ import { ApiListResponse, CompanyBranch } from "../types";
 import api from "../utils/api";
 import { getUrlParams } from "../utils/utils";
 
-const PROFILES_ENDPOINT = "/profile/";
+const ENDPOINT = "/profile/";
 
 type BranchResponse = ApiListResponse<CompanyBranch>["data"];
 
@@ -13,7 +13,7 @@ export const useCompanyBranchesInfinityQuery = () =>
     queryKey: ["profiles", "branches"],
     queryFn: async ({ pageParam }) => {
       const response = await api.get<BranchResponse>(
-        PROFILES_ENDPOINT + `branch/?page=${pageParam}`,
+        ENDPOINT + `branch/?page=${pageParam}`,
       );
       return response.data;
     },

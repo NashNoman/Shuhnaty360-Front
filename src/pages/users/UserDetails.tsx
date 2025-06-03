@@ -1,102 +1,18 @@
 import { useState } from "react";
 import SelectMenu from "../../components/SelectMenu";
-import Pagination from "../../components/pagination/Pagination";
-import UserDriverDetailsTable from "../../components/usersDrivers/userDriverDetails/UserDriverDetailsTable";
 // import PieChart from '../../components/charts/PieChart';
 
 import { useParams } from "react-router-dom";
+import { useShipmentsInfinityQuery } from "../../api/shipments.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
 import mailIcon from "../../assets/images/users/sms.svg";
+import EntityShipmentsTable from "../../components/EntityShipmentsTable";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
 import { useSidebar } from "../../context/SidebarContext";
 import { useFetch } from "../../hooks/useApi";
 import { GetUserDetailsResponse, User } from "../../types";
-
-const userShipmentsData = [
-  {
-    source: "الرياض",
-    destination: "الوجهة",
-    shipmentNumber: "267400",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "month",
-  },
-  {
-    source: "الدمام",
-    destination: "الرياض",
-    shipmentNumber: "651535",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "month",
-  },
-  {
-    source: "الرياض",
-    destination: "الوجهة",
-    shipmentNumber: "558612",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "month",
-  },
-  {
-    source: "الدمام",
-    destination: "الرياض",
-    shipmentNumber: "449003",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "week",
-  },
-  {
-    source: "الرياض",
-    destination: "الوجهة",
-    shipmentNumber: "558612",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "week",
-  },
-  {
-    source: "الدمام",
-    destination: "الرياض",
-    shipmentNumber: "651535",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "week",
-  },
-  {
-    source: "الرياض",
-    destination: "الوجهة",
-    shipmentNumber: "653518",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "day",
-  },
-  {
-    source: "الدمام",
-    destination: "الرياض",
-    shipmentNumber: "449003",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "day",
-  },
-  {
-    source: "الدمام",
-    destination: "الرياض",
-    shipmentNumber: "267400",
-    pickupDate: "22/05/2025",
-    label: "تم التوصيل",
-    shipmentStatus: "delivered",
-    date: "day",
-  },
-];
 
 const selectMenuOptions = [
   { label: "الكل", value: "all" },
@@ -108,8 +24,6 @@ const selectMenuOptions = [
 const UsersDetails = () => {
   const { userId } = useParams();
   const [selectedOption, setSelectedOption] = useState("الكل");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const { isSidebarOpen } = useSidebar();
   const { isLoading, data } = useFetch<GetUserDetailsResponse>(
     ["user", userId],
@@ -117,6 +31,12 @@ const UsersDetails = () => {
     undefined,
     !!userId,
   );
+
+  const { data: shipmentsData, isLoading: isLoadingShipments } =
+    useShipmentsInfinityQuery();
+
+  const shipments =
+    shipmentsData?.items.filter((item) => item.user?.id == userId) || [];
 
   const user: User | undefined = data?.data;
 
@@ -163,15 +83,6 @@ const UsersDetails = () => {
     },
   ];
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
-
-  const handleItemsPerPageChange = (itemsPerPageChange: any) => {
-    setItemsPerPage(itemsPerPageChange);
-    setCurrentPage(1);
-  };
-
   return (
     <>
       {isLoading && (
@@ -193,17 +104,9 @@ const UsersDetails = () => {
               setSelectedItem={setSelectedOption}
             />
           </div>
-          <UserDriverDetailsTable
-            selectedOption={selectedOption}
-            userShipmentsData={userShipmentsData}
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-          />
-          <Pagination
-            totalItems={userShipmentsData.length}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
+          <EntityShipmentsTable
+            data={shipments}
+            isLoading={isLoadingShipments}
           />
         </div>
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">

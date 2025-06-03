@@ -1,30 +1,23 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useShipmentsInfinityQuery } from "../../api/shipments.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import truckIcon from "../../assets/images/truck.svg";
 import callIcon from "../../assets/images/users/call.svg";
 import flagIcon from "../../assets/images/users/flag.svg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
+import EntityShipmentsTable from "../../components/EntityShipmentsTable";
 import SelectMenu from "../../components/SelectMenu";
-import Pagination from "../../components/pagination/Pagination";
-import UserDetailsTable from "../../components/usersDrivers/userDriverDetails/UserDriverDetailsTable";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
-// import ImageModal from './ImageModal';
-// import frontDrivingLicenseImage from '../../assets/images/front.jpg';
-// import backDrivingLicenseImage from '../../assets/images/back.jpg';
-import { useParams } from "react-router-dom";
 import { useSidebar } from "../../context/SidebarContext";
 import { useFetch } from "../../hooks/useApi";
 import { GetDriverDetailsResponse } from "../../types";
 
 const DriverDetails = () => {
   const [selectedOption, setSelectedOption] = useState("الكل");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
   const { driverId } = useParams();
   const { isSidebarOpen } = useSidebar();
-
-  console.log("Driver Detail:", driverId);
 
   const { data: driverDetailsRes, isLoading } =
     useFetch<GetDriverDetailsResponse>(
@@ -32,19 +25,13 @@ const DriverDetails = () => {
       `/drivers/${driverId}`,
     );
 
-  // const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
-  //   useFetch<GetTruckTypesResponse>(["truckType"], "drivers/api/TruckType");
-
   const driver = driverDetailsRes?.data;
 
-  const handlePageChange = (page: any) => {
-    setCurrentPage(page);
-  };
+  const { data: shipmentsData, isLoading: isLoadingShipments } =
+    useShipmentsInfinityQuery();
 
-  const handleItemsPerPageChange = (itemsPerPageChange: any) => {
-    setItemsPerPage(itemsPerPageChange);
-    setCurrentPage(1);
-  };
+  const shipments =
+    shipmentsData?.items.filter((item) => item.driver?.id == driverId) || [];
 
   const personalInfoData = {
     name: driver?.name,
@@ -81,90 +68,6 @@ const DriverDetails = () => {
       image: callIcon,
       label: "رقم الشاحنة",
       value: driver?.vehicle_number,
-    },
-  ];
-
-  const userShipmentsData = [
-    {
-      source: "الرياض",
-      destination: "الوجهة",
-      shipmentNumber: "267400",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "month",
-    },
-    {
-      source: "الدمام",
-      destination: "الرياض",
-      shipmentNumber: "651535",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "month",
-    },
-    {
-      source: "الرياض",
-      destination: "الوجهة",
-      shipmentNumber: "558612",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "month",
-    },
-    {
-      source: "الدمام",
-      destination: "الرياض",
-      shipmentNumber: "449003",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "week",
-    },
-    {
-      source: "الرياض",
-      destination: "الوجهة",
-      shipmentNumber: "558612",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "week",
-    },
-    {
-      source: "الدمام",
-      destination: "الرياض",
-      shipmentNumber: "651535",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "week",
-    },
-    {
-      source: "الرياض",
-      destination: "الوجهة",
-      shipmentNumber: "653518",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "day",
-    },
-    {
-      source: "الدمام",
-      destination: "الرياض",
-      shipmentNumber: "449003",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "day",
-    },
-    {
-      source: "الدمام",
-      destination: "الرياض",
-      shipmentNumber: "267400",
-      pickupDate: "22/05/2025",
-      label: "تم التوصيل",
-      shipmentStatus: "delivered",
-      date: "day",
     },
   ];
 
@@ -209,17 +112,9 @@ const DriverDetails = () => {
               setSelectedItem={setSelectedOption}
             />
           </div>
-          <UserDetailsTable
-            selectedOption={selectedOption}
-            userShipmentsData={userShipmentsData}
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-          />
-          <Pagination
-            totalItems={userShipmentsData.length}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
+          <EntityShipmentsTable
+            data={shipments}
+            isLoading={isLoadingShipments}
           />
         </div>
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">

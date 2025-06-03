@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useClientQuery, useDeleteClient } from "../../api/clients.api";
 import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
 import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
 import { useSidebar } from "../../context/SidebarContext";
-import { useDelete, useFetch } from "../../hooks/useApi";
-import { ApiResponse, Client } from "../../types";
 
 const DeleteClient = () => {
   const navigate = useNavigate();
@@ -13,14 +12,15 @@ const DeleteClient = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { clientId } = useParams();
 
-  const { data: clientRes, isLoading: isClientDataLoading } = useFetch<
-    ApiResponse<Client>
-  >(["clients", clientId], `/clients/api/${clientId}`, undefined, !!clientId);
+  const { data: clientRes, isLoading: isClientDataLoading } =
+    useClientQuery(clientId);
 
-  const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
-    `/clients/api/${clientId}`,
-    ["clients", clientId],
-  );
+  const { mutate: deleteMutate, isPending: isDeleting } = useDeleteClient();
+
+  if (!clientId) {
+    navigate("/clients");
+    return;
+  }
 
   const client = clientRes?.data;
 

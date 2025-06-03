@@ -28,12 +28,6 @@ const ShipmentCostSection = ({
         {...register("premium")}
       />
       <StayCostInputField register={register} errors={errors} />
-      {/* <TextInputField
-        label="المبيت"
-        error={errors.stay_cost?.message}
-        type="number"
-        {...register("stay_cost")}
-      /> */}
       <TextInputField
         label="الخصم"
         error={errors.deducted?.message}

@@ -166,6 +166,11 @@ export interface Register {
    * Designates that this user has all permissions without explicitly assigning them.
    */
   is_superuser?: boolean;
+  /**
+   * Active
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  is_active?: boolean;
 }
 
 export interface City {
@@ -305,6 +310,42 @@ export interface ClientBranchCreate {
   city: number;
 }
 
+export interface ClientBranchUpdate {
+  /** ID */
+  id?: number;
+  /**
+   * اسم الفرع
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * العنوان
+   * @minLength 1
+   * @maxLength 255
+   */
+  address: string;
+  /**
+   * اسم العنوان
+   * @maxLength 255
+   */
+  name_address?: string | null;
+  /**
+   * رقم الهاتف
+   * @maxLength 20
+   */
+  phone_number?: string | null;
+  /**
+   * رقم الهاتف الثاني
+   * @maxLength 20
+   */
+  second_phone_number?: string | null;
+  /** العميل */
+  client: number;
+  /** المدينة */
+  city: number;
+}
+
 export interface Branch {
   /** ID */
   id?: number;
@@ -380,29 +421,16 @@ export interface ClientSerializerDetails {
   dicription?: string | null;
 }
 
-export interface TruckType {
+export interface DriverList {
   /** ID */
   id?: number;
   /**
-   * نوع الشاحنة
+   * Truck type
+   * @format slug
    * @minLength 1
-   * @maxLength 100
+   * @pattern ^[-a-zA-Z0-9_]+$
    */
-  name_ar: string;
-  /**
-   * Truck_Type
-   * @minLength 1
-   * @maxLength 100
-   */
-  name_en: string;
-  /** الوصف */
-  description?: string | null;
-}
-
-export interface Driver {
-  /** ID */
-  id?: number;
-  truck_type: TruckType;
+  truck_type: string;
   /**
    * Created at
    * @format date-time
@@ -451,6 +479,78 @@ export interface Driver {
   is_active?: boolean;
 }
 
+export interface TruckType {
+  /** ID */
+  id?: number;
+  /**
+   * نوع الشاحنة
+   * @minLength 1
+   * @maxLength 100
+   */
+  name_ar: string;
+  /**
+   * Truck_Type
+   * @minLength 1
+   * @maxLength 100
+   */
+  name_en: string;
+  /** الوصف */
+  description?: string | null;
+}
+
+export interface DriverCreate {
+  /** ID */
+  id?: number;
+  /**
+   * اسم السائق
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * رقم الهاتف
+   * @minLength 1
+   * @maxLength 20
+   */
+  phone_number: string;
+  /**
+   * الجنسية
+   * @minLength 1
+   * @maxLength 100
+   */
+  nationality: string;
+  /** اللغة */
+  language?: "en" | "ar" | "ur";
+  /**
+   * رقم الهوية
+   * @minLength 1
+   * @maxLength 20
+   */
+  identity_number: string;
+  /**
+   * رقم المركبة
+   * @minLength 1
+   * @maxLength 20
+   */
+  vehicle_number: string;
+  /** حالة السائق */
+  status?: "available" | "busy" | "offline";
+  /** نشط */
+  is_active?: boolean;
+  /**
+   * تاريخ الإنشاء
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * تاريخ التحديث
+   * @format date-time
+   */
+  updated_at?: string;
+  /** نوع الشاحنة */
+  truck_type?: number | null;
+}
+
 export interface UserSerializerMini {
   /** ID */
   id?: number;
@@ -473,6 +573,17 @@ export interface DriverSerializerMini {
    * @maxLength 255
    */
   name: string;
+}
+
+export interface TruckTypeSerializerMini {
+  /** ID */
+  id?: number;
+  /**
+   * نوع الشاحنة
+   * @minLength 1
+   * @maxLength 100
+   */
+  name_ar: string;
 }
 
 export interface ClientSerializerMini {
@@ -570,6 +681,7 @@ export interface ShipmentSerializerList {
   tracking_number?: string | null;
   user?: UserSerializerMini;
   driver?: DriverSerializerMini;
+  truck_type?: TruckTypeSerializerMini;
   client?: ClientSerializerMini;
   client_branch?: BranchSerializerMini;
   /**
@@ -859,13 +971,15 @@ export interface RecipientSerializerCreate {
 
 export interface ShipmentSerializerCreate {
   /** User */
-  user?: number | null;
+  user: number;
   /** Driver */
-  driver?: number | null;
-  /** مدينة التحميل */
-  origin_city?: number | null;
-  /** مدينة الوجهة */
-  destination_city?: number | null;
+  driver: number;
+  /** Truck type */
+  truck_type: number;
+  /** Origin city */
+  origin_city: number;
+  /** Destination city */
+  destination_city: number;
   /**
    * Loading date
    * @format date-time
@@ -894,9 +1008,9 @@ export interface ShipmentSerializerCreate {
   /** ملاحظات */
   notes?: string | null;
   /** Client */
-  client?: number | null;
+  client: number;
   /** Client branch */
-  client_branch?: number | null;
+  client_branch: number;
   /**
    * Customer Invoice Number
    * @maxLength 50
@@ -905,14 +1019,10 @@ export interface ShipmentSerializerCreate {
   /** ملاحظات العميل */
   notes_customer?: string | null;
   /** Recipient */
-  recipient?: number | null;
+  recipient: number;
   /** ملاحظات المستلم */
   notes_recipient?: string | null;
-  /**
-   * Fare
-   * @min -2147483648
-   * @max 2147483647
-   */
+  /** Fare */
   fare: number;
   /**
    * Premium
@@ -944,8 +1054,8 @@ export interface ShipmentSerializerCreate {
    * @max 2147483647
    */
   deducted?: number | null;
-  /** الحالة */
-  status?: number | null;
+  /** Status */
+  status: number;
 }
 
 export interface ShipmentStatus {
@@ -967,24 +1077,26 @@ export interface ShipmentStatus {
 
 export interface ShipmentSerializerUpdate {
   /** Driver */
-  driver?: number | null;
+  driver: number;
+  /** Truck type */
+  truck_type: number;
   /**
    * Customer Invoice Number
    * @maxLength 50
    */
   client_invoice_number?: string | null;
   /** Client */
-  client?: number | null;
+  client: number;
   /** Client branch */
-  client_branch?: number | null;
+  client_branch: number;
   /** Recipient */
-  recipient?: number | null;
-  /** الحالة */
-  status?: number | null;
-  /** مدينة التحميل */
-  origin_city?: number | null;
-  /** مدينة الوجهة */
-  destination_city?: number | null;
+  recipient: number;
+  /** Status */
+  status: number;
+  /** Origin city */
+  origin_city: number;
+  /** Destination city */
+  destination_city: number;
   /**
    * عدد الأيام  الوصول
    * @min -2147483648
@@ -1040,11 +1152,7 @@ export interface ShipmentSerializerUpdate {
   weight?: number | null;
   /** محتويات الشحنة */
   contents?: string | null;
-  /**
-   * Fare
-   * @min -2147483648
-   * @max 2147483647
-   */
+  /** Fare */
   fare: number;
   /**
    * Premium
@@ -1068,6 +1176,8 @@ export interface ShipmentSerializerDetail {
   user?: number | null;
   /** Driver */
   driver?: number | null;
+  /** Truck type */
+  truck_type?: number | null;
   /** Client */
   client?: number | null;
   /** Client branch */
@@ -1847,34 +1957,17 @@ export class Api<
      * No description
      *
      * @tags clients
-     * @name ClientsBranchRead
-     * @request GET:/clients/branch/{id}
+     * @name ClientsBranchUpdateUpdate
+     * @request PUT:/clients/branch/update/{id}
      * @secure
      */
-    clientsBranchRead: (id: number, params: RequestParams = {}) =>
-      this.request<ClientBranchList, any>({
-        path: `/clients/branch/${id}`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags clients
-     * @name ClientsBranchUpdate
-     * @request PUT:/clients/branch/{id}
-     * @secure
-     */
-    clientsBranchUpdate: (
+    clientsBranchUpdateUpdate: (
       id: number,
-      data: ClientBranchList,
+      data: ClientBranchUpdate,
       params: RequestParams = {},
     ) =>
-      this.request<ClientBranchList, any>({
-        path: `/clients/branch/${id}`,
+      this.request<ClientBranchUpdate, any>({
+        path: `/clients/branch/update/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -1887,21 +1980,38 @@ export class Api<
      * No description
      *
      * @tags clients
-     * @name ClientsBranchPartialUpdate
-     * @request PATCH:/clients/branch/{id}
+     * @name ClientsBranchUpdatePartialUpdate
+     * @request PATCH:/clients/branch/update/{id}
      * @secure
      */
-    clientsBranchPartialUpdate: (
+    clientsBranchUpdatePartialUpdate: (
       id: number,
-      data: ClientBranchList,
+      data: ClientBranchUpdate,
       params: RequestParams = {},
     ) =>
-      this.request<ClientBranchList, any>({
-        path: `/clients/branch/${id}`,
+      this.request<ClientBranchUpdate, any>({
+        path: `/clients/branch/update/${id}`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags clients
+     * @name ClientsBranchRead
+     * @request GET:/clients/branch/{id}
+     * @secure
+     */
+    clientsBranchRead: (id: number, params: RequestParams = {}) =>
+      this.request<ClientBranchList, any>({
+        path: `/clients/branch/${id}`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -2024,7 +2134,7 @@ export class Api<
           next?: string | null;
           /** @format uri */
           previous?: string | null;
-          results: Driver[];
+          results: DriverList[];
         },
         any
       >({
@@ -2032,25 +2142,6 @@ export class Api<
         method: "GET",
         query: query,
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags drivers
-     * @name DriversCreate
-     * @request POST:/drivers/
-     * @secure
-     */
-    driversCreate: (data: Driver, params: RequestParams = {}) =>
-      this.request<Driver, any>({
-        path: `/drivers/`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -2112,15 +2203,17 @@ export class Api<
      * No description
      *
      * @tags drivers
-     * @name DriversRead
-     * @request GET:/drivers/{id}
+     * @name DriversCreateCreate
+     * @request POST:/drivers/create/
      * @secure
      */
-    driversRead: (id: number, params: RequestParams = {}) =>
-      this.request<Driver, any>({
-        path: `/drivers/${id}`,
-        method: "GET",
+    driversCreateCreate: (data: DriverCreate, params: RequestParams = {}) =>
+      this.request<DriverCreate, any>({
+        path: `/drivers/create/`,
+        method: "POST",
+        body: data,
         secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -2129,13 +2222,17 @@ export class Api<
      * No description
      *
      * @tags drivers
-     * @name DriversUpdate
-     * @request PUT:/drivers/{id}
+     * @name DriversUpdateUpdate
+     * @request PUT:/drivers/update/{id}
      * @secure
      */
-    driversUpdate: (id: number, data: Driver, params: RequestParams = {}) =>
-      this.request<Driver, any>({
-        path: `/drivers/${id}`,
+    driversUpdateUpdate: (
+      id: number,
+      data: DriverCreate,
+      params: RequestParams = {},
+    ) =>
+      this.request<DriverCreate, any>({
+        path: `/drivers/update/${id}`,
         method: "PUT",
         body: data,
         secure: true,
@@ -2148,21 +2245,38 @@ export class Api<
      * No description
      *
      * @tags drivers
-     * @name DriversPartialUpdate
-     * @request PATCH:/drivers/{id}
+     * @name DriversUpdatePartialUpdate
+     * @request PATCH:/drivers/update/{id}
      * @secure
      */
-    driversPartialUpdate: (
+    driversUpdatePartialUpdate: (
       id: number,
-      data: Driver,
+      data: DriverCreate,
       params: RequestParams = {},
     ) =>
-      this.request<Driver, any>({
-        path: `/drivers/${id}`,
+      this.request<DriverCreate, any>({
+        path: `/drivers/update/${id}`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags drivers
+     * @name DriversRead
+     * @request GET:/drivers/{id}
+     * @secure
+     */
+    driversRead: (id: number, params: RequestParams = {}) =>
+      this.request<DriverList, any>({
+        path: `/drivers/${id}`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -2703,52 +2817,6 @@ export class Api<
         path: `/shipments/${id}`,
         method: "GET",
         secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags shipments
-     * @name ShipmentsUpdate
-     * @request PUT:/shipments/{id}
-     * @secure
-     */
-    shipmentsUpdate: (
-      id: number,
-      data: ShipmentSerializerDetail,
-      params: RequestParams = {},
-    ) =>
-      this.request<ShipmentSerializerDetail, any>({
-        path: `/shipments/${id}`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags shipments
-     * @name ShipmentsPartialUpdate
-     * @request PATCH:/shipments/{id}
-     * @secure
-     */
-    shipmentsPartialUpdate: (
-      id: number,
-      data: ShipmentSerializerDetail,
-      params: RequestParams = {},
-    ) =>
-      this.request<ShipmentSerializerDetail, any>({
-        path: `/shipments/${id}`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

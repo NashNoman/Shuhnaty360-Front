@@ -3,6 +3,7 @@ import { useCitiesInfinityQuery } from "../../api/cities.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
 import AutoCompleteSelectField from "../ui/AutoCompleteSelectField";
 import DatePickerField from "../ui/DatePickerField";
+import TextAreaField from "../ui/TextAreaField";
 import TextInputField from "../ui/TextInputField";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
@@ -55,22 +56,24 @@ const ShipmentSection = ({
         description="أكّد مع المستلم التاريخ الدقيق للاستلام"
         control={control}
       />
-      {/* <DatePickerField
-        label="تاريخ الاستلام"
+      <DatePickerField
+        label="تاريخ الفعلي"
         name="actual_delivery_date"
         error={errors.actual_delivery_date?.message}
         control={control}
-      /> */}
-      <TextInputField
-        label="المحتويات"
-        error={errors.contents?.message}
-        {...register("contents")}
       />
       <TextInputField
         label="الوزن (بالطن)"
         type="number"
         error={errors.weight?.message}
         {...register("weight")}
+      />
+      <TextAreaField
+        label="المحتويات"
+        className="h-32"
+        containerClassName="col-span-2"
+        error={errors.contents?.message}
+        {...register("contents")}
       />
     </ShipmentSectionWrapper>
   );

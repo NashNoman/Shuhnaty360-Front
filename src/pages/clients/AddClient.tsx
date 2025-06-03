@@ -2,12 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useCreateClient } from "../../api/clients.api";
 import ClientForm, {
   ClientFormData,
   clientSchema,
 } from "../../components/ClientForm";
 import { useSidebar } from "../../context/SidebarContext";
-import { useCreate } from "../../hooks/useApi";
 
 const AddClient = () => {
   const { isSidebarOpen } = useSidebar();
@@ -21,9 +21,7 @@ const AddClient = () => {
     resolver: zodResolver(clientSchema),
   });
 
-  const { mutate, isPending: isLoading } = useCreate("/clients/", [
-    ["clients"],
-  ]);
+  const { mutate, isPending: isLoading } = useCreateClient();
 
   const onSubmit = handleSubmit((formData: ClientFormData) => {
     mutate(formData, {

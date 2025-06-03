@@ -14,14 +14,14 @@ import {
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
-const RECIPIENTS_ENDPOINT = "/recipient/";
+const ENDPOINT = "/recipient/";
 
 export const useRecipientsInfinityQuery = () =>
   useInfiniteQuery({
     ...defaultInfinityQueryOptions<RecipientSerializerList>(["recipients"]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<RecipientSerializerList>>(
-        RECIPIENTS_ENDPOINT + `?page=${pageParam}`,
+        ENDPOINT + `?page=${pageParam}`,
       );
       return response.data;
     },
@@ -32,7 +32,7 @@ export const useRecipientQuery = (id?: number) =>
     queryKey: ["recipients", id],
     queryFn: async () => {
       const response = await api.get<ApiResponse<Recipient>>(
-        RECIPIENTS_ENDPOINT + `${id}`,
+        ENDPOINT + `${id}`,
       );
       return response.data;
     },
@@ -44,10 +44,7 @@ export const useCreateRecipient = () => {
 
   const mutation = useMutation({
     mutationFn: async (formData: RecipientSerializerCreate) => {
-      const response = await api.post(
-        RECIPIENTS_ENDPOINT + "create/",
-        formData,
-      );
+      const response = await api.post(ENDPOINT + "create/", formData);
       return response.data;
     },
     onSuccess: () => {
@@ -67,7 +64,7 @@ export const useUpdateRecipient = (id?: number) => {
 
   return useMutation({
     mutationFn: async (formData: RecipientSerializerCreate) => {
-      const response = await api.patch(RECIPIENTS_ENDPOINT + `${id}`, formData);
+      const response = await api.patch(ENDPOINT + `${id}`, formData);
       return response.data;
     },
     onSuccess: () => {
@@ -85,7 +82,7 @@ export const useDeleteRecipient = () => {
 
   return useMutation({
     mutationFn: async (id?: number) => {
-      const response = await api.delete(RECIPIENTS_ENDPOINT + `${id}`);
+      const response = await api.delete(ENDPOINT + `${id}`);
       return response.data;
     },
     onSuccess: () => {
