@@ -1,6 +1,6 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { useCitiesInfinityQuery } from "../api/cities.api";
-import { RecipientSerializerSchema } from "../schemas/recipientSerializerSchema";
+import { RecipientSerializerSchema } from "../schemas/recipient.schema";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "./ui/AutoCompleteSelectField";

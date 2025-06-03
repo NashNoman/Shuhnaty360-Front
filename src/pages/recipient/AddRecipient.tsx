@@ -7,7 +7,7 @@ import RecipientForm from "../../components/RecipientForm";
 import {
   recipientSerializerSchema,
   RecipientSerializerSchema,
-} from "../../schemas/recipientSerializerSchema";
+} from "../../schemas/recipient.schema";
 
 const AddRecipient = () => {
   const navigate = useNavigate();

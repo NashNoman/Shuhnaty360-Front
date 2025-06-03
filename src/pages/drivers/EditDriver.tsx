@@ -3,13 +3,14 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useUpdateDriver } from "../../api/drivers.api";
 import DriverForm, {
   DriverFormData,
   driverSchema,
 } from "../../components/DriverForm";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch, useUpdate } from "../../hooks/useApi";
-import { GetDriverDetailsResponse, GetTruckTypesResponse } from "../../types";
+import { useFetch } from "../../hooks/useApi";
+import { GetDriverDetailsResponse } from "../../types";
 
 const EditDriver = () => {
   const { isSidebarOpen } = useSidebar();
@@ -33,16 +34,7 @@ const EditDriver = () => {
     !!driverId,
   );
 
-  const { data: truckTypesRes, isLoading: isTruckTypesLoading } =
-    useFetch<GetTruckTypesResponse>(["truckType"], "drivers/TruckType");
-
-  const { mutate } = useUpdate(`/drivers/${driverId}/`, ["drivers"]);
-
-  const truckTypeOptions =
-    truckTypesRes?.data?.results.map((truckType) => ({
-      value: truckType.id,
-      label: truckType.name_ar,
-    })) || [];
+  const { mutate } = useUpdateDriver(driverId);
 
   const onSubmit = handleSubmit((formData: DriverFormData) => {
     mutate(formData, {
@@ -74,7 +66,7 @@ const EditDriver = () => {
 
   return (
     <>
-      {(isLoading || isTruckTypesLoading) && (
+      {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"
@@ -89,7 +81,6 @@ const EditDriver = () => {
         isLoading={isLoading}
         register={register}
         errors={errors}
-        truckTypeOptions={truckTypeOptions}
         control={control}
       />
     </>

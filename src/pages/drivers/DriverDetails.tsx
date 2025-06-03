@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useDriverQuery } from "../../api/drivers.api";
 import { useShipmentsInfinityQuery } from "../../api/shipments.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -11,19 +12,13 @@ import EntityShipmentsTable from "../../components/EntityShipmentsTable";
 import SelectMenu from "../../components/SelectMenu";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { GetDriverDetailsResponse } from "../../types";
 
 const DriverDetails = () => {
   const [selectedOption, setSelectedOption] = useState("الكل");
   const { driverId } = useParams();
   const { isSidebarOpen } = useSidebar();
 
-  const { data: driverDetailsRes, isLoading } =
-    useFetch<GetDriverDetailsResponse>(
-      ["drivers", driverId],
-      `/drivers/${driverId}`,
-    );
+  const { data: driverDetailsRes, isLoading } = useDriverQuery(driverId);
 
   const driver = driverDetailsRes?.data;
 
@@ -62,7 +57,7 @@ const DriverDetails = () => {
     {
       image: truckIcon,
       label: "نوع الشاحنة",
-      value: driver?.truck_type?.name_ar,
+      value: driver?.truck_type,
     },
     {
       image: callIcon,

@@ -7,7 +7,7 @@ import ShipmentsForm from "../../components/ShipmentsForm";
 import {
   shipmentSerializerSchema,
   ShipmentSerializerSchema,
-} from "../../schemas/shipmentSerializerSchema";
+} from "../../schemas/shipment.schema";
 
 const EditShipment = () => {
   const navigate = useNavigate();

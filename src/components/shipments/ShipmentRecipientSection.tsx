@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { ClientSerializerList } from "../../../Api";
 import { useClientQuery, useClientsInfinityQuery } from "../../api/clients.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
+import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "../ui/AutoCompleteSelectField";

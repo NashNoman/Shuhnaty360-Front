@@ -1,5 +1,5 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
+import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import StayCostInputField from "../ui/StayCostInputField";
 import TextInputField from "../ui/TextInputField";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";

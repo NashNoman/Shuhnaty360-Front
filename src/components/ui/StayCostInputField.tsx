@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
+import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import { cn } from "../../utils/utils";
 
 export type StayCostInputFieldProps = {

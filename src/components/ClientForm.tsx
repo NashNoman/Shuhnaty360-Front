@@ -7,12 +7,31 @@ import TextInputField from "./ui/TextInputField";
 // eslint-disable-next-line react-refresh/only-export-components
 export const clientSchema = z.object({
   name: z.string().min(1, { message: "اسم العميل مطلوب" }),
-  address: z.string().min(1, { message: "العنوان مطلوب" }),
-  phone_number: z.string().min(1, { message: "رقم الهاتف مطلوب" }),
-  second_phone_number: z.string().optional(),
-  email: z.string().email({ message: "صيغة البريد الإلكتروني غير صحيحة" }),
-  Commercial_registration_number: z.string().optional(),
-  dicription: z.string().optional(),
+  address: z
+    .string()
+    .min(1, { message: "العنوان مطلوب" })
+    .or(z.literal(""))
+    .nullable()
+    .optional(),
+  phone_number: z
+    .string()
+    .min(1, { message: "رقم الهاتف مطلوب" })
+    .or(z.literal(""))
+    .nullable()
+    .optional(),
+  second_phone_number: z.string().or(z.literal("")).nullable().optional(),
+  email: z
+    .string()
+    .email({ message: "صيغة البريد الإلكتروني غير صحيحة" })
+    .or(z.literal(""))
+    .nullable()
+    .optional(),
+  Commercial_registration_number: z
+    .string()
+    .or(z.literal(""))
+    .nullable()
+    .optional(),
+  dicription: z.string().or(z.literal("")).nullable().optional(),
 });
 
 export type ClientFormData = z.infer<typeof clientSchema>;

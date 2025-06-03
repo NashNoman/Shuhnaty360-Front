@@ -1,11 +1,9 @@
-// import AddEditInfoSection from '../../components/shipments/addShipment/AddEditInfoSection';
-// import PhoneNumberInput from '../../components/shipments/addShipment/addShipmentInputs/phoneNumberInput/PhoneNumberInput';
-// import addIcon from '../../assets/images/add.svg';
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useUpdateClient } from "../../api/clients.api";
+import { useClientQuery, useUpdateClient } from "../../api/clients.api";
 import ClientForm, {
   ClientFormData,
   clientSchema,
@@ -20,12 +18,15 @@ const EditClient = () => {
   const {
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
   });
 
-  const { mutate, isPending: isLoading } = useUpdateClient(clientId);
+  const { data, isLoading } = useClientQuery(clientId);
+
+  const { mutate, isPending: isUpdating } = useUpdateClient(clientId);
 
   const onSubmit = handleSubmit((formData: ClientFormData) => {
     mutate(formData, {
@@ -41,9 +42,25 @@ const EditClient = () => {
     });
   });
 
+  useEffect(() => {
+    if (data?.data) {
+      const client = data.data;
+      setValue("name", client.name);
+      setValue("email", client.email);
+      setValue("address", client.address);
+      setValue(
+        "Commercial_registration_number",
+        client.Commercial_registration_number,
+      );
+      setValue("dicription", client.dicription);
+      setValue("phone_number", client.phone_number);
+      setValue("second_phone_number", client.second_phone_number);
+    }
+  }, [data, setValue]);
+
   return (
     <>
-      {isLoading && (
+      {(isUpdating || isLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"
@@ -54,7 +71,7 @@ const EditClient = () => {
       )}
       <ClientForm
         onSubmit={onSubmit}
-        isLoading={isLoading}
+        isLoading={isUpdating}
         register={register}
         errors={errors}
       />

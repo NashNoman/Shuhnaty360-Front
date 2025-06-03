@@ -1,5 +1,6 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
+import { useTruckTypesInfinityQuery } from "../api/drivers.api";
 import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
 import Card from "./ui/Card";
 import SelectField from "./ui/SelectField";
@@ -27,7 +28,6 @@ type DriverFormProps = {
   isLoading: boolean;
   register: UseFormRegister<DriverFormData>;
   errors: FieldErrors<DriverFormData>;
-  truckTypeOptions: { value: number; label: string }[];
   control: Control<DriverFormData>;
   isEdit?: boolean;
 };
@@ -49,10 +49,16 @@ const DriverForm = ({
   isLoading,
   register,
   errors,
-  truckTypeOptions,
   control,
   isEdit = false,
 }: DriverFormProps) => {
+  const { data: truckTypesRes } = useTruckTypesInfinityQuery();
+
+  const truckTypeOptions =
+    truckTypesRes?.items.map((truckType) => ({
+      value: truckType.id as number,
+      label: truckType.name_ar,
+    })) || [];
   return (
     <Card>
       <form onSubmit={onSubmit}>

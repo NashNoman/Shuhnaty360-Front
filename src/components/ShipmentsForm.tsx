@@ -1,5 +1,5 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { ShipmentSerializerSchema } from "../schemas/shipmentSerializerSchema";
+import { ShipmentSerializerSchema } from "../schemas/shipment.schema";
 import ShipmentClientSection from "./shipments/ShipmentClientSection";
 import ShipmentCostSection from "./shipments/ShipmentCostSection";
 import ShipmentDriverSection from "./shipments/ShipmentDriverSection";

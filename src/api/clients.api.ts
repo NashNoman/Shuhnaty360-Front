@@ -56,7 +56,7 @@ export const useUpdateClient = (id?: number | string) => {
 
   const mutation = useMutation({
     mutationFn: async (formData: ClientSerializerDetails) => {
-      const response = await api.post(ENDPOINT + id, formData);
+      const response = await api.patch(ENDPOINT + `update/${id}`, formData);
       return response.data;
     },
     onSuccess: () => {

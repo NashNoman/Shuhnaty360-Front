@@ -1,70 +1,16 @@
 import {
-  infiniteQueryOptions,
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { flatMap } from "lodash";
-import { toast } from "sonner";
-import { ClientSerializerList, DriverList, TruckType } from "../../Api";
-import { ApiListResponse, Driver } from "../types";
+import { DriverCreate, DriverList, TruckType } from "../../Api";
+import { ApiListResponse, ApiResponse } from "../types";
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
-import { getUrlParams } from "../utils/utils";
 
 const ENDPOINT = "/drivers/";
 const KEY = "drivers";
-
-export const getDriversList = async ({
-  pageParam = 1,
-}: {
-  pageParam?: number;
-}): Promise<ApiListResponse<Driver>> => {
-  const response = await api.get(ENDPOINT + `?page=${pageParam}`);
-  return response.data;
-};
-
-export const getDriver = async (
-  driverId: Pick<Driver, "id">,
-): Promise<Driver> => {
-  const response = await api.get(`${ENDPOINT}${driverId.id}/`);
-  return response.data;
-};
-
-export const createDriver = async (driver: Driver): Promise<Driver> => {
-  const response = await api.post(`${ENDPOINT}create/`, driver);
-  return response.data;
-};
-
-export const updateDriver = async (
-  driverId: Pick<Driver, "id">,
-  driver: Driver,
-): Promise<Driver> => {
-  const response = await api.patch(`${ENDPOINT}${driverId}/`, driver);
-  return response.data;
-};
-
-export const deleteDriver = async (
-  driverId: Pick<Driver, "id">,
-): Promise<void> => {
-  await api.delete(`${ENDPOINT}${driverId.id}/`);
-};
-
-export const getDriversListOptions = () =>
-  infiniteQueryOptions({
-    queryKey: [KEY],
-    queryFn: getDriversList,
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.next)?.page || undefined,
-    select: (data) =>
-      flatMap<Awaited<ReturnType<typeof getDriversList>>, Driver>(
-        data.pages,
-        (page) => page.data.results,
-      ),
-  });
 
 export const useDriversInfinityQuery = () =>
   useInfiniteQuery({
@@ -75,6 +21,18 @@ export const useDriversInfinityQuery = () =>
       );
       return response.data;
     },
+  });
+
+export const useDriverQuery = (id?: number | string) =>
+  useQuery({
+    queryKey: [KEY, id],
+    queryFn: async () => {
+      const response = await api.get<ApiResponse<DriverList>>(
+        ENDPOINT + `${id}`,
+      );
+      return response.data;
+    },
+    enabled: !!id,
   });
 
 export const useTruckTypesInfinityQuery = () =>
@@ -88,20 +46,48 @@ export const useTruckTypesInfinityQuery = () =>
     },
   });
 
-export const useCreateClient = () => {
+export const useCreateDriver = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (formData: ClientSerializerList) => {
+    mutationFn: async (formData: DriverCreate) => {
       const response = await api.post(ENDPOINT + "create/", formData);
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
-    onError: (error) => {
-      console.error(error);
-      toast.error("حصل خطاء");
+  });
+
+  return mutation;
+};
+
+export const useUpdateDriver = (id?: number | string) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (formData: DriverCreate) => {
+      const response = await api.patch(ENDPOINT + id, formData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  return mutation;
+};
+
+export const useDeleteDriver = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (id?: number | string) => {
+      const response = await api.delete(ENDPOINT + id);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
 

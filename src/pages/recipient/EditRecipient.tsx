@@ -12,7 +12,7 @@ import { useSidebar } from "../../context/SidebarContext";
 import {
   recipientSerializerSchema,
   RecipientSerializerSchema,
-} from "../../schemas/recipientSerializerSchema";
+} from "../../schemas/recipient.schema";
 
 const EditRecipient = () => {
   const navigate = useNavigate();

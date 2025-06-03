@@ -1,6 +1,6 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { useCitiesInfinityQuery } from "../../api/cities.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
+import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import AutoCompleteSelectField from "../ui/AutoCompleteSelectField";
 import DatePickerField from "../ui/DatePickerField";
 import TextAreaField from "../ui/TextAreaField";

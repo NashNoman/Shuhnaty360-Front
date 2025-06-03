@@ -1,13 +1,11 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { getDriversList } from "../../api/drivers.api";
+import { useDriversInfinityQuery } from "../../api/drivers.api";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
-import { getUrlParams } from "../../utils/utils";
 
 const selectMenuOptions = [
   { label: "الكل" },
@@ -95,15 +93,7 @@ const Drivers = () => {
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["drivers"],
-    queryFn: getDriversList,
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.data.next)?.page || undefined,
-  });
+  } = useDriversInfinityQuery();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -148,36 +138,34 @@ const Drivers = () => {
           <Table
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
-            dataCount={driversData?.pages?.length}
+            dataCount={driversData?.items?.length}
           >
-            {driversData?.pages &&
-              driversData.pages.map((page) =>
-                page.data.results.map((driver) => (
-                  <TableRow
-                    key={driver.id}
-                    index={rowIndex++}
-                    onClick={() =>
-                      navigate("/drivers/driver-details/" + driver.id)
-                    }
-                  >
-                    <TableCell>{driver.id}</TableCell>
-                    <TableCell>{driver.name}</TableCell>
-                    <TableCell>{getLang(driver.language)}</TableCell>
-                    <TableCell>{driver.nationality}</TableCell>
-                    <TableCell>{driver.phone_number}</TableCell>
-                    <TableCell>{driver.vehicle_number}</TableCell>
-                    <TableCell>
-                      <span
-                        className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
-                          driver.status,
-                        )} ${getStatusBgColor(driver.status)}`}
-                      >
-                        {driver.is_active ? "متاح" : "غير متاح"}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                )),
-              )}
+            {driversData?.items &&
+              driversData.items.map((item) => (
+                <TableRow
+                  key={item.id}
+                  index={rowIndex++}
+                  onClick={() => navigate("/drivers/driver-details/" + item.id)}
+                >
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>
+                    {item.language && getLang(item.language)}
+                  </TableCell>
+                  <TableCell>{item.nationality}</TableCell>
+                  <TableCell>{item.phone_number}</TableCell>
+                  <TableCell>{item.vehicle_number}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${
+                        item.status && getStatusColor(item.status)
+                      } ${item.status && getStatusBgColor(item.status)}`}
+                    >
+                      {item.is_active ? "متاح" : "غير متاح"}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
           </Table>
           <div ref={ref} className="h-0" />
         </div>

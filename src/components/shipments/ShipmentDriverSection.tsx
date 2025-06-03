@@ -5,7 +5,7 @@ import {
   useDriversInfinityQuery,
   useTruckTypesInfinityQuery,
 } from "../../api/drivers.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipmentSerializerSchema";
+import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "../ui/AutoCompleteSelectField";
