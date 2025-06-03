@@ -656,6 +656,8 @@ export interface ShipmentStatusSerializerMini {
 export interface ShipmentHistory {
   /** ID */
   id?: number;
+  user?: UserSerializerMini;
+  status?: ShipmentStatusSerializerMini;
   /**
    * Updated at
    * @format date-time
@@ -665,10 +667,6 @@ export interface ShipmentHistory {
   notes?: string | null;
   /** Shipment */
   shipment: number;
-  /** Status */
-  status?: number | null;
-  /** User */
-  user?: number | null;
 }
 
 export interface ShipmentSerializerList {
@@ -1172,25 +1170,19 @@ export interface ShipmentSerializerDetail {
    * @minLength 1
    */
   tracking_number?: string | null;
-  /** User */
-  user?: number | null;
-  /** Driver */
-  driver?: number | null;
-  /** Truck type */
-  truck_type?: number | null;
-  /** Client */
-  client?: number | null;
-  /** Client branch */
-  client_branch?: number | null;
+  user?: Users;
+  driver?: DriverList;
+  truck_type?: TruckType;
+  client?: ClientSerializerList;
+  client_branch?: ClientBranchCreate;
   /**
    * Customer Invoice Number
    * @maxLength 50
    */
   client_invoice_number?: string | null;
-  /** Recipient */
-  recipient?: number | null;
-  origin_city?: CitySerializerMini;
-  destination_city?: CitySerializerMini;
+  recipient?: RecipientSerializerList;
+  origin_city?: City;
+  destination_city?: City;
   /**
    * Fare
    * @min -2147483648
@@ -1251,7 +1243,7 @@ export interface ShipmentSerializerDetail {
   contents?: string | null;
   /** ملاحظات */
   notes?: string | null;
-  status?: ShipmentStatusSerializerMini;
+  status?: ShipmentStatus;
   /**
    * Loading date
    * @format date-time

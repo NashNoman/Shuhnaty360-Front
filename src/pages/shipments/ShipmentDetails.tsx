@@ -1,49 +1,22 @@
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useShipmentQuery } from "../../api/shipments.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
-import ShipmentDetailsInfoSection from "../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
-import ShipmentStatus from "../../components/shipments/shipmentDetails/shipmentStatus/ShipmentStatus";
-
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
 import PrintWaybillDialog from "../../components/shipments/shipment/PrintWaybillDialog";
+import ShipmentDetailsInfoSection from "../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
+import ShipmentStatus from "../../components/shipments/shipmentDetails/shipmentStatus/ShipmentStatus";
 import { useSidebar } from "../../context/SidebarContext";
-import { RootState } from "../../redux/store";
 
 const ShipmentDetails = () => {
   const { isSidebarOpen } = useSidebar();
   const { shipmentId } = useParams();
-  const shipment = useSelector((state: RootState) => state.shipments.shipment);
-  const driver = useSelector((state: RootState) => state.drivers.driver);
-  const recipient = useSelector(
-    (state: RootState) => state.recipients.recipient,
-  );
-  const client = useSelector((state: RootState) => state.clients.client);
-  const user = useSelector((state: RootState) => state.users.user);
-  const isDriverDataLoading = useSelector(
-    (state: RootState) => state.drivers.isLoading,
-  );
-  const isClientDataLoading = useSelector(
-    (state: RootState) => state.clients.isLoading,
-  );
-  const isRecipientDataLoading = useSelector(
-    (state: RootState) => state.recipients.isLoading,
-  );
-  const isUsersDataLoading = useSelector(
-    (state: RootState) => state.users.isLoading,
-  );
-  const isCitiesDataLoading = useSelector(
-    (state: RootState) => state.cities.isLoading,
-  );
-  const truckTypes = useSelector(
-    (state: RootState) => state.drivers.truckTypes,
-  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const truckType = truckTypes.find(
-    (truckType: any) => truckType.id === driver?.truck_type,
-  );
+  const { data, isLoading } = useShipmentQuery(shipmentId);
+
+  const shipment = data?.data;
 
   const menuActions = [
     {
@@ -59,26 +32,30 @@ const ShipmentDetails = () => {
   ];
 
   const clientData = [
-    { label: "الاسم", value: client?.name || "-" },
-    { label: "العنوان", value: client?.address || "-" },
-    { label: "الفرع", value: client?.branches[0].name || "-" },
+    { label: "الاسم", value: shipment?.client?.name || "-" },
+    { label: "العنوان", value: shipment?.client?.address || "-" },
+    { label: "الفرع", value: shipment?.client_branch?.name || "-" },
+    { label: "الفرع", value: "-" },
   ];
 
   const recipientData = [
-    { label: "الاسم", value: recipient?.name || "-" },
-    { label: "العنوان", value: recipient?.address || "-" },
-    { label: "بيانات التواصل", value: recipient?.phone_number || "-" },
+    { label: "الاسم", value: shipment?.recipient?.name || "-" },
+    { label: "العنوان", value: shipment?.recipient?.address || "-" },
+    {
+      label: "بيانات التواصل",
+      value: shipment?.recipient?.phone_number || "-",
+    },
   ];
 
   const driverData = [
-    { label: "الاسم", value: driver?.name || "-" },
-    { label: "نوع الشاحنة", value: truckType?.name_ar || "-" },
-    { label: "رقم الشاحنة", value: driver?.vehicle_number || "-" },
+    { label: "الاسم", value: shipment?.driver?.name || "-" },
+    { label: "نوع الشاحنة", value: shipment?.truck_type?.name_ar || "-" },
+    { label: "رقم الشاحنة", value: shipment?.driver?.vehicle_number || "-" },
   ];
 
   const shipmentData = [
-    { label: "من", value: shipment?.origin_city || "-" },
-    { label: "الى", value: shipment?.destination_city || "-" },
+    { label: "من", value: shipment?.origin_city?.ar_city || "-" },
+    { label: "الى", value: shipment?.destination_city?.ar_city || "-" },
     { label: "المحتويات", value: shipment?.contents || "-" },
     { label: "الوزن", value: shipment?.weight || "-" },
   ];
@@ -86,25 +63,21 @@ const ShipmentDetails = () => {
   const shipmentCost = [
     {
       label: "التكلفة الأساسية",
-      value: `${shipment?.fare} ر.س`,
+      value: `${shipment?.fare || "0"} ر.س`,
     },
     {
       label: "الزيادة ",
-      value: `${shipment?.premium} ر.س`,
+      value: `${shipment?.premium || "0"} ر.س`,
     },
     {
       label: "الخصم",
-      value: `${shipment?.deducted} ر.س`,
+      value: `${shipment?.deducted || "0"} ر.س`,
     },
   ];
 
   return (
     <>
-      {(isDriverDataLoading ||
-        isRecipientDataLoading ||
-        isClientDataLoading ||
-        isCitiesDataLoading ||
-        isUsersDataLoading) && (
+      {isLoading && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"
@@ -177,14 +150,17 @@ const ShipmentDetails = () => {
                 <div className="w-full flex justify-between items-center mt-6 font-Rubik text-[#333333] font-bold xs:text-base text-lg">
                   <span>الإجمالي</span>{" "}
                   <span className="xs:text-nowrap">
-                    {shipment.fare + shipment.premium - shipment.deducted} ر.س
+                    {(shipment?.fare ?? 0) +
+                      (shipment?.premium ?? 0) -
+                      (shipment?.deducted ?? 0)}{" "}
+                    ر.س
                   </span>
                 </div>
               </div>
               <div className="my-10 w-full flex flex-col gap-2 sm:flex-row sm:gap-0 justify-center items-center font-Rubik text-[#666666] text-xl sm:text-2xl">
                 <span>المندوب المسئول:</span>
                 <span>
-                  {user.first_name} {user.last_name}
+                  {shipment?.user?.first_name} {shipment?.user?.last_name}
                 </span>
               </div>
               <button
@@ -196,7 +172,7 @@ const ShipmentDetails = () => {
             </div>
           </div>
 
-          {shipment.history.length > 0 ? (
+          {shipment?.history && shipment?.history?.length > 0 ? (
             <div
               className={`xs:col-span-10 col-span-12 ${
                 isSidebarOpen ? "lg:col-span-4" : "lg:col-span-3"
@@ -218,15 +194,13 @@ const ShipmentDetails = () => {
           )}
         </div>
       </div>
-      <PrintWaybillDialog
-        shipment={shipment}
-        driver={driver}
-        client={client}
-        recipient={recipient}
-        open={isDialogOpen}
-        setOpen={setIsDialogOpen}
-        truckType={truckType?.name_ar}
-      />
+      {shipment && (
+        <PrintWaybillDialog
+          shipment={shipment}
+          open={isDialogOpen}
+          setOpen={setIsDialogOpen}
+        />
+      )}
     </>
   );
 };

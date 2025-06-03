@@ -1,109 +1,78 @@
 import { QRCodeSVG } from "qrcode.react";
+import { ShipmentSerializerDetail } from "../../../../Api";
 import { baseURL } from "../../../../config";
+import { formatDate } from "../../../utils/formatDate";
 import WaybillInfoRow from "./WaybillInfoRow";
 
 export const Waybill = ({
   shipment,
-  driver,
-  client,
-  recipient,
-  truckType,
-}: any) => {
+}: {
+  shipment: ShipmentSerializerDetail;
+}) => {
   const driverDetails = [
     {
       value: "الاسم",
-      label: driver.name,
+      label: shipment.driver?.name,
     },
     {
       value: "رقم الهوية",
-      label: driver.identity_number,
+      label: shipment.driver?.identity_number,
     },
     {
       value: "رقم الجوال",
-      label: driver.phone_number,
+      label: shipment.driver?.phone_number,
     },
   ];
 
   const truckDetails = [
     {
       value: "نوع الشاحنة",
-      label: truckType,
+      label: shipment.truck_type,
     },
     {
       value: "رقم الشاحنة",
-      label: driver.vehicle_number,
+      label: shipment.driver?.vehicle_number,
     },
   ];
 
   const recipientDetails = [
     {
       value: "الاسم",
-      label: recipient.name,
+      label: shipment.recipient?.name,
     },
     {
       value: "بيانات التواصل",
-      label: recipient.phone_number,
+      label: shipment.recipient?.phone_number,
     },
     {
       value: "العنوان",
-      label: recipient.address,
+      label: shipment.recipient?.address,
     },
   ];
 
   const clientDetails = [
     {
       value: "الاسم",
-      label: client.name,
+      label: shipment.client?.name,
     },
     {
       value: "بيانات التواصل",
-      label: client.phone_number,
+      label: shipment.client?.phone_number,
     },
     {
       value: "الفرع",
-      label: client.branches[0].name,
+      label: shipment.client_branch?.name,
     },
   ];
-
-  // const shipmentCostDetails = [
-  //   {
-  //     value: 'التكلفة الأساسية',
-  //     label: `${shipment.fare} ر.س`,
-  //   },
-  //   {
-  //     value: 'الزيادة',
-  //     label: `${shipment.premium} ر.س`,
-  //   },
-  //   {
-  //     value: 'الخصم',
-  //     label: `${shipment.deducted} ر.س`,
-  //   },
-  //   {
-  //     value: 'عدد الليالي',
-  //     label: `${shipment.days_stayed} ليلة`,
-  //   },
-  //   {
-  //     value: 'تكلفة المبيت لليلة الواحدة',
-  //     label: `${shipment.stay_cost} ر.س`,
-  //   },
-  //   {
-  //     value: 'الأجرة المرتجعة',
-  //     label: `${shipment.fare_return} ر.س`,
-  //   },
-  //   {
-  //     value: 'الإجمالي',
-  //     label: `${shipment.total_cost} ر.س`,
-  //   }
-  // ];
 
   const shipmentDetails = [
     {
       value: "من",
-      label: shipment.origin_city,
+      label: shipment.origin_city?.ar_city,
     },
     {
       value: "إلى",
-      label: shipment.destination_city,
+      label: shipment.destination_city?.ar_city,
     },
     {
       value: "المحتويات",
@@ -130,7 +99,8 @@ export const Waybill = ({
             <span>C.R</span> 4030172574
           </div>
           <div>
-            <span>التاريخ:</span> {shipment.loading_at}
+            <span>التاريخ:</span>{" "}
+            {shipment.loading_date ? formatDate(shipment.loading_date) : "-"}
           </div>
         </div>
         <div>

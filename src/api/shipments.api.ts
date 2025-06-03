@@ -1,25 +1,43 @@
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ShipmentSerializerCreate, ShipmentSerializerList } from "../../Api";
-import { ApiListResponse } from "../types";
+import {
+  ShipmentSerializerCreate,
+  ShipmentSerializerDetail,
+  ShipmentSerializerList,
+} from "../../Api";
+import { ApiListResponse, ApiResponse } from "../types";
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
 const ENDPOINT = "/shipments/";
+const KEY = "shipments";
 
 export const useShipmentsInfinityQuery = () =>
   useInfiniteQuery({
-    ...defaultInfinityQueryOptions<ShipmentSerializerList>(["shipments"]),
+    ...defaultInfinityQueryOptions<ShipmentSerializerList>([KEY]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<ShipmentSerializerList>>(
         ENDPOINT + `?page=${pageParam}`,
       );
       return response.data;
     },
+  });
+
+export const useShipmentQuery = (id?: number | string) =>
+  useQuery({
+    queryKey: [KEY, id],
+    queryFn: async () => {
+      const response = await api.get<ApiResponse<ShipmentSerializerDetail>>(
+        ENDPOINT + `${id}`,
+      );
+      return response.data;
+    },
+    enabled: !!id,
   });
 
 export const useCreateShipment = () => {
@@ -31,7 +49,7 @@ export const useCreateShipment = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["shipments"] });
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
       console.error(error);

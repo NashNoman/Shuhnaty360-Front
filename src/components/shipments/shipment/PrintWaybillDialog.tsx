@@ -1,20 +1,21 @@
-import * as React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import { useEffect, useRef } from "react";
+import { ShipmentSerializerDetail } from "../../../../Api";
 import { Waybill } from "./Waybill";
 
 export default function PrintWaybillDialog({
   shipment,
-  driver,
-  client,
-  recipient,
   open,
   setOpen,
-  truckType,
-}: any) {
-  const descriptionElementRef = React.useRef<HTMLElement>(null);
-  React.useEffect(() => {
+}: {
+  shipment: ShipmentSerializerDetail;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
+  const descriptionElementRef = useRef<HTMLElement>(null);
+  useEffect(() => {
     if (open) {
       const { current: descriptionElement } = descriptionElementRef;
       if (descriptionElement !== null) {
@@ -42,13 +43,7 @@ export default function PrintWaybillDialog({
             padding: "0",
           }}
         >
-          <Waybill
-            shipment={shipment}
-            driver={driver}
-            client={client}
-            recipient={recipient}
-            truckType={truckType}
-          />
+          <Waybill shipment={shipment} />
         </DialogContent>
         <DialogActions sx={{ margin: "10px 0 0" }}>
           <div className="grid grid-cols-2 gap-4 w-full mb-2">
