@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { fixHtmlFormOptionalFields } from "../utils/utils";
 
 export const userCreateSchema = z.object({
   username: z
@@ -17,8 +18,9 @@ export const userCreateSchema = z.object({
       invalid_type_error: "البريد الإلكتروني يجب أن يكون نصًا",
     })
     .trim()
-    .email({ message: "صيغة البريد الإلكتروني غير صحيحة" }),
-  // .or(z.literal("")),
+    .email({ message: "صيغة البريد الإلكتروني غير صحيحة" })
+    .optional()
+    .or(z.literal("")),
   password: z
     .string({
       required_error: "كلمة المرور مطلوبة",
@@ -71,16 +73,20 @@ export const userCreateSchema = z.object({
     })
     .optional()
     .or(z.literal("")),
-  company_branch: z.number({
-    invalid_type_error: "الفرع مطلوب",
-    coerce: true,
-  }),
+  company_branch: z
+    .number({
+      invalid_type_error: "الفرع مطلوب",
+      coerce: true,
+    })
+    .optional(),
 });
 
-export const userUpdateSchema = userCreateSchema.partial({
-  password: true,
-  password2: true,
-});
+export const userUpdateSchema = fixHtmlFormOptionalFields(
+  userCreateSchema.partial({
+    password: true,
+    password2: true,
+  }),
+);
 
 export type UserCreateSchemaType = z.infer<typeof userCreateSchema>;
 export type UserUpdateSchemaType = z.infer<typeof userUpdateSchema>;

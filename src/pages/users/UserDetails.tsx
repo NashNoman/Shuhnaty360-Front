@@ -1,9 +1,8 @@
-import { useState } from "react";
-import SelectMenu from "../../components/SelectMenu";
 // import PieChart from '../../components/charts/PieChart';
 
 import { useParams } from "react-router-dom";
-import { useShipmentsInfinityQuery } from "../../api/shipments.api";
+import { Users } from "../../../Api";
+import { useUserQuery } from "../../api/users.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
@@ -11,34 +10,14 @@ import mailIcon from "../../assets/images/users/sms.svg";
 import EntityShipmentsTable from "../../components/EntityShipmentsTable";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { GetUserDetailsResponse, User } from "../../types";
-
-const selectMenuOptions = [
-  { label: "الكل", value: "all" },
-  { label: "يوم", value: "day" },
-  { label: "اسبوع", value: "week" },
-  { label: "شهر", value: "month" },
-];
 
 const UsersDetails = () => {
   const { userId } = useParams();
-  const [selectedOption, setSelectedOption] = useState("الكل");
   const { isSidebarOpen } = useSidebar();
-  const { isLoading, data } = useFetch<GetUserDetailsResponse>(
-    ["user", userId],
-    `/accounts/users/${userId}/`,
-    undefined,
-    !!userId,
-  );
 
-  const { data: shipmentsData, isLoading: isLoadingShipments } =
-    useShipmentsInfinityQuery();
+  const { isLoading, data } = useUserQuery(userId);
 
-  const shipments =
-    shipmentsData?.items.filter((item) => item.user?.id == userId) || [];
-
-  const user: User | undefined = data?.data;
+  const user: Users | undefined = data?.data;
 
   const moreInfoData = [
     {
@@ -95,20 +74,7 @@ const UsersDetails = () => {
         </div>
       )}
       <div className="grid col-span-2 lg:grid-cols-3 gap-8">
-        <div className="col-span-1 lg:col-span-2 h-fit shadow-lg rounded-3xl px-8 py-4 w-full overflow-x-auto">
-          <div className="w-full flex justify-between items-center mb-6">
-            <h1 className="xs:text-lg text-xl font-bold">قائمة الشحنات</h1>
-            <SelectMenu
-              options={selectMenuOptions}
-              selectedItem={selectedOption}
-              setSelectedItem={setSelectedOption}
-            />
-          </div>
-          <EntityShipmentsTable
-            data={shipments}
-            isLoading={isLoadingShipments}
-          />
-        </div>
+        <EntityShipmentsTable user={userId} />
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">
           <div className="w-full shadow-sm rounded-3xl lg:px-8 py-4 mb-6">
             <UserDriverProfileCard

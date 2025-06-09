@@ -1,6 +1,13 @@
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { ShipmentSerializerList } from "../../Api";
+import {
+  ShipmentFiltersType,
+  useShipmentsInfinityQuery,
+  useShipmentStatusInfinityQuery,
+} from "../api/shipments.api";
 import { formatDate } from "../utils/formatDate";
+import SelectMenu from "./SelectMenu";
 import { Table, TableCell, TableRow } from "./ui/Table";
 
 const tableColumns = [
@@ -50,45 +57,91 @@ const getStatusColor = (status: string) => {
   }
 };
 
-type EntityShipmentsTableProps = {
-  data: ShipmentSerializerList[];
-  isLoading: boolean;
-};
+type EntityShipmentsTableProps = ShipmentFiltersType;
 
-const EntityShipmentsTable = ({
-  data,
-  isLoading,
-}: EntityShipmentsTableProps) => {
+const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
   const navigate = useNavigate();
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const { ref, inView } = useInView();
+
+  const { data: statusData } = useShipmentStatusInfinityQuery();
+
+  const options = [
+    { label: "الكل", value: "" },
+    ...(statusData?.items.map((status) => ({
+      label: status.name_ar,
+      value: status.id?.toString() || "",
+    })) || []),
+  ];
+
+  const status = options.find(
+    (option) => option.label === selectedStatus,
+  )?.value;
+
+  const { data, isLoading, hasNextPage, fetchNextPage } =
+    useShipmentsInfinityQuery({
+      ...props,
+      status,
+    });
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView]);
+
   return (
-    <Table dataCount={data.length} columns={tableColumns} isLoading={isLoading}>
-      {data.map((shipment, index) => (
-        <TableRow
-          key={`${shipment.id}${index}`}
-          index={index}
-          onClick={() => navigate("/shipments/shipment-details/" + shipment.id)}
-        >
-          <TableCell>{shipment.id}</TableCell>
-          <TableCell>{shipment.origin_city?.ar_city}</TableCell>
-          <TableCell>{shipment.destination_city?.ar_city}</TableCell>
-          <TableCell>{shipment.tracking_number}</TableCell>
-          <TableCell>{shipment.recipient?.name}</TableCell>
-          <TableCell className="text-center flex items-center justify-center gap-4">
-            {shipment.loading_date && formatDate(shipment.loading_date)}
-          </TableCell>
-          <TableCell>
-            <span
-              className={`py-2 text-center font-medium inline-block rounded-md w-36 text-sm ${
-                shipment.status?.name_ar &&
-                getStatusColor(shipment.status?.name_ar)
-              } ${shipment.status?.name_ar && getStatusBgColor(shipment.status.name_ar)}`}
-            >
-              {shipment.status?.name_ar || "-"}
-            </span>
-          </TableCell>
-        </TableRow>
-      ))}
-    </Table>
+    <div className="col-span-1 lg:col-span-2 h-fit shadow-lg rounded-3xl px-8 py-4 w-full overflow-x-auto">
+      <div className="w-full flex justify-between items-center mb-6">
+        <h1 className="xs:text-lg text-xl font-bold">قائمة الشحنات</h1>
+        <SelectMenu
+          options={options}
+          selectedItem={selectedStatus}
+          setSelectedItem={(value) => {
+            if (value === "الكل") {
+              setSelectedStatus(null);
+            } else {
+              setSelectedStatus(value);
+            }
+          }}
+        />
+      </div>
+      <Table
+        dataCount={data?.items.length}
+        columns={tableColumns}
+        isLoading={isLoading}
+      >
+        {data?.items.map((shipment, index) => (
+          <TableRow
+            key={`${shipment.id}${index}`}
+            index={index}
+            onClick={() =>
+              navigate("/shipments/shipment-details/" + shipment.id)
+            }
+          >
+            <TableCell>{shipment.id}</TableCell>
+            <TableCell>{shipment.origin_city?.ar_city}</TableCell>
+            <TableCell>{shipment.destination_city?.ar_city}</TableCell>
+            <TableCell>{shipment.tracking_number}</TableCell>
+            <TableCell>{shipment.recipient?.name}</TableCell>
+            <TableCell className="text-center flex items-center justify-center gap-4">
+              {shipment.loading_date && formatDate(shipment.loading_date)}
+            </TableCell>
+            <TableCell>
+              <span
+                className={`py-2 text-center font-medium inline-block rounded-md w-36 text-sm ${
+                  shipment.status?.name_ar &&
+                  getStatusColor(shipment.status?.name_ar)
+                } ${shipment.status?.name_ar && getStatusBgColor(shipment.status.name_ar)}`}
+              >
+                {shipment.status?.name_ar || "-"}
+              </span>
+            </TableCell>
+          </TableRow>
+        ))}
+      </Table>
+      <div ref={ref} className="h-0" />
+    </div>
   );
 };
 

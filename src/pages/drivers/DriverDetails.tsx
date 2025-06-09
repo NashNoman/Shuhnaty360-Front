@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDriverQuery } from "../../api/drivers.api";
-import { useShipmentsInfinityQuery } from "../../api/shipments.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import truckIcon from "../../assets/images/truck.svg";
@@ -9,24 +7,16 @@ import callIcon from "../../assets/images/users/call.svg";
 import flagIcon from "../../assets/images/users/flag.svg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
 import EntityShipmentsTable from "../../components/EntityShipmentsTable";
-import SelectMenu from "../../components/SelectMenu";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
 import { useSidebar } from "../../context/SidebarContext";
 
 const DriverDetails = () => {
-  const [selectedOption, setSelectedOption] = useState("الكل");
   const { driverId } = useParams();
   const { isSidebarOpen } = useSidebar();
 
   const { data: driverDetailsRes, isLoading } = useDriverQuery(driverId);
 
   const driver = driverDetailsRes?.data;
-
-  const { data: shipmentsData, isLoading: isLoadingShipments } =
-    useShipmentsInfinityQuery();
-
-  const shipments =
-    shipmentsData?.items.filter((item) => item.driver?.id == driverId) || [];
 
   const personalInfoData = {
     name: driver?.name,
@@ -66,13 +56,6 @@ const DriverDetails = () => {
     },
   ];
 
-  const selectMenuOptions = [
-    { label: "الكل", value: "all" },
-    { label: "يوم", value: "day" },
-    { label: "اسبوع", value: "week" },
-    { label: "شهر", value: "month" },
-  ];
-
   const menuActions = [
     {
       label: "تعديل البيانات",
@@ -98,20 +81,7 @@ const DriverDetails = () => {
         </div>
       )}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="col-span-1 lg:col-span-2 h-fit shadow-lg rounded-3xl px-8 py-4 w-full overflow-x-auto">
-          <div className="w-full flex justify-between items-center mb-6">
-            <h1 className="xs:text-lg text-xl font-bold">قائمة الشحنات</h1>
-            <SelectMenu
-              options={selectMenuOptions}
-              selectedItem={selectedOption}
-              setSelectedItem={setSelectedOption}
-            />
-          </div>
-          <EntityShipmentsTable
-            data={shipments}
-            isLoading={isLoadingShipments}
-          />
-        </div>
+        <EntityShipmentsTable driver={driverId} />
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">
           <div className="w-full shadow-sm rounded-3xl lg:px-8 py-4 mb-6">
             <UserDriverProfileCard

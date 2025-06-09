@@ -1,8 +1,18 @@
-import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-const SelectMenu = ({ selectedItem, setSelectedItem, options }: any) => {
+type SelectMenuProps = {
+  selectedItem: string | null;
+  setSelectedItem: (value: string) => void;
+  options: { label: string; value: string }[];
+};
+
+const SelectMenu = ({
+  selectedItem,
+  setSelectedItem,
+  options,
+}: SelectMenuProps) => {
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedItem(event.target.value);
   };
@@ -12,7 +22,7 @@ const SelectMenu = ({ selectedItem, setSelectedItem, options }: any) => {
       <Select
         labelId="demo-select-small-label"
         id="demo-select-small"
-        value={selectedItem}
+        value={selectedItem || "الكل"}
         sx={{
           color: "#666666",
           fontSize: "14px",

@@ -66,7 +66,7 @@ const items = [
       <img
         src={usersIcon}
         alt="users"
-        className={`${selectedItem === "/users" ? iconsStyles : ""}`}
+        className={`${selectedItem.startsWith("/users") ? iconsStyles : ""}`}
       />
     ),
   },
@@ -77,7 +77,7 @@ const items = [
       <img
         src={truckIcon}
         alt="drivers"
-        className={`${selectedItem === "/drivers" ? iconsStyles : ""}`}
+        className={`${selectedItem.startsWith("/drivers") ? iconsStyles : ""}`}
       />
     ),
   },
@@ -88,7 +88,7 @@ const items = [
       <img
         src={clientsIcon}
         alt="clients"
-        className={`${selectedItem === "/clients" ? iconsStyles : ""}`}
+        className={`${selectedItem.startsWith("/clients") ? iconsStyles : ""}`}
       />
     ),
   },
@@ -99,7 +99,7 @@ const items = [
       <img
         src={clientsIcon}
         alt="recipients"
-        className={`${selectedItem === "/recipients" ? iconsStyles : ""}`}
+        className={`${selectedItem.startsWith("/recipients") ? iconsStyles : ""}`}
       />
     ),
   },
@@ -110,7 +110,7 @@ const items = [
       <img
         src={alertIcon}
         alt="alert-messages"
-        className={`${selectedItem === "/alert-messages" ? iconsStyles : ""}`}
+        className={`${selectedItem.startsWith("/alert-messages") ? iconsStyles : ""}`}
       />
     ),
   },
@@ -212,7 +212,7 @@ const Sidebar = () => {
                       } transition-all duration-300 ${
                         isSidebarOpen ? "justify-start" : "justify-center"
                       } ${
-                        location.pathname === item.nav
+                        location.pathname.startsWith(item.nav)
                           ? "bg-[#DD7E1F] rounded-lg text-[#FCFCFC]"
                           : ""
                       }`}

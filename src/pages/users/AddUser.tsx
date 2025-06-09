@@ -33,8 +33,6 @@ const AddUser = () => {
       ]),
     ) as UserCreateSchemaType;
 
-    console.log(cleanedData);
-
     mutate(cleanedData, {
       onSuccess: () => {
         navigate("/users");

@@ -4,16 +4,15 @@ import { useLayoutEffect } from "react";
 import { Control, useForm, UseFormRegister } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useUpdateUser } from "../../api/users.api";
+import { Users } from "../../../Api";
+import { useUpdateUser, useUserQuery } from "../../api/users.api";
 import UserForm from "../../components/UserForm";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
 import {
   UserCreateSchemaType,
   userUpdateSchema,
   UserUpdateSchemaType,
 } from "../../schemas/user.schema";
-import { GetUserDetailsResponse } from "../../types";
 
 const EditUser = () => {
   const { isSidebarOpen } = useSidebar();
@@ -30,19 +29,15 @@ const EditUser = () => {
     resolver: zodResolver(userUpdateSchema),
   });
 
-  const { data: userData, isLoading } = useFetch<GetUserDetailsResponse>(
-    ["user", userId],
-    `/accounts/users/${userId}/`,
-    undefined,
-    !!userId,
-  );
+  const { data: userData, isLoading } = useUserQuery(userId);
 
   const { mutate, isPending } = useUpdateUser(
     userId ? parseInt(userId) : undefined,
   );
 
   const onSubmit = handleSubmit((formData: UserUpdateSchemaType) => {
-    mutate(formData, {
+    // TODO: Fix type issue with formData
+    mutate(formData as Users, {
       onSuccess: () => {
         navigate("/users");
       },
@@ -57,11 +52,11 @@ const EditUser = () => {
   useLayoutEffect(() => {
     if (userData?.data) {
       setValue("username", userData.data.username);
-      setValue("first_name", userData.data.first_name);
-      setValue("last_name", userData.data.last_name);
+      setValue("first_name", userData.data.first_name!);
+      setValue("last_name", userData.data.last_name!);
       setValue("company_branch", userData.data.company_branch?.id || 0);
-      setValue("email", userData.data.email);
-      setValue("phone", userData.data.phone);
+      setValue("email", userData.data.email!);
+      setValue("phone", userData.data.phone!);
       setValue("is_superuser", userData.data.is_active);
       setValue("is_staff", userData.data.is_staff);
       setValue("is_active", userData.data.is_active);

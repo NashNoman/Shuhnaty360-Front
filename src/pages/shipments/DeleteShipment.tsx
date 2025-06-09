@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
 import ShipmentStatusOverview from "../../components/shipments/shipment/rejectShipment/ShipmentStatusOverview";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useDeleteShipment, useShipmentQuery } from "../../api/shipments.api";
 import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
 import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
 import { useSidebar } from "../../context/SidebarContext";
-import { deleteShipment, getShipment } from "../../redux/Slices/shipmentsSlice";
-import { AppDispatch, RootState } from "../../redux/store";
+import { getShipment } from "../../redux/Slices/shipmentsSlice";
+import { AppDispatch } from "../../redux/store";
 
 const DeleteShipment = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const isShipmentDataLoading = useSelector(
-    (state: RootState) => state.shipments.isLoading,
-  );
   const { shipmentId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { isSidebarOpen } = useSidebar();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const shipment = useSelector((state: RootState) => state.shipments.shipment);
+
+  const { data, isLoading } = useShipmentQuery(shipmentId);
+  const { mutate: deleteShipment, isPending } = useDeleteShipment();
+
+  const shipment = data?.data;
 
   useEffect(() => {
     if (shipmentId) {
@@ -30,27 +31,22 @@ const DeleteShipment = () => {
 
   const handleDeleteItemClick = async () => {
     setIsDialogOpen(false);
-    setIsLoading(true);
-    try {
-      const response = await dispatch(deleteShipment(shipmentId));
-      console.log("delete shipment response: ", response);
-      if (response.meta.requestStatus === "fulfilled") {
-        setIsLoading(false);
-        toast.success("تم حذف الشحنة بنجاح");
-        navigate("/shipments");
-      }
-    } catch (e) {
-      setIsLoading(false);
-      toast.error("Error deleting shipment");
-      console.log(e);
-    } finally {
-      setIsLoading(false);
-    }
+    deleteShipment(shipmentId, {
+      onSuccess: () => {
+        navigate("/shipments/all");
+      },
+      onError: (error: any) => {
+        console.error(error);
+        const errorMessage =
+          error?.response?.data?.detail || "حدث خطأ أثناء حذف الشحنة";
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
     <>
-      {(isLoading || isShipmentDataLoading) && (
+      {(isPending || isLoading) && (
         <div
           className={`fixed inset-0 flex justify-center items-center z-50 ${
             isSidebarOpen && "lg:transform -translate-x-[5%]"

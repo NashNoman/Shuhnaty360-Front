@@ -2,28 +2,18 @@ import DeleteItem from "../../components/shipments/deleteItem/DeleteItem";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useDeleteUser, useUserQuery } from "../../api/users.api";
 import image from "../../assets/images/avatar.jpg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
 import mailIcon from "../../assets/images/users/sms.svg";
-import { useDelete, useFetch } from "../../hooks/useApi";
-import { GetUserDetailsResponse } from "../../types";
 
 const DeleteUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
 
-  const { data: userData, isLoading: isUserDataLoading } =
-    useFetch<GetUserDetailsResponse>(
-      ["user"],
-      `/accounts/users/${userId}/`,
-      undefined,
-      !!userId,
-    );
+  const { data: userData, isLoading: isUserDataLoading } = useUserQuery(userId);
 
-  const { mutate: deleteMutate, isPending: isDeleting } = useDelete(
-    `/accounts/users/${userId}/`,
-    ["users", userId],
-  );
+  const { mutate: deleteMutate, isPending: isDeleting } = useDeleteUser();
 
   const handleDeleteItemClick = () => {
     deleteMutate(undefined, {
