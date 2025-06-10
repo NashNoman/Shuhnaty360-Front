@@ -18,15 +18,7 @@ const Layout = React.memo(({ children }: any) => {
         }`}
       >
         <Header />
-        <Toaster
-          position="bottom-left"
-          // toastOptions={{
-          //   style: {
-          //     textAlign: "center",
-          //     justifyContent: "center",
-          //   },
-          // }}
-        />
+        <Toaster position="bottom-left" />
         <div className="grow md:p-4">{children}</div>
       </div>
     </div>

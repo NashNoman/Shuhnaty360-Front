@@ -74,6 +74,8 @@ const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
     })) || []),
   ];
 
+  console.log(JSON.stringify(statusData?.items));
+
   const status = options.find(
     (option) => option.label === selectedStatus,
   )?.value;

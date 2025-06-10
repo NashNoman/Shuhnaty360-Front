@@ -100,9 +100,6 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
                   error && "border-red-500",
                   disabled && "bg-gray-100 cursor-not-allowed",
                 )}
-                // className={`p-2 pr-10 text-lg border ${
-                //   error ? "border-red-500" : "border-[#CCCCCC]"
-                // } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] w-full`}
                 placeholder={placeholder}
                 value={
                   inputValue ||
@@ -111,7 +108,7 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
                     : "")
                 }
                 onChange={(e) => {
-                  const val = e.target.value;
+                  const val = e.target.value.trim();
                   setInputValue(val);
                   setShowOptions(true);
                   setHighlightedIndex(0);

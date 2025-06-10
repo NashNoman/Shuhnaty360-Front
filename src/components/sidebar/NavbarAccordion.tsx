@@ -45,7 +45,6 @@ const NavbarAccordion = ({
               items.map((item, index) => (
                 <Link
                   to={item.nav}
-                  // onClick={() => setSelectedItem(item.nav.substring(1))}
                   key={item.name}
                   className={`flex items-center w-full ${
                     index !== items.length - 1 && "mb-4"

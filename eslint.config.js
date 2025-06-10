@@ -29,5 +29,5 @@ export default tseslint.config(
       "@tanstack/query/exhaustive-deps": "off",
       "@typescript-eslint/no-unused-expressions": "warn",
     },
-  }
+  },
 );

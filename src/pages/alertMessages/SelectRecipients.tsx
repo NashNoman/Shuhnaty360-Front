@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { DriverList } from "../../../Api";
 import leftArrowIcon from "../../assets/images/arrow-left.png";
 import Pagination from "../../components/pagination/Pagination";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
 import DriversTable from "../../components/usersDrivers/DriversTable";
-import { Driver } from "../../types";
 const selectMenuOptions = [
   { label: "الكل", value: "all" },
   { label: "متاح", value: "available" },
   { label: "غير متاح", value: "notAvailable" },
 ];
 
-const DriversData: Driver[] = [
+const DriversData: DriverList[] = [
   // {
   //   id: 453,
   //   name: "محمد صالح",

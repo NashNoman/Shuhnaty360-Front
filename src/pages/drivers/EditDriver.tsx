@@ -3,14 +3,16 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useUpdateDriver } from "../../api/drivers.api";
+import {
+  useDriverQuery,
+  useTruckTypesInfinityQuery,
+  useUpdateDriver,
+} from "../../api/drivers.api";
 import DriverForm, {
   DriverFormData,
   driverSchema,
 } from "../../components/DriverForm";
 import { useSidebar } from "../../context/SidebarContext";
-import { useFetch } from "../../hooks/useApi";
-import { GetDriverDetailsResponse } from "../../types";
 
 const EditDriver = () => {
   const { isSidebarOpen } = useSidebar();
@@ -27,12 +29,13 @@ const EditDriver = () => {
     resolver: zodResolver(driverSchema),
   });
 
-  const { data: driverData, isLoading } = useFetch<GetDriverDetailsResponse>(
-    ["drivers", driverId],
-    `/drivers/${driverId}/`,
-    undefined,
-    !!driverId,
-  );
+  const { data: driverData, isLoading } = useDriverQuery(driverId);
+  const { data: truckTypesRes } = useTruckTypesInfinityQuery();
+
+  const truckType =
+    truckTypesRes?.items?.find(
+      (type) => type.name_ar === driverData?.data?.truck_type,
+    )?.id || 0;
 
   const { mutate } = useUpdateDriver(driverId);
 
@@ -55,14 +58,14 @@ const EditDriver = () => {
       setValue("name", driverData.data.name);
       setValue("phone_number", driverData.data.phone_number);
       setValue("identity_number", driverData.data.identity_number);
-      setValue("truck_type", driverData.data.truck_type?.id);
+      setValue("truck_type", truckType);
       setValue("status", driverData.data.status);
       setValue("is_active", driverData.data.is_active);
       setValue("language", driverData.data.language);
       setValue("nationality", driverData.data.nationality);
       setValue("vehicle_number", driverData.data.vehicle_number);
     }
-  }, [driverData, register, setValue]);
+  }, [driverData, register, setValue, truckType]);
 
   return (
     <>
@@ -76,6 +79,7 @@ const EditDriver = () => {
         </div>
       )}
       <DriverForm
+        key={truckType}
         isEdit
         onSubmit={onSubmit}
         isLoading={isLoading}

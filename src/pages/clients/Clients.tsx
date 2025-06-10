@@ -76,7 +76,7 @@ const Clients = () => {
             onChange={(e: any) => setSearchValue(e.target.value)}
           />
         </div>
-        <div className="shadow-xl rounded-3xl px-8 py-4">
+        <div className="shadow-xl rounded-3xl bg-white px-8 py-4">
           <div className="w-full flex justify-between items-center mb-6">
             <h1 className="text-xl font-bold">قائمة العملاء</h1>
           </div>

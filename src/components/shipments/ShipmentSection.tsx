@@ -22,8 +22,8 @@ const ShipmentSection = ({
 
   const cityOptions =
     data?.items.map((city) => ({
-      value: city.id,
-      label: city.ar_city,
+      value: city.id!,
+      label: city.ar_city!,
     })) || [];
 
   return (

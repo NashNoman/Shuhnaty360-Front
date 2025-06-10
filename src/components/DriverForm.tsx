@@ -2,22 +2,26 @@ import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
 import { useTruckTypesInfinityQuery } from "../api/drivers.api";
 import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
+import Button from "./ui/Button";
 import Card from "./ui/Card";
 import SelectField from "./ui/SelectField";
 import TextInputField from "./ui/TextInputField";
+import Toggle from "./ui/Toggle";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const driverSchema = z.object({
   name: z.string().min(1, { message: "اسم السائق مطلوب" }),
   phone_number: z.string().min(1, { message: "رقم الهاتف مطلوب" }),
   nationality: z.string().min(1, { message: "الجنسية مطلوبة" }),
-  language: z.enum(["ar", "en", "ur"], { message: "اللغة مطلوبة" }),
+  language: z.enum(["ar", "en", "ur"], { message: "اللغة مطلوبة" }).optional(),
   identity_number: z.string().min(1, { message: "رقم الهوية/الإقامة مطلوب" }),
   vehicle_number: z.string().min(1, { message: "رقم الشاحنة مطلوب" }),
-  status: z.enum(["available", "offline", "busy"], {
-    message: "الحالة مطلوبة",
-  }),
-  is_active: z.boolean(),
+  status: z
+    .enum(["available", "offline", "busy"], {
+      message: "الحالة مطلوبة",
+    })
+    .optional(),
+  is_active: z.boolean().optional(),
   truck_type: z.coerce.number().optional(),
 });
 
@@ -110,30 +114,20 @@ const DriverForm = ({
             options={truckTypeOptions}
             {...register("truck_type")}
           />
-          <div className="flex items-center gap-2 mt-2">
-            <input
-              type="checkbox"
-              id="is_active"
-              {...register("is_active")}
-              className="w-5 h-5"
-            />
-            <label htmlFor="is_active" className="text-lg">
-              نشط
-            </label>
-            {errors.is_active && (
-              <span className="text-red-500 text-sm">
-                {errors.is_active.message}
-              </span>
-            )}
-          </div>
+          <Toggle
+            name="is_active"
+            label="نشط"
+            control={control}
+            error={errors.is_active?.message}
+          />
         </div>
         <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
-        <button
+        <Button
           disabled={isLoading}
           className="w-full py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
         >
           {isEdit ? "تعديل السائق" : "إضافة سائق"}
-        </button>
+        </Button>
       </form>
     </Card>
   );

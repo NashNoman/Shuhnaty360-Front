@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { City } from "../../Api";
 import { ApiListResponse } from "../types";
-import { City } from "../types/cities.types";
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 

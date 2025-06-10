@@ -55,7 +55,7 @@ export const useShipmentsInfinityQuery = (
 
 export const useShipmentStatusInfinityQuery = () =>
   useInfiniteQuery({
-    ...defaultInfinityQueryOptions<ShipmentStatus>([KEY, "status"]),
+    ...defaultInfinityQueryOptions<ShipmentStatus>([KEY + "status"]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<ShipmentStatus>>(
         ENDPOINT + `status/?page=${pageParam}`,

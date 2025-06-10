@@ -18,7 +18,6 @@ A modern web application for managing shipping operations, built with React, Typ
 - 🎨 [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
 - 🏗️ [TypeScript](https://www.typescriptlang.org/) - TypeScript is a typed superset of JavaScript
 - 📊 [Recharts](https://recharts.org/) - A composable charting library built on React components
-- 🔄 [Redux Toolkit](https://redux-toolkit.js.org/) - The official, opinionated, batteries-included toolset for efficient Redux development
 
 ## Getting Started
 
@@ -30,12 +29,14 @@ A modern web application for managing shipping operations, built with React, Typ
 ### Installation
 
 1. Clone the repository
+
    ```bash
    git clone [repository-url]
    cd Shuhnaty-react
    ```
 
 2. Install dependencies
+
    ```bash
    npm install
    # or
@@ -43,6 +44,7 @@ A modern web application for managing shipping operations, built with React, Typ
    ```
 
 3. Start the development server
+
    ```bash
    npm run dev
    # or
@@ -82,11 +84,12 @@ src/
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
+tsconfigRootDir: import.meta.dirname,
+},
+},
 })
-```
+
+````
 
 - Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
 - Optionally add `...tseslint.configs.stylisticTypeChecked`
@@ -110,4 +113,4 @@ export default tseslint.config({
     ...react.configs['jsx-runtime'].rules,
   },
 })
-```
+````

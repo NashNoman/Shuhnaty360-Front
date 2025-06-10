@@ -29,8 +29,8 @@ const UserForm = ({
 
   const companyBranchOptions =
     companyBranches?.items.map((item) => ({
-      value: item.id,
-      label: item.branch_name_ar,
+      value: item.id!,
+      label: item.branch_name_ar!,
     })) || [];
 
   return (

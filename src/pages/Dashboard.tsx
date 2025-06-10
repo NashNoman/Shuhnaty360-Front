@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { ShipmentSerializerList } from "../../Api";
+import { useShipmentsInfinityQuery } from "../api/shipments.api";
 import boxSearch from "../assets/images/box-search.svg";
 import boxTime from "../assets/images/box-time.svg";
 import message from "../assets/images/message.svg";
@@ -7,14 +8,13 @@ import HorizontalChart from "../components/charts/HorizontalChart";
 import LineChartComponent from "../components/charts/LineChart";
 import PieChart from "../components/charts/PieChart";
 import { useSidebar } from "../context/SidebarContext";
-import { RootState } from "../redux/store";
 
 function parseShipmentDate(dateStr: string): Date {
   return new Date(dateStr?.replace(" ", "T"));
 }
 
 function getDeliveredShipmentsChartData(
-  deliveredShipments: any[],
+  deliveredShipments: ShipmentSerializerList[],
   range: string,
 ) {
   const { start, end } = getRangeDates(range);
@@ -164,10 +164,9 @@ function formatDate(date: Date) {
 const Dashboard = React.memo(() => {
   const { isSidebarOpen } = useSidebar();
   const [selectedRange, setSelectedRange] = useState("أسبوعي");
-  const shipments = useSelector(
-    (state: RootState) => state.shipments.shipments,
-  );
-  const returnedShipments = shipments.filter(
+  const { data } = useShipmentsInfinityQuery();
+  const shipments = data?.items;
+  const returnedShipments = shipments?.filter(
     (shipment: any) => shipment.status === "مرتجعة",
   );
   const { start, end } = useMemo(
@@ -177,30 +176,28 @@ const Dashboard = React.memo(() => {
 
   const filteredShipments = useMemo(
     () =>
-      shipments.filter((shipment: any) => {
+      shipments?.filter((shipment: any) => {
         const date = parseShipmentDate(shipment.loading_at);
         return date >= start && date <= end;
       }),
     [shipments, start, end],
   );
-  const delayedShipments = shipments.filter(
+  const delayedShipments = shipments?.filter(
     (shipment: any) => shipment.status === "متأخرة",
   );
-  const deliveredShipments = filteredShipments.filter(
+  const deliveredShipments = filteredShipments?.filter(
     (shipment: any) => shipment.status === "تم التوصيل",
   );
 
-  // useEffect(() => {
-  //   dispatch(getShipments());
-  // }, [dispatch]);
-
   const chartData = useMemo(
-    () => getDeliveredShipmentsChartData(deliveredShipments, selectedRange),
+    () =>
+      getDeliveredShipmentsChartData(deliveredShipments || [], selectedRange),
     [deliveredShipments, selectedRange],
   );
 
   const filteredDelivered = useMemo(
-    () => getFilteredDeliveredShipments(deliveredShipments, selectedRange),
+    () =>
+      getFilteredDeliveredShipments(deliveredShipments || [], selectedRange),
     [deliveredShipments, selectedRange],
   );
 
@@ -209,14 +206,14 @@ const Dashboard = React.memo(() => {
   }, []);
 
   const percentage =
-    shipments.length === 0
+    !shipments || shipments.length === 0
       ? 0
       : ((filteredDelivered.length / shipments.length) * 100).toFixed(1);
 
   const shipmentsStatus = [
     {
       status: "مرتجعة",
-      count: returnedShipments.length,
+      count: returnedShipments?.length || 0,
       icon: (
         <div className="p-2 rounded-full bg-[#999999] group-hover:bg-[#4D4D4D]">
           <img
@@ -230,7 +227,7 @@ const Dashboard = React.memo(() => {
     },
     {
       status: "شحنات متأخرة",
-      count: delayedShipments.length,
+      count: delayedShipments?.length || 0,
       icon: (
         <div className="p-2 rounded-full bg-[#CA8B02] group-hover:bg-[#986801]">
           <img
@@ -273,7 +270,7 @@ const Dashboard = React.memo(() => {
 
   const pieCounts = pieStatuses.map(
     (item) =>
-      filteredShipments.filter(
+      filteredShipments?.filter(
         (shipment: any) => shipment.status === item.status,
       ).length,
   );
@@ -292,7 +289,7 @@ const Dashboard = React.memo(() => {
 
   const uniqueCities = useMemo(() => {
     const citySet = new Set();
-    filteredShipments.forEach((s: any) => {
+    filteredShipments?.forEach((s: any) => {
       if (s.origin_city) citySet.add(s.origin_city);
     });
     return Array.from(citySet);
@@ -311,8 +308,10 @@ const Dashboard = React.memo(() => {
       name: status.name,
       data: uniqueCities.map(
         (city) =>
-          filteredShipments.filter(
-            (s) => s.origin_city === city && s.status === status.name,
+          filteredShipments?.filter(
+            (s) =>
+              s.origin_city?.ar_city === city &&
+              s.status?.name_ar === status.name,
           ).length,
       ),
     }));
@@ -322,7 +321,7 @@ const Dashboard = React.memo(() => {
     return series.length
       ? series[0].data
           .map((_, cityIdx) =>
-            series.reduce((sum, s) => sum + s.data[cityIdx], 0),
+            series.reduce((sum, s) => sum + s.data[cityIdx]!, 0),
           )
           .reduce((a, b) => a + b, 0)
       : 0;
@@ -368,7 +367,7 @@ const Dashboard = React.memo(() => {
                     </span>
                     <span className="font-Rubik text-nowrap">من إجمالي</span>
                     <span className="text-[#333333] xs:text-lg text-xl sm:text-3xl font-bold">
-                      {filteredShipments.length}
+                      {filteredShipments?.length}
                     </span>
                   </div>
                 </div>

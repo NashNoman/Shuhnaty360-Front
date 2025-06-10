@@ -8,10 +8,10 @@ import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
 
 const selectMenuOptions = [
-  { label: "الكل" },
-  { label: "متاح" },
-  { label: "غير متاح" },
-  { label: "مشغول" },
+  { label: "الكل", value: "" },
+  { label: "متاح", value: "available" },
+  { label: "غير متاح", value: "offline" },
+  { label: "مشغول", value: "busy" },
 ];
 
 const tableColumns = [
@@ -124,7 +124,7 @@ const Drivers = () => {
             onChange={(e: any) => setSearchValue(e.target.value)}
           />
         </div>
-        <div className="shadow-xl rounded-3xl px-8 py-4">
+        <div className="shadow-xl rounded-3xl bg-white px-8 py-4">
           <div className="w-full flex justify-between items-center mb-6">
             <h1 className="xs:text-lg text-xl text-nowrap font-bold">
               قائمة السائقين

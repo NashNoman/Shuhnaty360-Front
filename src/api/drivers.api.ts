@@ -67,7 +67,7 @@ export const useUpdateDriver = (id?: number | string) => {
 
   const mutation = useMutation({
     mutationFn: async (formData: DriverCreate) => {
-      const response = await api.patch(ENDPOINT + id, formData);
+      const response = await api.patch(ENDPOINT + `update/${id}`, formData);
       return response.data;
     },
     onSuccess: () => {

@@ -1,20 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ShipmentStatusOverview from "../../components/shipments/shipment/rejectShipment/ShipmentStatusOverview";
 
-import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteShipment, useShipmentQuery } from "../../api/shipments.api";
 import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
 import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
 import { useSidebar } from "../../context/SidebarContext";
-import { getShipment } from "../../redux/Slices/shipmentsSlice";
-import { AppDispatch } from "../../redux/store";
 
 const DeleteShipment = () => {
   const navigate = useNavigate();
   const { shipmentId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
   const { isSidebarOpen } = useSidebar();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -22,12 +18,6 @@ const DeleteShipment = () => {
   const { mutate: deleteShipment, isPending } = useDeleteShipment();
 
   const shipment = data?.data;
-
-  useEffect(() => {
-    if (shipmentId) {
-      dispatch(getShipment(shipmentId));
-    }
-  }, [dispatch, shipmentId]);
 
   const handleDeleteItemClick = async () => {
     setIsDialogOpen(false);

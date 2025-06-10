@@ -49,8 +49,8 @@ const EditRecipient = () => {
     if (data) {
       const recipientData = data.data;
       setValue("name", recipientData.name);
-      setValue("address", recipientData.address);
-      setValue("phone_number", recipientData.phone_number);
+      setValue("address", recipientData.address || undefined);
+      setValue("phone_number", recipientData.phone_number || undefined);
       setValue("second_phone_number", recipientData.second_phone_number || "");
       setValue("email", recipientData.email || "");
       setValue("city", recipientData.city);

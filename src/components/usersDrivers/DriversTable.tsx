@@ -1,10 +1,10 @@
 import React from "react";
 import { TiFilter } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
-import { Driver } from "../../types";
+import { DriverList } from "../../../Api";
 import { ColumnFilterDropdown } from "../shipments/shipmentsTable/ColumnFilterDropdown";
 
-const driverStatus: Record<Driver["status"], string> = {
+const driverStatus = {
   available: "متاح",
   offline: "غير متاح",
   busy: "مشغول",
@@ -12,7 +12,7 @@ const driverStatus: Record<Driver["status"], string> = {
 
 type DriversTableProps = {
   selectedStatus: string;
-  data: Driver[];
+  data: DriverList[];
   currentPage: number;
   itemsPerPage: number;
 };
@@ -64,7 +64,7 @@ const DriversTable = ({
   filterableColumns.forEach((col) => {
     let values = data.map((item: any) => item[col.key]);
     if (col.key === "status") {
-      values = values.map((val: Driver["status"]) => driverStatus[val]);
+      values = values.map((val: DriverList["status"]) => driverStatus[val!]);
     }
     uniqueOptions[col.key] = Array.from(new Set(values)).filter(Boolean);
   });
@@ -73,17 +73,17 @@ const DriversTable = ({
   const [showFilter, setShowFilter] = React.useState<any>({});
 
   const filteredData = data.filter(
-    (item: Driver) =>
+    (item: DriverList) =>
       Object.keys(filters).every((key) => {
         if (!filters[key] || filters[key].length === 0) return true;
         if (key === "status") {
-          const statusText = driverStatus[item[key]];
+          const statusText = driverStatus[item[key]!];
           return filters[key].includes(statusText);
         }
-        return filters[key].includes(item[key as keyof Driver]);
+        return filters[key].includes(item[key as keyof DriverList]);
       }) &&
       (selectedStatus === "الكل" ||
-        driverStatus[item.status] === selectedStatus),
+        driverStatus[item.status!] === selectedStatus),
   );
 
   const paginatedData = filteredData.slice(
@@ -91,7 +91,7 @@ const DriversTable = ({
     currentPage * itemsPerPage,
   );
 
-  const getLang = (lang: string) => {
+  const getLang = (lang: string | undefined) => {
     switch (lang) {
       case "ar":
         return "العربية";
@@ -160,7 +160,7 @@ const DriversTable = ({
         </thead>
         <div className="h-8"></div>
         <tbody className="font-Rubik text-base font-medium">
-          {paginatedData.map((item: Driver, index: any) => (
+          {paginatedData.map((item: DriverList, index: any) => (
             <>
               <tr className={`rounded-lg ${index % 2 === 0 && "bg-[#F2F2F2]"}`}>
                 <button
@@ -180,11 +180,11 @@ const DriversTable = ({
                   <td className={tableRowStyles}>{item.vehicle_number}</td>
                   <td className="py-2 px-4 text-center ">
                     <span
-                      className={`p-2 inline-block rounded-md w-44 text-sm ${getStatusColor(
-                        item.status,
-                      )} ${getStatusBgColor(item.status)}`}
+                      className={`p-2 inline-block rounded-md w-44 text-sm ${
+                        item.status && getStatusColor(item.status)
+                      } ${item.status && getStatusBgColor(item.status)}`}
                     >
-                      {driverStatus[item.status]}
+                      {driverStatus[item.status!]}
                     </span>
                   </td>
                 </button>

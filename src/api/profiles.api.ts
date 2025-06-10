@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { flatMap } from "lodash";
-import { ApiListResponse, CompanyBranch } from "../types";
+import { CompanyBranch } from "../../Api";
+import { ApiListResponse } from "../types";
 import api from "../utils/api";
 import { getUrlParams } from "../utils/utils";
 

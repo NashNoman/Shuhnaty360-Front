@@ -29,7 +29,7 @@ const RecipientForm = ({
 
   const cities: AutocompleteOption[] =
     citiesData?.items.map((item) => ({
-      value: item.id,
+      value: item.id!,
       label: item.ar_city,
     })) || [];
 

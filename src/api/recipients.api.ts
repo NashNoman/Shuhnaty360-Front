@@ -5,12 +5,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { RecipientSerializerCreate, RecipientSerializerList } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
-import {
-  Recipient,
-  RecipientSerializerCreate,
-  RecipientSerializerList,
-} from "../types/recipients.types";
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
@@ -31,7 +27,7 @@ export const useRecipientQuery = (id?: number) =>
   useQuery({
     queryKey: ["recipients", id],
     queryFn: async () => {
-      const response = await api.get<ApiResponse<Recipient>>(
+      const response = await api.get<ApiResponse<RecipientSerializerCreate>>(
         ENDPOINT + `${id}`,
       );
       return response.data;

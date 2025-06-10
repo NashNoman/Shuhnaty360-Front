@@ -79,7 +79,7 @@ function App() {
                       </Layout>
                     }
                   >
-                    <Route index element={<Shipments />} />{" "}
+                    <Route index element={<Shipments />} />
                     <Route path="all" element={<Shipments />} />
                     <Route path="delivered" element={<Shipments />} />
                     <Route path="completed" element={<Shipments />} />
