@@ -2,7 +2,6 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Control, Controller, FieldError } from "react-hook-form";
-// import CalendarIcon from "../../assets/images/calendar.svg";
 import { cn } from "../../utils/utils";
 
 export type DatePickerFieldProps = {
@@ -116,7 +115,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
   minDate,
   maxDate,
   disabled = false,
-  dateFormat = "dd-MM-yyyy",
+  dateFormat = "YYYY-MM-dd",
   showTimeSelect = false,
   timeFormat = "HH:mm",
   className = "",
@@ -138,7 +137,9 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
           <DatePicker
             id={name}
             selected={field.value ? new Date(field.value) : null}
-            onChange={(date) => field.onChange(date?.toDateString())}
+            onChange={(date) => {
+              field.onChange(date?.toISOString());
+            }}
             onBlur={field.onBlur}
             minDate={minDate}
             maxDate={maxDate}

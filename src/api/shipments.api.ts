@@ -96,6 +96,24 @@ export const useCreateShipment = () => {
   return mutation;
 };
 
+export const useUpdateShipment = (id?: number | string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (formData: ShipmentSerializerCreate) => {
+      const response = await api.patch(ENDPOINT + `${id}`, formData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error(error?.message || "حدث خطأ أثناء تحديث العميل");
+    },
+  });
+};
+
 export const useDeleteShipment = () => {
   const queryClient = useQueryClient();
 

@@ -11,10 +11,11 @@ import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
 const ENDPOINT = "/recipient/";
+const KEY = "recipients";
 
 export const useRecipientsInfinityQuery = () =>
   useInfiniteQuery({
-    ...defaultInfinityQueryOptions<RecipientSerializerList>(["recipients"]),
+    ...defaultInfinityQueryOptions<RecipientSerializerList>([KEY]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<RecipientSerializerList>>(
         ENDPOINT + `?page=${pageParam}`,
@@ -25,7 +26,7 @@ export const useRecipientsInfinityQuery = () =>
 
 export const useRecipientQuery = (id?: number) =>
   useQuery({
-    queryKey: ["recipients", id],
+    queryKey: [KEY, id],
     queryFn: async () => {
       const response = await api.get<ApiResponse<RecipientSerializerCreate>>(
         ENDPOINT + `${id}`,
@@ -44,7 +45,7 @@ export const useCreateRecipient = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipients"] });
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
       console.error(error);
@@ -55,7 +56,7 @@ export const useCreateRecipient = () => {
   return mutation;
 };
 
-export const useUpdateRecipient = (id?: number) => {
+export const useUpdateRecipient = (id?: number | string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -64,7 +65,7 @@ export const useUpdateRecipient = (id?: number) => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipients"] });
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
       console.error(error);
@@ -82,7 +83,7 @@ export const useDeleteRecipient = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["recipients"] });
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
       console.error(error);

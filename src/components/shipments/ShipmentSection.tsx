@@ -1,5 +1,6 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { useCitiesInfinityQuery } from "../../api/cities.api";
+import { useShipmentStatusInfinityQuery } from "../../api/shipments.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import AutoCompleteSelectField from "../ui/AutoCompleteSelectField";
 import DatePickerField from "../ui/DatePickerField";
@@ -18,12 +19,19 @@ const ShipmentSection = ({
   control,
   errors,
 }: ShipmentSectionProps) => {
-  const { data } = useCitiesInfinityQuery();
+  const { data: citiesData } = useCitiesInfinityQuery();
+  const { data: statusData } = useShipmentStatusInfinityQuery();
 
   const cityOptions =
-    data?.items.map((city) => ({
+    citiesData?.items.map((city) => ({
       value: city.id!,
       label: city.ar_city!,
+    })) || [];
+
+  const statusOptions =
+    statusData?.items.map((status) => ({
+      value: status.id!,
+      label: status.name_ar!,
     })) || [];
 
   return (
@@ -46,7 +54,7 @@ const ShipmentSection = ({
         label="تاريخ التحميل"
         name="loading_date"
         error={errors.loading_date?.message}
-        description="يتم تحديد تاريخ التحميل بشكل تلقائي حسب تاريخ اليوم، إذا كانت الشحنة تستلزم تاريخا محدددا للتحميل يمكنك التعديل بناء عليه."
+        description="يتم تحديد تاريخ التحميل بشكل تلقائي حسب تاريخ اليوم، إذا كانت الشحنة تستلزم تاريخا محددا للتحميل يمكنك التعديل بناء عليه."
         control={control}
       />
       <DatePickerField
@@ -57,7 +65,7 @@ const ShipmentSection = ({
         control={control}
       />
       <DatePickerField
-        label="تاريخ الفعلي"
+        label="تاريخ التسليم الفعلي"
         name="actual_delivery_date"
         error={errors.actual_delivery_date?.message}
         control={control}
@@ -67,6 +75,14 @@ const ShipmentSection = ({
         type="number"
         error={errors.weight?.message}
         {...register("weight")}
+        step={0.01}
+      />
+      <AutoCompleteSelectField
+        name="status"
+        label="حالة الشحنة"
+        options={statusOptions}
+        error={errors.status?.message}
+        control={control}
       />
       <TextAreaField
         label="المحتويات"

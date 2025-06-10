@@ -57,40 +57,29 @@ const getStatusColor = (status: string) => {
   }
 };
 
-const selectMenuOptions = [
-  { label: "الكل", value: "all" },
-  { label: "قيد الشحن", value: "in-shipping" },
-  { label: "متأخرة", value: "delayed" },
-  { label: "تم التوصيل", value: "delivered" },
-  { label: "مكتملة", value: "completed" },
-  { label: "تم الإلغاء", value: "cancelled" },
-  { label: "تم الإرجاع", value: "returned" },
-];
-
-// const status = [
-//   { id: 0, name_ar: "الكل", name_en: "All" },
-//   { id: 1, name_ar: "قيد الشحن", name_en: "In Shipping" },
-//   { id: 2, name_ar: "في الطريق", name_en: "In Transit" },
-//   { id: 3, name_ar: "تم التوصيل", name_en: "Delivered" },
-//   { id: 4, name_ar: "تم الإرجاع", name_en: "Returned" },
-//   { id: 5, name_ar: "قيد المراجعة", name_en: "Under Review" },
-//   { id: 6, name_ar: "تم الإلغاء", name_en: "Cancelled" },
-// ];
-
 const routeStatusMap: Record<string, string> = {
   all: "الكل",
-  delivered: "تم التوصيل",
-  completed: "مكتملة",
   "in-shipping": "قيد الشحن",
-  delayed: "متأخرة",
-  cancelled: "تم الإلغاء",
+  "in-transit": "في الطريق",
+  delivered: "تم التوصيل",
   returned: "تم الإرجاع",
+  "under-review": "قيد المراجعة",
+  cancelled: "تم الإلغاء",
 };
 
-const Shipments = () => {
+const selectMenuOptions = Object.entries(routeStatusMap).map(
+  ([value, label]) => ({
+    label,
+    value,
+  }),
+);
+
+const Shipments = ({ status }: { status?: string }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedShipmentStatus, setSelectedShipmentStatus] = useState("الكل");
+  const [selectedShipmentStatus, setSelectedShipmentStatus] = useState(
+    status || "الكل",
+  );
   const [searchValue, setSearchValue] = useState("");
 
   const { ref, inView } = useInView();
@@ -142,7 +131,7 @@ const Shipments = () => {
       <div className="shadow-xl rounded-3xl bg-white px-8 py-4">
         <div className="w-full flex justify-between items-center mb-6">
           <h1 className="text-base md:text-xl font-bold">قائمة الشحنات</h1>
-          {statusFromRoute === "الكل" && (
+          {!status && (
             <SelectMenu
               options={selectMenuOptions}
               selectedItem={selectedShipmentStatus}

@@ -4,6 +4,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import { Link } from "react-router-dom";
 import arrowDownIcon from "../../assets/images/arrow-down.svg";
 import shipmentsIcon from "../../assets/images/box.svg";
+import { cn } from "../../utils/utils";
 
 const NavbarAccordion = ({
   items,
@@ -28,11 +29,10 @@ const NavbarAccordion = ({
           aria-controls="shipment-status"
         >
           <div
-            className={` flex items-center w-full ${
-              isSidebarOpen
-                ? "justify-start gap-2 -ms-1.5"
-                : "justify-center min-w-10"
-            }`}
+            className={cn(
+              "flex items-center w-full jusify-center min-w-10",
+              isSidebarOpen && "justify-start gap-2 -ms-1.5",
+            )}
           >
             <img src={shipmentsIcon} alt="shipments" />
             {isSidebarOpen && <span>{title}</span>}
@@ -52,7 +52,7 @@ const NavbarAccordion = ({
                     isSidebarOpen ? "justify-start" : "justify-center"
                   } ${
                     selectedItem === item.nav
-                      ? "bg-[#DD7E1F] text-[#FCFCFC]"
+                      ? "bg-[#DD7E1F] text-[#FCFCFC] rounded-lg"
                       : "hover:bg-[#F9E6D2]"
                   }`}
                 >

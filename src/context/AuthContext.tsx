@@ -131,8 +131,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [handleLogout]);
 
   const authContextValue = useMemo(() => {
-    console.log("From AuthContext");
-
     return {
       accessToken: state.accessToken,
       refreshToken: state.refreshToken,

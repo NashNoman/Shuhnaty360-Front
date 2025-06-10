@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
 import { DriverList } from "../../../Api";
 import {
   useDriversInfinityQuery,
@@ -16,12 +21,14 @@ type ShipmentDriverSectionProps = {
   register: UseFormRegister<ShipmentSerializerSchema>;
   errors: FieldErrors<ShipmentSerializerSchema>;
   control: Control<ShipmentSerializerSchema>;
+  setValue: UseFormSetValue<ShipmentSerializerSchema>;
 };
 
 const ShipmentDriverSection = ({
-  register,
+  // register,
   errors,
   control,
+  setValue,
 }: ShipmentDriverSectionProps) => {
   const [selectedDriver, setSelectedDriver] = useState<DriverList | undefined>(
     undefined,
@@ -52,20 +59,12 @@ const ShipmentDriverSection = ({
         (o) => o.label === selectedDriver.truck_type,
       );
       if (option) {
-        register("truck_type").onChange({
-          target: {
-            value: option.value,
-          },
-        });
+        setValue("truck_type", option.value as number);
       } else {
-        register("truck_type").onChange({
-          target: {
-            value: "",
-          },
-        });
+        setValue("truck_type", 1);
       }
     }
-  }, [register, selectedDriver, truckTypeOptions]);
+  }, [selectedDriver, setValue, truckTypeOptions]);
 
   return (
     <ShipmentSectionWrapper title="السائق">

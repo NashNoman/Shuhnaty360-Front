@@ -15,16 +15,22 @@ const AddShipment = () => {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<ShipmentSerializerSchema>({
     resolver: zodResolver(shipmentSerializerSchema),
   });
 
-  const { status } = useCreateShipment();
+  console.log("Errors:", errors);
+
+  const { mutate, status } = useCreateShipment();
 
   const onSubmit = handleSubmit((formData) => {
     console.log(formData);
-    // mutate(formData);
+    mutate({
+      user: 1,
+      ...formData,
+    });
   });
 
   useEffect(() => {
@@ -35,6 +41,7 @@ const AddShipment = () => {
     <ShipmentsForm
       onSubmit={onSubmit}
       register={register}
+      setValue={setValue}
       errors={errors}
       isLoading={status === "pending"}
       control={control}

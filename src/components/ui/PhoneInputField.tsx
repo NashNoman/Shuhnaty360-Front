@@ -47,7 +47,7 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
         disabled={disabled}
         countrySelectorStyleProps={{
           className:
-            "border-none bg-[#E6E6E6] rounded-lg rounded-tl-none rounded-bl-none flex items-center justify-center px-2.5",
+            "border-none bg-white rounded-lg flex items-center justify-center px-2.5",
           dropdownStyleProps: {
             className: "hidden",
           },
@@ -55,7 +55,7 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
         inputProps={{
           required: true,
           className:
-            "!w-full !ps-4 !text-[#1A1A1A] !bg-[#FCFCFC] h-12 rounded-lg border border-[#CCCCCC] rounded-tr-none rounded-br-none text-left font-Rubik focus:!border-1 focus:!border-[#DD7E1F] focus:!outline-none",
+            "!w-full !ps-4 !text-[#1A1A1A] !bg-white h-12 rounded-lg border border-[#CCCCCC] text-left font-Rubik focus:!border-1 focus:!border-[#DD7E1F] focus:!outline-none",
         }}
         defaultCountry="sa"
         {...props}

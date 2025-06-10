@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { ClientSerializerList } from "../../../Api";
-import { useClientQuery, useClientsInfinityQuery } from "../../api/clients.api";
+import { RecipientSerializerList } from "../../../Api";
+import { useRecipientsInfinityQuery } from "../../api/recipients.api";
 import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import AutoCompleteSelectField, {
   AutocompleteOption,
@@ -21,29 +21,23 @@ const ShipmentRecipientSection = ({
   errors,
   control,
 }: ShipmentClientSectionProps) => {
-  const [selectedClient, setSelectedClient] = useState<
-    ClientSerializerList | undefined
-  >(undefined);
-  const [branchOptions, setBranchOptions] = useState<AutocompleteOption[]>([]);
+  const [selectedRecipient, setSelectedRecipient] = useState<
+    RecipientSerializerList | undefined
+  >();
 
-  const { data: clientsData } = useClientsInfinityQuery();
-  const { data: selectedClientData, isLoading: isLoadingBranches } =
-    useClientQuery(selectedClient?.id);
+  const { data: recipientsData } = useRecipientsInfinityQuery();
 
-  const clientOptions: AutocompleteOption[] =
-    clientsData?.items.map((item) => ({
+  const recipientOptions: AutocompleteOption[] =
+    recipientsData?.items.map((item) => ({
       value: item.id as number,
       label: item.name,
     })) || [];
 
-  useEffect(() => {
-    const options: AutocompleteOption[] =
-      selectedClientData?.data?.branches?.map((item) => ({
-        value: item.id as number,
-        label: item.address,
-      })) || [];
-    setBranchOptions(() => options);
-  }, [selectedClientData]);
+  const branchOptions: AutocompleteOption[] =
+    recipientsData?.items?.map((item) => ({
+      value: item.id!,
+      label: item.address || "",
+    })) || [];
 
   return (
     <ShipmentSectionWrapper title="المستلِم">
@@ -51,32 +45,33 @@ const ShipmentRecipientSection = ({
         name="recipient"
         label="الاسم"
         control={control}
-        options={clientOptions}
+        options={recipientOptions}
         error={errors.recipient?.message}
         onInputChange={(value) => {
-          const client = clientsData?.items.find((item) => item.name === value);
-          setSelectedClient(client);
+          const client = recipientsData?.items.find(
+            (item) => item.name === value,
+          );
+          setSelectedRecipient(client);
         }}
       />
       <AutoCompleteSelectField
-        key={selectedClient?.id || "none"}
+        key={selectedRecipient?.id || "none"}
         name="address"
         label="العنوان"
         control={control}
         options={branchOptions}
-        isLoading={isLoadingBranches}
         disabled={!branchOptions.length}
       />
       <PhoneInputField
         name="recipient_phone"
         label="رقم الهاتف (أساسي)"
-        value={selectedClient?.phone_number || "+966"}
+        value={selectedRecipient?.phone_number || "+966"}
         control={control}
       />
       <PhoneInputField
         name="recipient_phone2"
         label="رقم الهاتف (احتياطي)"
-        value={selectedClient?.second_phone_number || "+966"}
+        value={selectedRecipient?.second_phone_number || "+966"}
         control={control}
       />
       <TextAreaField
