@@ -23,7 +23,10 @@ const TableHead = ({ columns }: TableHeadProps) => {
               className={cn("px-4 py-2 text-left font-medium", col.className)}
             >
               <div
-                className={`font-bold flex items-center gap-1 ${index === columns.length - 1 && "ms-4"}`}
+                className={cn(
+                  `font-bold flex items-center gap-1 ${index === columns.length - 1 && "ms-4"}`,
+                  col.className,
+                )}
               >
                 {col.label}
                 {col.isFilterable && (

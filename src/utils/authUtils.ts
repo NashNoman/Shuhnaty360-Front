@@ -23,7 +23,24 @@ export const setRefreshToken = (token: string) => {
   localStorage.setItem("refresh_token", token);
 };
 
-export const removeTokens = () => {
+export const getUserId = () => {
+  const id = localStorage.getItem("user_id");
+  if (id) {
+    return parseInt(id);
+  }
+  return null;
+};
+
+export const setUserId = (userId: string) => {
+  localStorage.setItem("user_id", userId);
+};
+
+export const getCurrentUser = () => {
+  return localStorage.getItem("current_user");
+};
+
+export const removeSessionsData = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+  localStorage.removeItem("user_id");
 };

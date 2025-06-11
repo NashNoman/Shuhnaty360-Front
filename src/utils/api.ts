@@ -6,7 +6,7 @@ import {
   callGlobalLogout,
   getAccessToken,
   getRefreshToken,
-  removeTokens,
+  removeSessionsData,
   setAccessToken,
 } from "./authUtils";
 
@@ -69,7 +69,7 @@ api.interceptors.response.use(
 
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
-        removeTokens();
+        removeSessionsData();
         callGlobalLogout();
         return Promise.reject(error);
       }
@@ -83,7 +83,7 @@ api.interceptors.response.use(
       } catch (err) {
         console.error("Refresh token failed:", err);
         processQueue(err, null);
-        removeTokens();
+        removeSessionsData();
         callGlobalLogout();
         return Promise.reject(err);
       } finally {
@@ -100,3 +100,27 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+export const classifyAxiosError = (error: unknown) => {
+  if (!axios.isAxiosError(error)) {
+    return { type: "unknown", message: "حدث خطأ غير معروف." };
+  }
+
+  if (error.response) {
+    return null;
+    // return {
+    //   type: "api",
+    //   status: error.response.status,
+    //   data: error.response.data,
+    // };
+  }
+
+  if (error.request) {
+    return {
+      type: "network",
+      message: "خطأ في الشبكة: لا يوجد استجابة من الخادم.",
+    };
+  }
+
+  return { type: "axios", message: error.message };
+};

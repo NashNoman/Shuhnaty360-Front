@@ -8,6 +8,10 @@ export type LoginCredentials = {
 export type LoginResponse = {
   access: string;
   refresh: string;
+  user: {
+    id: number;
+    username: string;
+  };
 };
 
 export type RefreshTokenResponse = {

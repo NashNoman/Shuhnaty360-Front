@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-export interface TokenObtainPair {
+export interface CustomTokenObtainPair {
   /**
    * Username
    * @minLength 1
@@ -23,7 +23,7 @@ export interface TokenObtainPair {
   password: string;
 }
 
-export interface TokenRefresh {
+export interface CustomTokenRefresh {
   /**
    * Refresh
    * @minLength 1
@@ -171,6 +171,72 @@ export interface Register {
    * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
    */
   is_active?: boolean;
+}
+
+export interface UsersUpdate {
+  /** ID */
+  id?: number;
+  /**
+   * Username
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   * @minLength 1
+   * @maxLength 150
+   * @pattern ^[\w.@+-]+$
+   */
+  username: string;
+  /**
+   * Email
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+  /**
+   * First name
+   * @maxLength 150
+   */
+  first_name?: string;
+  /**
+   * Last name
+   * @maxLength 150
+   */
+  last_name?: string;
+  /**
+   * Staff status
+   * Designates whether the user can log into this admin site.
+   */
+  is_staff?: boolean;
+  /**
+   * Active
+   * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+   */
+  is_active?: boolean;
+  /**
+   * Date joined
+   * @format date-time
+   */
+  date_joined?: string;
+  /**
+   * Phone
+   * @maxLength 100
+   */
+  phone?: string | null;
+  /** Company branch */
+  company_branch?: number | null;
+  /**
+   * Superuser status
+   * Designates that this user has all permissions without explicitly assigning them.
+   */
+  is_superuser?: boolean;
+  /**
+   * Password
+   * @minLength 1
+   */
+  password: string;
+  /**
+   * Password2
+   * @minLength 1
+   */
+  password2: string;
 }
 
 export interface City {
@@ -1516,15 +1582,18 @@ export class Api<
 > extends HttpClient<SecurityDataType> {
   accounts = {
     /**
-     * @description Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+     * No description
      *
      * @tags accounts
      * @name AccountsTokenCreate
      * @request POST:/accounts/token/
      * @secure
      */
-    accountsTokenCreate: (data: TokenObtainPair, params: RequestParams = {}) =>
-      this.request<TokenObtainPair, any>({
+    accountsTokenCreate: (
+      data: CustomTokenObtainPair,
+      params: RequestParams = {},
+    ) =>
+      this.request<CustomTokenObtainPair, any>({
         path: `/accounts/token/`,
         method: "POST",
         body: data,
@@ -1535,7 +1604,7 @@ export class Api<
       }),
 
     /**
-     * @description Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+     * No description
      *
      * @tags accounts
      * @name AccountsTokenRefreshCreate
@@ -1543,10 +1612,10 @@ export class Api<
      * @secure
      */
     accountsTokenRefreshCreate: (
-      data: TokenRefresh,
+      data: CustomTokenRefresh,
       params: RequestParams = {},
     ) =>
-      this.request<TokenRefresh, any>({
+      this.request<CustomTokenRefresh, any>({
         path: `/accounts/token/refresh/`,
         method: "POST",
         body: data,
@@ -1652,17 +1721,33 @@ export class Api<
      * No description
      *
      * @tags accounts
-     * @name AccountsUsersUpdate
-     * @request PUT:/accounts/users/{id}/
+     * @name AccountsUsersDelete
+     * @request DELETE:/accounts/users/{id}/
      * @secure
      */
-    accountsUsersUpdate: (
+    accountsUsersDelete: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/accounts/users/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags accounts
+     * @name AccountsUsersUpdateUpdate
+     * @request PUT:/accounts/users/{id}/update
+     * @secure
+     */
+    accountsUsersUpdateUpdate: (
       id: number,
-      data: Users,
+      data: UsersUpdate,
       params: RequestParams = {},
     ) =>
-      this.request<Users, any>({
-        path: `/accounts/users/${id}/`,
+      this.request<UsersUpdate, any>({
+        path: `/accounts/users/${id}/update`,
         method: "PUT",
         body: data,
         secure: true,
@@ -1675,38 +1760,22 @@ export class Api<
      * No description
      *
      * @tags accounts
-     * @name AccountsUsersPartialUpdate
-     * @request PATCH:/accounts/users/{id}/
+     * @name AccountsUsersUpdatePartialUpdate
+     * @request PATCH:/accounts/users/{id}/update
      * @secure
      */
-    accountsUsersPartialUpdate: (
+    accountsUsersUpdatePartialUpdate: (
       id: number,
-      data: Users,
+      data: UsersUpdate,
       params: RequestParams = {},
     ) =>
-      this.request<Users, any>({
-        path: `/accounts/users/${id}/`,
+      this.request<UsersUpdate, any>({
+        path: `/accounts/users/${id}/update`,
         method: "PATCH",
         body: data,
         secure: true,
         type: ContentType.Json,
         format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags accounts
-     * @name AccountsUsersDelete
-     * @request DELETE:/accounts/users/{id}/
-     * @secure
-     */
-    accountsUsersDelete: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/accounts/users/${id}/`,
-        method: "DELETE",
-        secure: true,
         ...params,
       }),
   };

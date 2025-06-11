@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useShipmentQuery, useUpdateShipment } from "../../api/shipments.api";
 import ShipmentsForm from "../../components/ShipmentsForm";
 import { useSidebar } from "../../context/SidebarContext";
+import { useAuth } from "../../hooks/useAuth";
 import {
   shipmentSerializerSchema,
   ShipmentSerializerSchema,
@@ -14,6 +15,7 @@ import { formateDateTime } from "../../utils/formatDate";
 
 const EditShipment = () => {
   const navigate = useNavigate();
+  const { userId } = useAuth();
   const { isSidebarOpen } = useSidebar();
   const { shipmentId } = useParams();
 
@@ -31,14 +33,11 @@ const EditShipment = () => {
 
   const { mutate, status } = useUpdateShipment(shipmentId);
 
-  console.log("Errors:", errors);
-  console.log("Data:", data?.data);
-
   const onSubmit = handleSubmit((formData) => {
     console.log(formData);
     mutate(
       {
-        user: 1,
+        user: userId!,
         ...formData,
       },
       {

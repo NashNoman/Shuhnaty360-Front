@@ -78,6 +78,9 @@ export const userCreateSchema = z.object({
       invalid_type_error: "الفرع مطلوب",
       coerce: true,
     })
+    .gt(0, {
+      message: "الفرع مطلوب",
+    })
     .optional(),
 });
 

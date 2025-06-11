@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { FiCheckCircle, FiPlus, FiXCircle } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { useUsersInfinityQuery } from "../../api/users.api";
+import {
+  useUpdateUserIsActive,
+  useUsersInfinityQuery,
+} from "../../api/users.api";
 import SearchInput from "../../components/searchInput/SearchInput";
 import SelectMenu from "../../components/SelectMenu";
+import RowToggle from "../../components/ui/RowToggle";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
 
 const selectMenuOptions = [
@@ -47,14 +51,14 @@ const tableColumns = [
   {
     key: "status",
     label: "الحالة",
-    isFilterable: true,
+    // className: "ms-14",
   },
 ];
 
-const getStatusBgColor = (status: any) =>
-  status ? "bg-[#B3E5BD]" : "bg-[#CCCCCC]";
-const getStatusColor = (status: any) =>
-  status ? "text-[#2E853F]" : "text-[#333333]";
+// const getStatusBgColor = (status: any) =>
+//   status ? "bg-[#B3E5BD]" : "bg-[#CCCCCC]";
+// const getStatusColor = (status: any) =>
+//   status ? "text-[#2E853F]" : "text-[#333333]";
 
 const Users = () => {
   const navigate = useNavigate();
@@ -68,6 +72,8 @@ const Users = () => {
     hasNextPage,
     fetchNextPage,
   } = useUsersInfinityQuery();
+
+  const { mutate } = useUpdateUserIsActive();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -140,13 +146,15 @@ const Users = () => {
                     )}
                   </TableCell>
                   <TableCell>
-                    <span
-                      className={`py-2 text-center font-medium inline-block rounded-md w-44 text-sm ${getStatusColor(
-                        item.is_active,
-                      )} ${getStatusBgColor(item.is_active)}`}
-                    >
-                      {item.is_active ? "متاح" : "غير متاح"}
-                    </span>
+                    <RowToggle
+                      checked={!!item.is_active}
+                      onChange={(val) => {
+                        mutate({
+                          id: item.id!,
+                          is_active: val,
+                        });
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

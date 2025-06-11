@@ -9,20 +9,26 @@ import {
   useReducer,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { Users } from "../../Api";
 import { loginUser } from "../api/auth.api";
+import { useUserQuery } from "../api/users.api";
 import { LoginCredentials, LoginResponse } from "../types";
 import {
   getAccessToken,
   getRefreshToken,
-  removeTokens,
+  getUserId,
+  removeSessionsData,
   setAccessToken,
   setGlobalLogout,
   setRefreshToken,
+  setUserId,
 } from "../utils/authUtils";
 
 type AuthState = {
   accessToken: string | null;
   refreshToken: string | null;
+  userId: number | null;
+  user: Users | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -31,6 +37,7 @@ type AuthState = {
 type AuthAction =
   | { type: "LOGIN_SUCCESS"; payload: LoginResponse }
   | { type: "LOGOUT" }
+  | { type: "SET_USER"; payload: Users | null }
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ERROR"; payload: string };
 
@@ -41,6 +48,7 @@ const AuthReducer = (state: AuthState, action: AuthAction): AuthState => {
         ...state,
         accessToken: action.payload.access,
         refreshToken: action.payload.refresh,
+        userId: action.payload.user.id,
         isAuthenticated: true,
         isLoading: false,
         error: null,
@@ -50,9 +58,15 @@ const AuthReducer = (state: AuthState, action: AuthAction): AuthState => {
         ...state,
         accessToken: null,
         refreshToken: null,
+        userId: null,
         isAuthenticated: false,
         isLoading: false,
         error: null,
+      };
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.payload,
       };
     case "SET_LOADING":
       return {
@@ -75,6 +89,8 @@ const accessToken = getAccessToken();
 const initialState: AuthState = {
   accessToken: accessToken,
   refreshToken: getRefreshToken(),
+  userId: getUserId(),
+  user: null,
   isAuthenticated: !!accessToken,
   isLoading: false,
   error: null,
@@ -83,6 +99,8 @@ const initialState: AuthState = {
 type AuthContextType = {
   accessToken: string | null;
   refreshToken: string | null;
+  userId: number | null;
+  user: Users | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: any;
@@ -106,8 +124,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     onSuccess: (data: LoginResponse) => {
       setAccessToken(data.access);
       setRefreshToken(data.refresh);
+      setUserId(data.user.id.toString());
       dispatch({ type: "LOGIN_SUCCESS", payload: data });
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       navigate("/dashboard");
     },
     onError: (error: any) => {
@@ -119,8 +137,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
+  const userQuery = useUserQuery(state.userId as number);
+
+  useEffect(() => {
+    if (userQuery.data?.data && state.userId) {
+      dispatch({
+        type: "SET_USER",
+        payload: userQuery.data.data,
+      });
+    } else {
+      dispatch({
+        type: "SET_USER",
+        payload: null,
+      });
+    }
+  }, [state.userId, userQuery.data?.data]);
+
   const handleLogout = useCallback(() => {
-    removeTokens();
+    removeSessionsData();
     dispatch({ type: "LOGOUT" });
     navigate("/login");
     queryClient.clear();
@@ -134,6 +168,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return {
       accessToken: state.accessToken,
       refreshToken: state.refreshToken,
+      userId: state.userId,
+      user: state.user,
       isAuthenticated: state.isAuthenticated,
       isLoading: state.isLoading || loginMutation.isPending,
       error: state.error || loginMutation.error,

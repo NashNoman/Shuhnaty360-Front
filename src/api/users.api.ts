@@ -5,9 +5,9 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Register, Users } from "../../Api";
+import { Register, Users, UsersUpdate } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
-import api from "../utils/api";
+import api, { classifyAxiosError } from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 
 const ENDPOINT = "/accounts/users/";
@@ -42,12 +42,13 @@ export const useCreateUser = () => {
       const response = await api.post(ENDPOINT + "create/", formData);
       return response.data;
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
+      const err = classifyAxiosError(error);
       console.error(error);
-      toast.error("حصل خطاء");
+      toast.error(err?.message || "حدث خطأ أثناء إنشاء المندوب");
     },
   });
 
@@ -58,16 +59,77 @@ export const useUpdateUser = (id?: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (formData: Users) => {
-      const response = await api.patch(ENDPOINT + `${id}`, formData);
+    mutationFn: async (formData: UsersUpdate) => {
+      const response = await api.put(ENDPOINT + `${id}/update`, formData);
       return response.data;
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
+      const err = classifyAxiosError(error);
       console.error(error);
-      toast.error(error?.message || "حدث خطأ أثناء تحديث العميل");
+      toast.error(err?.message || "حدث خطأ أثناء تحديث المندوب");
+    },
+  });
+};
+
+export const useUpdateUserIsActive = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      is_active,
+    }: {
+      id: number;
+      is_active: boolean;
+    }) => {
+      const response = await api.patch(ENDPOINT + `${id}/update`, {
+        is_active,
+      });
+      return response.data;
+    },
+
+    onMutate: async ({ id, is_active }) => {
+      await queryClient.cancelQueries({ queryKey: [KEY] });
+      const previousUsers = queryClient.getQueryData<ApiListResponse<Users>>([
+        KEY,
+      ]);
+
+      queryClient.setQueryData([KEY], (oldData: any) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map(
+            (page: ApiListResponse<Users>): ApiListResponse<Users> => ({
+              ...page,
+              data: {
+                ...page.data,
+                results: page.data.results.map((user: Users) => {
+                  if (user.id === id) {
+                    return { ...user, is_active };
+                  }
+                  return user;
+                }),
+              },
+            }),
+          ),
+        };
+      });
+
+      return { previousUsers };
+    },
+    onError: (error, _user, context) => {
+      if (context?.previousUsers) {
+        queryClient.setQueryData([KEY], context.previousUsers);
+      }
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء تحديث المندوب");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
 };
@@ -80,8 +142,13 @@ export const useDeleteUser = () => {
       const response = await api.delete(ENDPOINT + id);
       return response.data;
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+    onError: (error) => {
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء حذف المندوب");
     },
   });
 

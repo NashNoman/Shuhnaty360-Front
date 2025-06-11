@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCreateShipment } from "../../api/shipments.api";
 import ShipmentsForm from "../../components/ShipmentsForm";
+import { useAuth } from "../../hooks/useAuth";
 import {
   ShipmentSerializerSchema,
   shipmentSerializerSchema,
@@ -11,6 +12,7 @@ import {
 
 const AddShipment = () => {
   const navigate = useNavigate();
+  const { userId } = useAuth();
   const {
     register,
     handleSubmit,
@@ -21,14 +23,11 @@ const AddShipment = () => {
     resolver: zodResolver(shipmentSerializerSchema),
   });
 
-  console.log("Errors:", errors);
-
   const { mutate, status } = useCreateShipment();
 
   const onSubmit = handleSubmit((formData) => {
-    console.log(formData);
     mutate({
-      user: 1,
+      user: userId!,
       ...formData,
     });
   });

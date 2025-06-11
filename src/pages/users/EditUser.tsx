@@ -3,8 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLayoutEffect } from "react";
 import { Control, useForm, UseFormRegister } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import { Users } from "../../../Api";
+import { UsersUpdate } from "../../../Api";
 import { useUpdateUser, useUserQuery } from "../../api/users.api";
 import UserForm from "../../components/UserForm";
 import { useSidebar } from "../../context/SidebarContext";
@@ -37,14 +36,9 @@ const EditUser = () => {
 
   const onSubmit = handleSubmit((formData: UserUpdateSchemaType) => {
     // TODO: Fix type issue with formData
-    mutate(formData as Users, {
+    mutate(formData as UsersUpdate, {
       onSuccess: () => {
         navigate("/users");
-      },
-      onError: (error: any) => {
-        toast.error(
-          error?.response?.data?.detail || "حدث خطأ أثناء تعديل المستخدم",
-        );
       },
     });
   });

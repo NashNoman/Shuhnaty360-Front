@@ -34,3 +34,14 @@ export const fixHtmlFormOptionalFields = <T extends z.ZodObject<any, any>>(
 
   return z.object(Object.fromEntries(transformedEntries)) as T;
 };
+
+export const removeNullOrBlankFields = <T extends Record<string, any>>(
+  obj: T,
+): Partial<T> => {
+  return Object.entries(obj).reduce((acc: Partial<T>, [key, value]) => {
+    if (value != null && value !== "" && value !== 0) {
+      acc[key as keyof T] = value;
+    }
+    return acc;
+  }, {} as Partial<T>);
+};

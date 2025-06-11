@@ -5,14 +5,14 @@ const SearchInput = ({ value, onChange, styles = "" }: any) => {
   return (
     <div
       dir="rtl"
-      className={`relative flex items-center border border-gray-300 rounded-md py-3 px-10 w-full max-w-sm  ${styles}`}
+      className={`relative bg-white flex items-center border border-gray-300 rounded-md py-3 px-10 w-full max-w-sm  ${styles}`}
     >
       <input
         type="text"
         value={value}
         onChange={onChange}
         placeholder="ابحث هنا"
-        className={`grow outline-none placeholder-gray-400 bg-transparent font-Rubik`}
+        className={`grow outline-none bg-white placeholder-gray-400 bg-transparent font-Rubik`}
       />
       <img
         src={searchIcon}

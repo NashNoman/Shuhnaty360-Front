@@ -12,8 +12,9 @@ import {
   ShipmentStatus,
 } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
-import api from "../utils/api";
+import api, { classifyAxiosError } from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
+import { removeNullOrBlankFields } from "../utils/utils";
 
 const ENDPOINT = "/shipments/";
 const KEY = "shipments";
@@ -81,15 +82,19 @@ export const useCreateShipment = () => {
 
   const mutation = useMutation({
     mutationFn: async (formData: ShipmentSerializerCreate) => {
-      const response = await api.post(ENDPOINT + "create/", formData);
+      const data = removeNullOrBlankFields(formData);
+      console.log("Creating shipment with data:", data);
+
+      const response = await api.post(ENDPOINT + "create/", data);
       return response.data;
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
+      const err = classifyAxiosError(error);
       console.error(error);
-      toast.error("حصل خطاء");
+      toast.error(err?.message || "حصل خطاء عند إنشاء الشحنة");
     },
   });
 
@@ -101,15 +106,17 @@ export const useUpdateShipment = (id?: number | string) => {
 
   return useMutation({
     mutationFn: async (formData: ShipmentSerializerCreate) => {
-      const response = await api.patch(ENDPOINT + `${id}`, formData);
+      const data = removeNullOrBlankFields(formData);
+      const response = await api.patch(ENDPOINT + `update/${id}`, data);
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
+      const err = classifyAxiosError(error);
       console.error(error);
-      toast.error(error?.message || "حدث خطأ أثناء تحديث العميل");
+      toast.error(err?.message || "حدث خطأ أثناء تحديث الشحنة");
     },
   });
 };
@@ -122,8 +129,13 @@ export const useDeleteShipment = () => {
       const response = await api.delete(ENDPOINT + id);
       return response.data;
     },
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+    onError: (error) => {
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء حذف الشحنة");
     },
   });
 

@@ -2,6 +2,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 import avatar from "../../assets/images/avatar.jpg";
 import notification from "../../assets/images/notification.svg";
+import { useAuth } from "../../hooks/useAuth";
 
 const PAGE_TITLES = [
   { path: "/dashboard", title: "لوحة المعلومات", exact: true },
@@ -58,6 +59,9 @@ const BACK_BUTTON_PATHS = [
 const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user } = useAuth();
+
+  const fullName = `${user?.first_name || ""} ${user?.last_name || ""}`.trim();
 
   const getPageTitle = () => {
     // First try exact matches
@@ -117,10 +121,10 @@ const Header = () => {
           <div className="flex items-center gap-2">
             <img
               src={avatar}
-              alt="صالح حسين"
+              alt={fullName}
               className="w-8 h-8 rounded-full object-cover"
             />
-            <h4 className="text-[#333333] text-sm">صالح حسين</h4>
+            <h4 className="text-[#333333] text-sm">{fullName}</h4>
           </div>
         </div>
       )}
