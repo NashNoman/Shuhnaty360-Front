@@ -154,7 +154,7 @@ const DatePickerField: React.FC<DatePickerFieldProps> = ({
             // popperContainer={({ children }) => <div dir="ltr">{children}</div>}
             // calendarIconClassName="end-2 center"
             className={cn(
-              "p-2 text-lg border rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] w-full",
+              "p-2 text-lg border rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#DD7E1F] w-full",
               error ? "border-red-500" : "border-[#CCCCCC]",
               disabled && "bg-gray-100 cursor-not-allowed",
               className,

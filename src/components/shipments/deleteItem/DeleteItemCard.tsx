@@ -23,7 +23,7 @@ const DeleteItemCard = ({ handleDeleteButtonClick }: any) => {
             id="password"
             type={isPasswordVisible ? "text" : "password"}
             dir="rtl"
-            className="border border-gray-200 w-full rounded-md py-2 ps-10 focus:outline-none font-Rubik"
+            className="border border-gray-200 w-full rounded-md py-2 ps-10 focus:outline-hidden font-Rubik"
             placeholder="أدخل كلمة المرور"
           />
           <CiLock

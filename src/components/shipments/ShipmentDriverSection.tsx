@@ -41,7 +41,7 @@ const ShipmentDriverSection = ({
   const driverOptions: AutocompleteOption[] =
     data?.items.map((driver) => ({
       value: driver.id as number,
-      label: driver.name,
+      label: `${driver.name} - ${driver.phone_number}`,
     })) || [];
 
   const truckTypeOptions: AutocompleteOption[] = useMemo(

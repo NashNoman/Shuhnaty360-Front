@@ -39,7 +39,7 @@ const SelectField = ({
         onChange={onChange}
         className={`p-3 text-lg border ${
           error ? "border-red-500" : "border-[#CCCCCC]"
-        } rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F] bg-white`}
+        } rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#DD7E1F] bg-white`}
         {...props}
       >
         {placeholder && <option value="">{placeholder}</option>}

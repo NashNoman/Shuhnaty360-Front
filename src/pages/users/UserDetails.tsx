@@ -76,7 +76,7 @@ const UsersDetails = () => {
       <div className="grid col-span-2 lg:grid-cols-3 gap-8">
         <EntityShipmentsTable user={userId} />
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">
-          <div className="w-full shadow-sm rounded-3xl lg:px-8 py-4 mb-6">
+          <div className="w-full shadow-xs rounded-3xl lg:px-8 py-4 mb-6">
             <UserDriverProfileCard
               personalInfoData={personalInfoData}
               moreInfoData={moreInfoData}
@@ -84,7 +84,7 @@ const UsersDetails = () => {
               page="user"
             />
           </div>
-          {/* <div className='w-full shadow-sm rounded-3xl md:px-8 py-4 bg-[#FFF]'>
+          {/* <div className='w-full shadow-xs rounded-3xl md:px-8 py-4 bg-[#FFF]'>
           <div className='flex items-center justify-center gap-2 my-12'>
             <h1 className='text-xl font-bold text-[#333333]'>بيان الشهر</h1>
           </div>

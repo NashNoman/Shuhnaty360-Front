@@ -17,7 +17,7 @@ export default function ImageModal({ image, fileName }: any) {
     <div>
       <Button
         onClick={handleOpen}
-        className="!text-[#DD7E1F] !normal-case flex items-center gap-2 !px-0"
+        className="text-[#DD7E1F]! normal-case! flex items-center gap-2 px-0!"
       >
         <span> {fileName}</span>
         <span>

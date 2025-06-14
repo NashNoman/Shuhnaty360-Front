@@ -55,7 +55,7 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
         inputProps={{
           required: true,
           className:
-            "!w-full !ps-4 !text-[#1A1A1A] !bg-white h-12 rounded-lg border border-[#CCCCCC] text-left font-Rubik focus:!border-1 focus:!border-[#DD7E1F] focus:!outline-none",
+            "w-full! ps-4! text-[#1A1A1A]! bg-white! h-12 rounded-lg border border-[#CCCCCC] text-left font-Rubik focus:border! focus:border-[#DD7E1F]! focus:outline-hidden!",
         }}
         defaultCountry="sa"
         {...props}

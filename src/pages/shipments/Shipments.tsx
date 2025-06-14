@@ -1,3 +1,4 @@
+import FiltersPopover from "@/components/searchInput/FiltersPopover";
 import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useInView } from "react-intersection-observer";
@@ -126,6 +127,11 @@ const Shipments = ({ status }: { status?: string }) => {
         <SearchInput
           value={searchValue}
           onChange={(e: any) => setSearchValue(e.target.value)}
+          suffixIcon={
+            <FiltersPopover>
+              <div></div>
+            </FiltersPopover>
+          }
         />
       </div>
       <div className="shadow-xl rounded-3xl bg-white px-8 py-4">

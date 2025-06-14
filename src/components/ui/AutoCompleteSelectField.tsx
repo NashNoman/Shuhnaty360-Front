@@ -96,7 +96,7 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
                 id={name}
                 type="text"
                 className={cn(
-                  "p-2 w-full text-lg border border-[#CCCCCC] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]",
+                  "p-2 w-full text-lg border border-[#CCCCCC] rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#DD7E1F]",
                   error && "border-red-500",
                   disabled && "bg-gray-100 cursor-not-allowed",
                 )}

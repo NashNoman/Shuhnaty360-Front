@@ -29,7 +29,7 @@ const Table = ({
 }: TableProps) => {
   return (
     <div className={`w-full overflow-x-auto min-h-[40vh]`}>
-      <table className={cn(`bg-[#FCFCFC] w-full`, className)}>
+      <table className={cn(`bg-white w-full`, className)}>
         <TableHead columns={columns} />
         <TableBody>
           {children}

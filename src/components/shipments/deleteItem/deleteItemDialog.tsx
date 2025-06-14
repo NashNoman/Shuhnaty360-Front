@@ -31,7 +31,7 @@ export default function DeleteItemDialog({
         <DialogContent>
           <DialogContentText
             id="alert-dialog-description"
-            className="text-[#DD7E1F] text-center !font-Almarai !text-xl"
+            className="text-[#DD7E1F] text-center !font-Almarai text-xl!"
           >
             {label}
           </DialogContentText>

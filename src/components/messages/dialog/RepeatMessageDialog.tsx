@@ -29,7 +29,7 @@ const RepeatMessageDialog = ({ isDialogVisible, setIsDialogVisible }: any) => {
       <DialogTitle
         sx={{ m: 0, p: 2 }}
         id="customized-dialog-title"
-        className="text-[#DD7E1F] text-center !font-Almarai !text-2xl"
+        className="text-[#DD7E1F] text-center !font-Almarai text-2xl!"
       >
         تكرار الإرسال
       </DialogTitle>

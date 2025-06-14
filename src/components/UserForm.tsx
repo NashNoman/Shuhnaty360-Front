@@ -2,8 +2,8 @@ import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import { useCompanyBranchesInfinityQuery } from "../api/profiles.api";
 import { UserCreateSchemaType } from "../schemas/user.schema";
 import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
-import Button from "./ui/Button";
 import Card from "./ui/Card";
+import FormButton from "./ui/FormButton";
 import TextInputField from "./ui/TextInputField";
 import Toggle from "./ui/Toggle";
 
@@ -104,9 +104,9 @@ const UserForm = ({
           />
         </div>
         <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
-        <Button disabled={isLoading} type="submit" className="w-full">
+        <FormButton disabled={isLoading} type="submit" className="w-full">
           {isEdit ? "تعديل المندوب" : "إضافة المندوب"}
-        </Button>
+        </FormButton>
       </form>
     </Card>
   );

@@ -83,7 +83,7 @@ const DriverDetails = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <EntityShipmentsTable driver={driverId} />
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">
-          <div className="w-full shadow-sm rounded-3xl lg:px-8 py-4 mb-6">
+          <div className="w-full shadow-xs rounded-3xl lg:px-8 py-4 mb-6">
             <UserDriverProfileCard
               personalInfoData={personalInfoData}
               moreInfoData={moreInfoData}
@@ -91,7 +91,7 @@ const DriverDetails = () => {
             />
           </div>
           {/* <hr className='border-0 border-t-2 border-[#999999] mx-8' />
-        <div className=' mt-8 shadow-sm rounded-2xl px-8 py-4 border-[3px] border-[#CD2026] bg-[#FCE9EA] font-Rubik w-[90%] md:w-[80%] m-auto'>
+        <div className=' mt-8 shadow-xs rounded-2xl px-8 py-4 border-[3px] border-[#CD2026] bg-[#FCE9EA] font-Rubik w-[90%] md:w-[80%] m-auto'>
           <h1 className='font-bold text-center text-xl'>بيانات الرخصة</h1>
           <div className='w-full mt-8'>
             {licenseInfo.map((item, index) => (
@@ -109,7 +109,7 @@ const DriverDetails = () => {
             <h1 className='font-bold text-xl text-[#CD2026] text-center mt-8'>منتهية</h1>
           </div>
         </div> */}
-          {/* <div className='w-full shadow-sm rounded-3xl px-8 py-4 bg-[#FFF]'>
+          {/* <div className='w-full shadow-xs rounded-3xl px-8 py-4 bg-[#FFF]'>
           <div className='flex items-center justify-center gap-2 mt-12 mb-12'>
             <h1 className='text-xl font-bold text-[##1A1A1A]'>بيان الشهر</h1>
           </div>

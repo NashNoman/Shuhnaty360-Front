@@ -17,7 +17,7 @@ export function ColumnFilterDropdown({
   return (
     <div className="absolute left-0 z-50 bg-white border p-4 rounded-lg shadow-lg w-60 mt-3">
       <input
-        className="w-full mb-2 border rounded px-2 py-1"
+        className="w-full mb-2 border rounded-sm px-2 py-1"
         placeholder={placeholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}

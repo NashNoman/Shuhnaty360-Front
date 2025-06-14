@@ -34,7 +34,7 @@ const MessagesHistoryPanel = ({
       <SearchInput
         value={searchValue}
         onChange={(e: any) => setSearchValue(e.target.value)}
-        styles="!rounded-2xl"
+        styles="rounded-2xl!"
       />
       <Messages
         messages={data}

@@ -346,7 +346,7 @@ const Dashboard = React.memo(() => {
                     {item.status === "تنبيهات السائقين" ? "تنبيه نشط" : "شحنة"}
                   </h5>
                 </div>
-                <button className="p-2 rounded-full bg-transparent border-none outline-none">
+                <button className="p-2 rounded-full bg-transparent border-none outline-hidden">
                   {item.icon}
                 </button>
               </div>

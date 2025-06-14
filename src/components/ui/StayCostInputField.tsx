@@ -30,7 +30,7 @@ const StayCostInputField = ({ register, errors }: StayCostInputFieldProps) => {
         <input
           placeholder="عدد الليالي"
           type="number"
-          className="w-1/5 p-2 focus:outline-none "
+          className="w-1/5 p-2 focus:outline-hidden "
           autoComplete="off"
           {...daysStayedRegister}
           onChange={(e) => {
@@ -48,7 +48,7 @@ const StayCostInputField = ({ register, errors }: StayCostInputFieldProps) => {
         <input
           placeholder="تكلفة المبيت لليلة الواحدة"
           type="number"
-          className="flex-grow px-2 focus:outline-none "
+          className="grow px-2 focus:outline-hidden "
           autoComplete="off"
           {...stayCostRegister}
           onChange={(e) => {

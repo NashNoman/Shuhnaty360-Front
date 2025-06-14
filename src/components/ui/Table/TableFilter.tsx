@@ -26,9 +26,9 @@ const TableFilter: React.FC<TableFilterProps> = ({
       <input
         type="text"
         placeholder={placeholder}
-        className="border rounded p-2 w-full"
+        className="border rounded-sm p-2 w-full"
       />
-      <div className="absolute z-10 bg-white border rounded shadow-lg mt-1 w-full">
+      <div className="absolute z-10 bg-white border rounded-sm shadow-lg mt-1 w-full">
         {options.map((option) => (
           <label key={option} className="block p-2 hover:bg-gray-100">
             <input

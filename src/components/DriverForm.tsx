@@ -2,8 +2,8 @@ import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
 import { useTruckTypesInfinityQuery } from "../api/drivers.api";
 import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
-import Button from "./ui/Button";
 import Card from "./ui/Card";
+import FormButton from "./ui/FormButton";
 import SelectField from "./ui/SelectField";
 import TextInputField from "./ui/TextInputField";
 import Toggle from "./ui/Toggle";
@@ -122,12 +122,12 @@ const DriverForm = ({
           />
         </div>
         <hr className="border-0 border-t-2 border-dashed border-[#666] my-12" />
-        <Button
+        <FormButton
           disabled={isLoading}
           className="w-full py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
         >
           {isEdit ? "تعديل السائق" : "إضافة سائق"}
-        </Button>
+        </FormButton>
       </form>
     </Card>
   );

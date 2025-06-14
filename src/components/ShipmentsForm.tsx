@@ -10,7 +10,7 @@ import ShipmentCostSection from "./shipments/ShipmentCostSection";
 import ShipmentDriverSection from "./shipments/ShipmentDriverSection";
 import ShipmentRecipientSection from "./shipments/ShipmentRecipientSection";
 import ShipmentSection from "./shipments/ShipmentSection";
-import Button from "./ui/Button";
+import FormButton from "./ui/FormButton";
 
 type ShipmentsFormProps = {
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
@@ -64,9 +64,9 @@ const ShipmentsForm = ({
         <hr className="border-0 border-t-2 border-dashed border-[] my-12" />
         <ShipmentCostSection register={register} errors={errors} />
         <hr className="border-0 border-t-2 border-dashed border-[] my-12" />
-        <Button disabled={isLoading} className="w-full">
+        <FormButton disabled={isLoading} className="w-full">
           {isEdit ? "تحديث الشحنة" : "إضافة الشحنة"}
-        </Button>
+        </FormButton>
       </form>
     </>
   );

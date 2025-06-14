@@ -38,7 +38,7 @@ const TextAreaField = ({
         id={props.id}
         placeholder={placeholder}
         className={cn(
-          "p-2 text-lg border rounded-lg border-[#CCCCCC] !resize-none focus:outline-none focus:ring-1 focus:ring-[#DD7E1F]",
+          "p-2 text-lg border rounded-lg border-[#CCCCCC] resize-none! focus:outline-hidden focus:ring-1 focus:ring-[#DD7E1F]",
           error && "border-red-500",
           className,
         )}

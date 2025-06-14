@@ -70,7 +70,7 @@ const MessagesHistoryBody = ({ data, index, selectedCategory }: any) => {
         <input
           type="text"
           placeholder="أدخل نص الرسالة"
-          className="w-full p-2 border-none rounded-lg outline-none font-Rubik"
+          className="w-full p-2 border-none rounded-lg outline-hidden font-Rubik"
         />
         <div
           className={`mt-6 flex justify-end items-center ${

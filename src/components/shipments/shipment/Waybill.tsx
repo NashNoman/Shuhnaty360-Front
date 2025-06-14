@@ -87,7 +87,7 @@ export const Waybill = ({
   return (
     <div
       id="waybill-printable"
-      className="m-0 bg-[#fff] rounded-2xl p-4 font-Rubik text-[#1a1a1a] text-right"
+      className="m-0 bg-white rounded-2xl p-4 font-Rubik text-[#1a1a1a] text-right"
     >
       <div className="flex gap-0 text-left flex-row justify-between items-start ">
         <div className="font-light">
