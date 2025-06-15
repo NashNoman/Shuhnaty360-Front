@@ -1,8 +1,8 @@
+import Card from "@/components/ui/Card";
+import TextAreaField from "@/components/ui/TextAreaField";
+import TextInputField from "@/components/ui/TextInputField";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
-import Card from "./ui/Card";
-import TextAreaField from "./ui/TextAreaField";
-import TextInputField from "./ui/TextInputField";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const clientSchema = z.object({

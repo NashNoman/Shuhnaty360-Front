@@ -1,12 +1,12 @@
+import { useTruckTypesInfinityQuery } from "@/api/drivers.api";
+import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
+import Card from "@/components/ui/Card";
+import FormButton from "@/components/ui/FormButton";
+import SelectField from "@/components/ui/SelectField";
+import TextInputField from "@/components/ui/TextInputField";
+import Toggle from "@/components/ui/Toggle";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
-import { useTruckTypesInfinityQuery } from "../api/drivers.api";
-import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
-import Card from "./ui/Card";
-import FormButton from "./ui/FormButton";
-import SelectField from "./ui/SelectField";
-import TextInputField from "./ui/TextInputField";
-import Toggle from "./ui/Toggle";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const driverSchema = z.object({

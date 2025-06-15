@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import { useDriversInfinityQuery } from "../../api/drivers.api";
 import SearchInput from "../../components/searchInput/SearchInput";
@@ -18,37 +17,30 @@ const tableColumns = [
   {
     key: "id",
     label: "(ID)",
-    isFilterable: false,
   },
   {
     key: "name",
     label: "اسم",
-    isFilterable: true,
   },
   {
     key: "language",
     label: "اللغة",
-    isFilterable: true,
   },
   {
     key: "nationality",
     label: "الجنسية",
-    isFilterable: true,
   },
   {
     key: "phone_number",
     label: "رقم الجوال",
-    isFilterable: true,
   },
   {
     key: "vehicle_number",
     label: "رقم الشاحنة",
-    isFilterable: true,
   },
   {
     key: "status",
     label: "الحالة",
-    isFilterable: true,
   },
 ];
 
@@ -86,22 +78,13 @@ const Drivers = () => {
   const navigate = useNavigate();
   const [selectedDriverStatus, setSelectedDriverStatus] = useState("الكل");
   const [searchValue, setSearchValue] = useState("");
-  const { ref, inView } = useInView();
 
   const {
     data: driversData,
     isFetching,
     hasNextPage,
-    fetchNextPage,
+    ref,
   } = useDriversInfinityQuery();
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
-
-  let rowIndex = 0;
 
   return (
     <>
@@ -141,10 +124,10 @@ const Drivers = () => {
             dataCount={driversData?.items?.length}
           >
             {driversData?.items &&
-              driversData.items.map((item) => (
+              driversData.items.map((item, index) => (
                 <TableRow
                   key={item.id}
-                  index={rowIndex++}
+                  index={index}
                   onClick={() => navigate("/drivers/driver-details/" + item.id)}
                 >
                   <TableCell>{item.id}</TableCell>

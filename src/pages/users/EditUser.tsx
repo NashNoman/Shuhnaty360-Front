@@ -5,13 +5,13 @@ import { Control, useForm, UseFormRegister } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { UsersUpdate } from "../../../Api";
 import { useUpdateUser, useUserQuery } from "../../api/users.api";
-import UserForm from "../../components/UserForm";
 import { useSidebar } from "../../context/SidebarContext";
 import {
   UserCreateSchemaType,
   userUpdateSchema,
   UserUpdateSchemaType,
 } from "../../schemas/user.schema";
+import UserForm from "./components/UserForm";
 
 const EditUser = () => {
   const { isSidebarOpen } = useSidebar();

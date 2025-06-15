@@ -1,10 +1,8 @@
-import { TiFilter } from "react-icons/ti";
 import { cn } from "../../../utils/utils";
 
 export type TableColumn = {
   key: string;
   label: string;
-  isFilterable?: boolean;
   className?: string;
 };
 
@@ -29,19 +27,6 @@ const TableHead = ({ columns }: TableHeadProps) => {
                 )}
               >
                 {col.label}
-                {col.isFilterable && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Handle filter toggle logic here
-                    }}
-                  >
-                    <TiFilter
-                      size={22}
-                      className="text-gray-400 hover:text-gray-900"
-                    />
-                  </button>
-                )}
               </div>
             </th>
           );

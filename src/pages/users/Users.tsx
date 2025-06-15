@@ -21,44 +21,32 @@ const tableColumns = [
   {
     key: "id",
     label: "(ID)",
-    isFilterable: false,
   },
   {
     key: "full_name",
     label: "اسم",
-    isFilterable: true,
   },
   {
     key: "phone",
     label: "رقم الهاتف",
-    isFilterable: true,
   },
   {
     key: "company_branch",
     label: "الفرع",
-    isFilterable: true,
   },
   {
     key: "is_staff",
     label: "موظف",
-    isFilterable: true,
   },
   {
     key: "is_superuser",
     label: "إداري",
-    isFilterable: true,
   },
   {
     key: "status",
     label: "الحالة",
-    // className: "ms-14",
   },
 ];
-
-// const getStatusBgColor = (status: any) =>
-//   status ? "bg-[#B3E5BD]" : "bg-[#CCCCCC]";
-// const getStatusColor = (status: any) =>
-//   status ? "text-[#2E853F]" : "text-[#333333]";
 
 const Users = () => {
   const navigate = useNavigate();

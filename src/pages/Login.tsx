@@ -1,3 +1,4 @@
+import { classifyAxiosError } from "@/utils/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLayoutEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -5,6 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { CiLock } from "react-icons/ci";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 import logo from "../assets/images/truck-Logo.svg";
 import { useAuth } from "../hooks/useAuth";
@@ -19,7 +21,8 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { isAuthenticated, login, loginIsLoading, loginError } = useAuth();
+  const { isAuthenticated, login, loginIsLoading, loginError, error } =
+    useAuth();
   const navigate = useNavigate();
 
   const {
@@ -40,8 +43,13 @@ const Login = () => {
       navigate("/dashboard");
     } else if (loginError) {
       resetField("password");
+    } else if (error) {
+      toast.error(
+        classifyAxiosError(error)?.message ||
+          "حدث خطاء عند محاولة تسجيل الدخول",
+      );
     }
-  }, [isAuthenticated, navigate, loginError, resetField]);
+  }, [isAuthenticated, navigate, loginError, error, resetField]);
 
   return (
     <div className="flex justify-center items-center w-screen h-screen">

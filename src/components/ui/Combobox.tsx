@@ -1,5 +1,3 @@
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,34 +13,57 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { ReactNode, useState } from "react";
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+type Option = {
+  value: string | number;
+  label: string | ReactNode;
+};
 
-function Combobox() {
+export type ComboboxProps = {
+  options: Option[];
+  value?: string | number;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  notFoundText?: string;
+  className?: string;
+  popoverClassName?: string;
+  disabled?: boolean;
+};
+
+export function Combobox({
+  options,
+  value = "",
+  onChange,
+  placeholder = "",
+  searchPlaceholder = "",
+  notFoundText = "لا توجد خيارات متاحة.",
+  className = "w-[200px]",
+  popoverClassName = "w-[200px] p-0",
+  disabled = false,
+}: ComboboxProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
+  const selectedOption = options.find(
+    (option) => String(option.value) === String(value),
+  );
+  const filteredOptions = options.filter((option) =>
+    option.label?.toString().toLowerCase().includes(searchValue.toLowerCase()),
+  );
+
+  const handleSelect = (currentValue: string) => {
+    const selectedOption = options.find(
+      (opt) => String(opt.value) === currentValue,
+    );
+    if (!selectedOption) return;
+
+    const newValue = currentValue === String(value) ? "" : selectedOption.value;
+    onChange?.(String(newValue));
+    setOpen(false);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -51,36 +72,39 @@ function Combobox() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={cn("justify-between flex-row-reverse", className)}
+          disabled={disabled}
         >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select framework..."}
-          <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <span className="truncate text-right">
+            {selectedOption?.label || placeholder}
+          </span>
+          <ChevronsUpDownIcon className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search framework..." />
+      <PopoverContent className={popoverClassName} align="start">
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={searchValue}
+            onValueChange={setSearchValue}
+          />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>{notFoundText}</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {filteredOptions.map((option) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                  }}
+                  key={option.value}
+                  value={option.value.toString()}
+                  onSelect={handleSelect}
+                  className="cursor-pointer"
                 >
                   <CheckIcon
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0",
+                      value === option.value ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  {framework.label}
+                  {option.label}
                 </CommandItem>
               ))}
             </CommandGroup>

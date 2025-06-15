@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import { useClientsInfinityQuery } from "../../api/clients.api";
 import locationIcon from "../../assets/images/location.svg";
@@ -11,49 +10,35 @@ const tableColumns = [
   {
     key: "id",
     label: "(ID)",
-    isFilterable: false,
   },
   {
     key: "name",
     label: "اسم",
-    isFilterable: true,
   },
   {
     key: "phone_number",
     label: "رقم الجوال",
-    isFilterable: true,
   },
   {
     key: "email",
     label: "البريد الإلكتروني",
-    isFilterable: true,
   },
   {
     key: "address",
     label: "الموقع",
-    isFilterable: true,
   },
 ];
 
 const Clients = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-  const { ref, inView } = useInView();
 
   const {
     data: clientsData,
     isFetching,
     hasNextPage,
-    fetchNextPage,
+    ref,
   } = useClientsInfinityQuery();
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
-
-  let rowIndex = 0;
 
   return (
     <>
@@ -87,10 +72,10 @@ const Clients = () => {
             dataCount={clientsData?.items?.length}
           >
             {clientsData?.items &&
-              clientsData.items.map((item) => (
+              clientsData.items.map((item, index) => (
                 <TableRow
                   key={item.id}
-                  index={rowIndex++}
+                  index={index}
                   onClick={() => navigate("/clients/client-details/" + item.id)}
                 >
                   <TableCell>{item.id}</TableCell>

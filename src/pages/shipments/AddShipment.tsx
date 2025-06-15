@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCreateShipment } from "../../api/shipments.api";
-import ShipmentsForm from "../../components/ShipmentsForm";
 import { useAuth } from "../../hooks/useAuth";
 import {
   ShipmentSerializerSchema,
   shipmentSerializerSchema,
 } from "../../schemas/shipment.schema";
+import ShipmentsForm from "./components/ShipmentsForm";
 
 const AddShipment = () => {
   const navigate = useNavigate();
@@ -21,6 +21,9 @@ const AddShipment = () => {
     formState: { errors },
   } = useForm<ShipmentSerializerSchema>({
     resolver: zodResolver(shipmentSerializerSchema),
+    defaultValues: {
+      status: 1,
+    },
   });
 
   const { mutate, status } = useCreateShipment();

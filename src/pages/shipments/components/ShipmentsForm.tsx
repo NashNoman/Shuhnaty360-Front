@@ -4,13 +4,13 @@ import {
   UseFormRegister,
   UseFormSetValue,
 } from "react-hook-form";
-import { ShipmentSerializerSchema } from "../schemas/shipment.schema";
-import ShipmentClientSection from "./shipments/ShipmentClientSection";
-import ShipmentCostSection from "./shipments/ShipmentCostSection";
-import ShipmentDriverSection from "./shipments/ShipmentDriverSection";
-import ShipmentRecipientSection from "./shipments/ShipmentRecipientSection";
-import ShipmentSection from "./shipments/ShipmentSection";
-import FormButton from "./ui/FormButton";
+import FormButton from "../../../components/ui/FormButton";
+import { ShipmentSerializerSchema } from "../../../schemas/shipment.schema";
+import ShipmentClientSection from "./ShipmentClientSection";
+import ShipmentCostSection from "./ShipmentCostSection";
+import ShipmentDriverSection from "./ShipmentDriverSection";
+import ShipmentRecipientSection from "./ShipmentRecipientSection";
+import ShipmentSection from "./ShipmentSection";
 
 type ShipmentsFormProps = {
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;

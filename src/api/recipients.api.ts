@@ -4,6 +4,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import { RecipientSerializerCreate, RecipientSerializerList } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
@@ -13,8 +15,10 @@ import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 const ENDPOINT = "/recipient/";
 const KEY = "recipients";
 
-export const useRecipientsInfinityQuery = () =>
-  useInfiniteQuery({
+export const useRecipientsInfinityQuery = () => {
+  const { ref, inView } = useInView();
+
+  const query = useInfiniteQuery({
     ...defaultInfinityQueryOptions<RecipientSerializerList>([KEY]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<RecipientSerializerList>>(
@@ -23,6 +27,21 @@ export const useRecipientsInfinityQuery = () =>
       return response.data;
     },
   });
+
+  const { isFetchingNextPage, hasNextPage, fetchNextPage } = query;
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
+
+  return {
+    ...query,
+    ref,
+    inView,
+  };
+};
 
 export const useRecipientQuery = (id?: number) =>
   useQuery({

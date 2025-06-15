@@ -1,16 +1,9 @@
 import React from "react";
 import { cn } from "../../../utils/utils";
 import TableBody from "./TableBody";
-import TableHead from "./TableHead";
+import TableHead, { TableColumn } from "./TableHead";
 import TableLoader from "./TableLoader";
 import TableNoDataRow from "./TableNoDataRow";
-
-type TableColumn = {
-  key: string;
-  label: string;
-  isFilterable?: boolean;
-  className?: string;
-};
 
 type TableProps = {
   children: React.ReactNode;

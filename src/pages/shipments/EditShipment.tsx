@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useShipmentQuery, useUpdateShipment } from "../../api/shipments.api";
-import ShipmentsForm from "../../components/ShipmentsForm";
 import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../hooks/useAuth";
 import {
@@ -12,6 +11,7 @@ import {
   ShipmentSerializerSchema,
 } from "../../schemas/shipment.schema";
 import { formateDateTime } from "../../utils/formatDate";
+import ShipmentsForm from "./components/ShipmentsForm";
 
 const EditShipment = () => {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ const EditShipment = () => {
     console.log(formData);
     mutate(
       {
-        user: userId!,
+        user: data?.data.user?.id || userId!,
         ...formData,
       },
       {

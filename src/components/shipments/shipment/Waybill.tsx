@@ -27,7 +27,7 @@ export const Waybill = ({
   const truckDetails = [
     {
       value: "نوع الشاحنة",
-      label: shipment.truck_type,
+      label: shipment.truck_type?.name_ar || "-",
     },
     {
       value: "رقم الشاحنة",
@@ -105,7 +105,10 @@ export const Waybill = ({
         </div>
         <div>
           <img
-            src="/src/assets/images/truck-Logo.svg"
+            src={
+              shipment.user?.company_branch?.company?.company_logo ||
+              "/src/assets/images/truck-Logo.svg"
+            }
             alt="logo"
             className="w-24"
           />

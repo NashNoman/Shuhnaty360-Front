@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useShipmentQuery } from "../../api/shipments.api";
+import {
+  useShipmentQuery,
+  useUpdateShipmentStatus,
+} from "../../api/shipments.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
@@ -8,6 +11,7 @@ import PrintWaybillDialog from "../../components/shipments/shipment/PrintWaybill
 import ShipmentDetailsInfoSection from "../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
 import ShipmentStatus from "../../components/shipments/shipmentDetails/shipmentStatus/ShipmentStatus";
 import { useSidebar } from "../../context/SidebarContext";
+import ShipmentStatusSelect from "./components/ShipmentStatusSelect";
 
 const ShipmentDetails = () => {
   const { isSidebarOpen } = useSidebar();
@@ -15,6 +19,7 @@ const ShipmentDetails = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data, isLoading } = useShipmentQuery(shipmentId);
+  const { mutate } = useUpdateShipmentStatus(shipmentId);
 
   const shipment = data?.data;
 
@@ -96,10 +101,19 @@ const ShipmentDetails = () => {
             <div className="absolute -left-8 top-0 bottom-0 w-px bg-[#B3B3B3] hidden lg:block"></div>
             <div className="flex items-center justify-between">
               <h1 className="text-xl sm:text-2xl font-bold">السائق</h1>
-              <ActionsMenu
-                options={menuActions}
-                position="top-16 left-4"
-              />{" "}
+              <div className="flex items-center gap-2">
+                <ShipmentStatusSelect
+                  status={shipment?.status?.name_ar || ""}
+                  onStatusChange={(status) => {
+                    mutate({
+                      id: shipment?.id || 0,
+                      status: status.id,
+                      status_name: status.name_ar,
+                    });
+                  }}
+                />
+                <ActionsMenu options={menuActions} position="top-16 left-4" />
+              </div>
             </div>
             <div className="flex flex-col items-start gap-3 font-Rubik text-[#333333] text-base">
               <ShipmentDetailsInfoSection data={driverData} />

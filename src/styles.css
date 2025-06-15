@@ -20,6 +20,10 @@
   font-style: normal;
 }
 
+button {
+  cursor: pointer;
+}
+
 body {
   font-family: "Almarai", sans-serif !important;
   background-color: #f8f8f8 !important;

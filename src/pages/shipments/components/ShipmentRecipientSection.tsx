@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { RecipientSerializerList } from "../../../Api";
-import { useRecipientsInfinityQuery } from "../../api/recipients.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
+import { useRecipientsInfinityQuery } from "@/api/recipients.api";
 import AutoCompleteSelectField, {
   AutocompleteOption,
-} from "../ui/AutoCompleteSelectField";
-import PhoneInputField from "../ui/PhoneInputField";
-import TextAreaField from "../ui/TextAreaField";
+} from "@/components/ui/AutoCompleteSelectField";
+import PhoneInputField from "@/components/ui/PhoneInputField";
+import TextAreaField from "@/components/ui/TextAreaField";
+import { ShipmentSerializerSchema } from "@/schemas/shipment.schema";
+import { RecipientSerializerList } from "Api";
+import { useState } from "react";
+import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentClientSectionProps = {

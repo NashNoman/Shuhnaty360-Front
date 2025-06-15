@@ -1,13 +1,18 @@
 import FiltersPopover from "@/components/searchInput/FiltersPopover";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useInView } from "react-intersection-observer";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useShipmentsInfinityQuery } from "../../api/shipments.api";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useDebounce } from "use-debounce";
+import {
+  ShipmentFiltersType,
+  useShipmentsInfinityQuery,
+  useUpdateShipmentStatus,
+} from "../../api/shipments.api";
 import SearchInput from "../../components/searchInput/SearchInput";
-import SelectMenu from "../../components/SelectMenu";
 import { Table, TableCell, TableRow } from "../../components/ui/Table";
 import { formatDate } from "../../utils/formatDate";
+import { ShipmentFilters } from "./components/ShipmentFilters";
+import ShipmentStatusSelect from "./components/ShipmentStatusSelect";
 
 const tableColumns = [
   { label: "رقم الشحنة", key: "id" },
@@ -21,43 +26,6 @@ const tableColumns = [
   { label: "حالة الشحنة", key: "status" },
 ];
 
-const getStatusBgColor = (status: string) => {
-  switch (status) {
-    case "قيد الشحن":
-      return "bg-[#B3E5BD]";
-    case "متأخرة":
-      return "bg-[#FEDE9A]";
-    case "تم التوصيل":
-      return "bg-[#E6E6E6]";
-    case "ملغية":
-      return "bg-[#CD2026]";
-    case "مرتجعة":
-      return "bg-[#F8D3D4]";
-    case "مكتملة":
-      return "bg-[#2E853F]";
-    default:
-      return "bg-gray-300";
-  }
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "قيد الشحن":
-    case "متأخرة":
-      return "text-[#071309]";
-    case "تم التوصيل":
-      return "text-[#333333]";
-    case "ملغية":
-      return "text-[#F8D3D4]";
-    case "مرتجعة":
-      return "text-[#CD2026]";
-    case "مكتملة":
-      return "text-[#B3E5BD]";
-    default:
-      return "text-[#071309]";
-  }
-};
-
 const routeStatusMap: Record<string, string> = {
   all: "الكل",
   "in-shipping": "قيد الشحن",
@@ -68,31 +36,35 @@ const routeStatusMap: Record<string, string> = {
   cancelled: "تم الإلغاء",
 };
 
-const selectMenuOptions = Object.entries(routeStatusMap).map(
-  ([value, label]) => ({
-    label,
-    value,
-  }),
-);
-
-const Shipments = ({ status }: { status?: string }) => {
+const Shipments = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedShipmentStatus, setSelectedShipmentStatus] = useState(
-    status || "الكل",
-  );
-  const [searchValue, setSearchValue] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [debouncedValue] = useDebounce(searchParams.get("search"), 500);
 
-  const { ref, inView } = useInView();
+  const [filters, setFilters] = useState<ShipmentFiltersType>({});
 
-  const { data, isFetching, hasNextPage, fetchNextPage } =
-    useShipmentsInfinityQuery();
+  // Calculate number of active filters
+  const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
+  const params = { search: debouncedValue, ...filters };
+
+  const { data, isFetching, hasNextPage, ref } =
+    useShipmentsInfinityQuery(params);
+
+  const { mutate } = useUpdateShipmentStatus(params);
+
+  const handleStatusChange = (
+    id: number,
+    status: { id: number; name_ar: string },
+  ) => {
+    console.log(status);
+    mutate({
+      id,
+      status: status.id,
+      status_name: status.name_ar,
+    });
+  };
 
   const shipmentsData = data?.items || [];
 
@@ -106,8 +78,6 @@ const Shipments = ({ status }: { status?: string }) => {
       (shipment) => shipment.status?.name_ar === statusFromRoute,
     );
   }
-
-  let rowIndex = 0;
 
   return (
     <div className="p-4">
@@ -125,11 +95,27 @@ const Shipments = ({ status }: { status?: string }) => {
           <FiPlus size={24} />
         </button>
         <SearchInput
-          value={searchValue}
-          onChange={(e: any) => setSearchValue(e.target.value)}
+          value={searchParams.get("search") || ""}
+          onChange={(e) =>
+            setSearchParams(
+              (prev) => {
+                if (e.target.value.trim()) {
+                  prev.set("search", e.target.value.trim());
+                } else {
+                  prev.delete("search");
+                }
+                return prev;
+              },
+              { replace: true },
+            )
+          }
           suffixIcon={
-            <FiltersPopover>
-              <div></div>
+            <FiltersPopover activeFilterCount={activeFilterCount}>
+              <ShipmentFilters
+                initialFilters={filters}
+                onApply={setFilters}
+                onClear={() => setFilters({})}
+              />
             </FiltersPopover>
           }
         />
@@ -137,13 +123,6 @@ const Shipments = ({ status }: { status?: string }) => {
       <div className="shadow-xl rounded-3xl bg-white px-8 py-4">
         <div className="w-full flex justify-between items-center mb-6">
           <h1 className="text-base md:text-xl font-bold">قائمة الشحنات</h1>
-          {!status && (
-            <SelectMenu
-              options={selectMenuOptions}
-              selectedItem={selectedShipmentStatus}
-              setSelectedItem={setSelectedShipmentStatus}
-            />
-          )}
         </div>
         <Table
           className="w-full overflow-x-auto"
@@ -152,33 +131,31 @@ const Shipments = ({ status }: { status?: string }) => {
           dataCount={filteredShipments?.length}
         >
           {filteredShipments &&
-            filteredShipments.map((shipment) => (
+            filteredShipments.map((shipment, index) => (
               <TableRow
-                key={`${shipment.id}${rowIndex}`}
-                index={rowIndex++}
+                key={`${shipment.id}${index}`}
+                index={index}
                 onClick={() =>
                   navigate("/shipments/shipment-details/" + shipment.id)
                 }
               >
                 <TableCell>{shipment.id}</TableCell>
-                <TableCell>{shipment.user?.username}</TableCell>
+                <TableCell>{`${shipment.user?.first_name} ${shipment.user?.last_name}`}</TableCell>
                 <TableCell>{shipment.recipient?.name}</TableCell>
                 <TableCell>{shipment.driver?.name}</TableCell>
                 <TableCell>{shipment.client_branch?.name}</TableCell>
                 <TableCell>{shipment.origin_city?.ar_city}</TableCell>
                 <TableCell>{shipment.destination_city?.ar_city}</TableCell>
-                <TableCell className="text-center flex items-center justify-center gap-4">
+                <TableCell className="text-center">
                   {shipment.loading_date && formatDate(shipment.loading_date)}
                 </TableCell>
                 <TableCell>
-                  <span
-                    className={`py-2 text-center font-medium inline-block rounded-md w-36 text-sm ${
-                      shipment.status?.name_ar &&
-                      getStatusColor(shipment.status?.name_ar)
-                    } ${shipment.status?.name_ar && getStatusBgColor(shipment.status.name_ar)}`}
-                  >
-                    {shipment.status?.name_ar}
-                  </span>
+                  <ShipmentStatusSelect
+                    status={shipment.status?.name_ar || ""}
+                    onStatusChange={(status) =>
+                      handleStatusChange(shipment.id!, status)
+                    }
+                  />
                 </TableCell>
               </TableRow>
             ))}

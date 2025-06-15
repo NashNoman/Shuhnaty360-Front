@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateDriver } from "../../api/drivers.api";
+import { useSidebar } from "../../context/SidebarContext";
 import DriverForm, {
   DriverFormData,
   driverSchema,
-} from "../../components/DriverForm";
-import { useSidebar } from "../../context/SidebarContext";
+} from "./components/DriverForm";
 
 const AddDriver = () => {
   const { isSidebarOpen } = useSidebar();

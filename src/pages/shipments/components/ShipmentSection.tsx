@@ -1,11 +1,11 @@
+import { useCitiesInfinityQuery } from "@/api/cities.api";
+import { useShipmentStatusInfinityQuery } from "@/api/shipments.api";
+import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
+import DatePickerField from "@/components/ui/DatePickerField";
+import TextAreaField from "@/components/ui/TextAreaField";
+import TextInputField from "@/components/ui/TextInputField";
+import { ShipmentSerializerSchema } from "@/schemas/shipment.schema";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { useCitiesInfinityQuery } from "../../api/cities.api";
-import { useShipmentStatusInfinityQuery } from "../../api/shipments.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
-import AutoCompleteSelectField from "../ui/AutoCompleteSelectField";
-import DatePickerField from "../ui/DatePickerField";
-import TextAreaField from "../ui/TextAreaField";
-import TextInputField from "../ui/TextInputField";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentSectionProps = {

@@ -1,9 +1,12 @@
 import {
+  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import {
   ShipmentSerializerCreate,
@@ -26,15 +29,19 @@ export type ShipmentFiltersType = {
   client_branch?: number | string;
   recipient?: number | string;
   status?: number | string;
+  origin_city?: number | string;
+  destination_city?: number | string;
   loading_date?: string;
   client_invoice_number?: string;
-  search?: string;
+  search?: string | null;
 };
 
 export const useShipmentsInfinityQuery = (
   filters?: ShipmentFiltersType | undefined,
-) =>
-  useInfiniteQuery({
+) => {
+  const { ref, inView } = useInView();
+
+  const query = useInfiniteQuery({
     ...defaultInfinityQueryOptions<ShipmentSerializerList>([KEY, filters]),
     queryFn: async ({ pageParam }) => {
       const paramsObj: Record<string, string> = {};
@@ -54,6 +61,20 @@ export const useShipmentsInfinityQuery = (
     },
   });
 
+  const { isFetchingNextPage, hasNextPage, fetchNextPage } = query;
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
+
+  return {
+    ...query,
+    ref,
+    inView,
+  };
+};
 export const useShipmentStatusInfinityQuery = () =>
   useInfiniteQuery({
     ...defaultInfinityQueryOptions<ShipmentStatus>([KEY + "status"]),
@@ -117,6 +138,100 @@ export const useUpdateShipment = (id?: number | string) => {
       const err = classifyAxiosError(error);
       console.error(error);
       toast.error(err?.message || "حدث خطأ أثناء تحديث الشحنة");
+    },
+  });
+};
+
+export const useUpdateShipmentStatus = (keys?: any) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      status,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      status_name: _,
+    }: {
+      id: number;
+      status: number;
+      status_name: string;
+    }) => {
+      const response = await api.patch(ENDPOINT + `update/${id}`, {
+        status,
+      });
+      return response.data;
+    },
+
+    onMutate: async ({ id, status, status_name }) => {
+      await queryClient.cancelQueries({
+        queryKey: [KEY, keys],
+      });
+
+      const previousData = queryClient.getQueryData<
+        | InfiniteData<ApiListResponse<ShipmentSerializerList>>
+        | ApiResponse<ShipmentSerializerDetail>
+      >([KEY, keys]);
+
+      if (previousData && "pages" in previousData) {
+        queryClient.setQueryData<
+          InfiniteData<ApiListResponse<ShipmentSerializerList>>
+        >([KEY, keys], (oldData) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page) => ({
+              ...page,
+              data: {
+                ...page.data,
+                results: page.data.results.map((shipment) =>
+                  shipment.id === id
+                    ? {
+                        ...shipment,
+                        status: {
+                          ...shipment.status!,
+                          id: status,
+                          name_ar: status_name,
+                        },
+                      }
+                    : shipment,
+                ),
+              },
+            })),
+          };
+        });
+      } else if (previousData && "data" in previousData) {
+        queryClient.setQueryData<ApiResponse<ShipmentSerializerDetail>>(
+          [KEY, id],
+          (oldData) => {
+            if (!oldData) return oldData;
+            return {
+              ...oldData,
+              data: {
+                ...oldData.data,
+                status: {
+                  ...oldData.data.status!,
+                  id: status,
+                  name_ar: status_name,
+                },
+              },
+            };
+          },
+        );
+      }
+
+      return { previousData };
+    },
+    onError: (error, _, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData([KEY, keys], context.previousData);
+      }
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء تحديث حالة الشحنة");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY, keys] });
     },
   });
 };

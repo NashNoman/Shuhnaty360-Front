@@ -4,6 +4,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { ClientSerializerDetails, ClientSerializerList } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
@@ -13,8 +15,10 @@ import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 const ENDPOINT = "/clients/";
 const KEY = "clients";
 
-export const useClientsInfinityQuery = () =>
-  useInfiniteQuery({
+export const useClientsInfinityQuery = () => {
+  const { ref, inView } = useInView();
+
+  const query = useInfiniteQuery({
     ...defaultInfinityQueryOptions<ClientSerializerList>([KEY]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<ClientSerializerList>>(
@@ -23,6 +27,21 @@ export const useClientsInfinityQuery = () =>
       return response.data;
     },
   });
+
+  const { isFetchingNextPage, hasNextPage, fetchNextPage } = query;
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
+
+  return {
+    ...query,
+    ref,
+    inView,
+  };
+};
 
 export const useClientQuery = (id?: number | string) =>
   useQuery({

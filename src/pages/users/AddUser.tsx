@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateUser } from "../../api/users.api";
-import UserForm from "../../components/UserForm";
 import { useSidebar } from "../../context/SidebarContext";
 import {
   userCreateSchema,
   UserCreateSchemaType,
 } from "../../schemas/user.schema";
+import UserForm from "./components/UserForm";
 
 const AddUser = () => {
   const { isSidebarOpen } = useSidebar();

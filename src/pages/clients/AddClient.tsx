@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateClient } from "../../api/clients.api";
+import { useSidebar } from "../../context/SidebarContext";
 import ClientForm, {
   ClientFormData,
   clientSchema,
-} from "../../components/ClientForm";
-import { useSidebar } from "../../context/SidebarContext";
+} from "./components/ClientForm";
 
 const AddClient = () => {
   const { isSidebarOpen } = useSidebar();

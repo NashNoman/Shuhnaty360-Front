@@ -44,9 +44,60 @@ export interface TokenVerify {
   token: string;
 }
 
+export interface CompanyProfileSerializerMini {
+  /** ID */
+  id?: number;
+  /**
+   * اسم الشركة
+   * @maxLength 255
+   */
+  company_name_ar?: string | null;
+  /**
+   * Company Name
+   * @maxLength 255
+   */
+  company_name_en?: string | null;
+  /**
+   * Company logo
+   * @format uri
+   */
+  company_logo?: string | null;
+  /** وصف الشركة */
+  company_description_ar?: string | null;
+  /** Company Description */
+  company_description_en?: string | null;
+  /**
+   * الرقم الأساسي
+   * @maxLength 20
+   */
+  main_phone_number?: string | null;
+  /**
+   * الرقم الفرعي
+   * @maxLength 20
+   */
+  secondary_phone_number?: string | null;
+  /**
+   * البريد الالكتروني
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+  /**
+   * الموقع الالكتروني
+   * @format uri
+   * @maxLength 200
+   */
+  website?: string | null;
+  /** العنوان */
+  address?: string | null;
+  /** City */
+  city?: number | null;
+}
+
 export interface AccountsCompanyBranch {
   /** ID */
   id?: number;
+  company: CompanyProfileSerializerMini;
   /**
    * اسم الفرع
    * @maxLength 255
@@ -57,6 +108,38 @@ export interface AccountsCompanyBranch {
    * @maxLength 255
    */
   branch_name_en?: string | null;
+  /**
+   * الرقم الأساسي
+   * @maxLength 20
+   */
+  main_phone_number?: string | null;
+  /**
+   * الرقم الفرعي
+   * @maxLength 20
+   */
+  secondary_phone_number?: string | null;
+  /**
+   * البريد الالكتروني
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+  /** العنوان */
+  address?: string | null;
+  /** Is active */
+  is_active?: boolean;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string;
+  /** City */
+  city?: number | null;
 }
 
 export interface Users {
@@ -227,16 +310,10 @@ export interface UsersUpdate {
    * Designates that this user has all permissions without explicitly assigning them.
    */
   is_superuser?: boolean;
-  /**
-   * Password
-   * @minLength 1
-   */
-  password: string;
-  /**
-   * Password2
-   * @minLength 1
-   */
-  password2: string;
+  /** Password */
+  password?: string;
+  /** Password2 */
+  password2?: string;
 }
 
 export interface City {
@@ -628,6 +705,16 @@ export interface UserSerializerMini {
    * @pattern ^[\w.@+-]+$
    */
   username: string;
+  /**
+   * Last name
+   * @maxLength 150
+   */
+  last_name?: string;
+  /**
+   * First name
+   * @maxLength 150
+   */
+  first_name?: string;
 }
 
 export interface DriverSerializerMini {

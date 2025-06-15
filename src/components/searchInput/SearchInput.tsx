@@ -29,13 +29,7 @@ const SearchInput = ({
         src={searchIcon}
         alt="box Search icon"
         className="w-6 h-6 absolute right-2 cursor-pointer"
-        // onClick={handleSearchIconClick}
       />
-      {/* <img
-        src={filterIcon}
-        alt="box Search icon"
-        className="w-6 h-6 absolute left-4 cursor-pointer"
-      /> */}
       {suffixIcon && (
         <div className="w-6 h-6 absolute left-4 cursor-pointer">
           {suffixIcon}

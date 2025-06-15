@@ -1,19 +1,20 @@
+import { ShipmentHistory } from "Api";
+import CancelledShipmentIcon from "../../../../assets/images/Cancelled-shipment-truck.svg";
+import deliveredShipmentIcon from "../../../../assets/images/delivered-shipment-truck.svg";
 import inShippingIcon from "../../../../assets/images/in-shipping-truck.svg";
 import inTransitIcon from "../../../../assets/images/in-transit-truck.svg";
-import underReviewIcon from "../../../../assets/images/under-review-truck.svg";
-import deliveredShipmentIcon from "../../../../assets/images/delivered-shipment-truck.svg";
-// import CancelledShipmentIcon from '../../../../assets/images/Cancelled-shipment-truck.svg';
 import returnedShipmentIcon from "../../../../assets/images/returned-shipment-truck.svg";
+import underReviewIcon from "../../../../assets/images/under-review-truck.svg";
 
 const statusIcons: any = {
   "قيد الشحن": inShippingIcon,
   "في الطريق": inTransitIcon,
   "قيد المراجعة": underReviewIcon,
   "تم التوصيل": deliveredShipmentIcon,
-  // ملغية: CancelledShipmentIcon,
+  ملغيه: CancelledShipmentIcon,
   مرتجعة: returnedShipmentIcon,
 };
-const ShipmentStatus = ({ history }: any) => {
+const ShipmentStatus = ({ history }: { history: ShipmentHistory[] }) => {
   function formatDate(dateStr: string) {
     if (!dateStr) return "";
     const dt = new Date(dateStr);
@@ -31,27 +32,23 @@ const ShipmentStatus = ({ history }: any) => {
       </h1>
       <hr className="border-0 border-t-2 border-dashed border-[#B3B3B3] my-6" />
       <div className="flex flex-col gap-20 items-start w-full">
-        {history.map((phase: any, index: number) => (
+        {history.map((phase, index: number) => (
           <div key={phase.id} className="relative w-full">
             {index !== history.length - 1 && (
               <div
-                className={`absolute right-2 top-12 h-[calc(100%+3rem)] w-[2px] rounded-lg bg-[${
-                  phase.verticalLineBgColor
-                    ? phase.verticalLineBgColor
-                    : "#B3B3B3"
-                }]`}
+                className={`absolute right-2 top-12 h-[calc(100%+3rem)] w-[2px] rounded-lg bg-[$]`}
               ></div>
             )}
             <div
               className={`flex font-Rubik w-full gap-4 ${index === 0 && "-ms-2.5"}`}
             >
-              <img src={statusIcons[phase.title]} alt={phase.title} />
+              <img src={statusIcons[phase.status?.name_ar as string]} />
               <div className="flex flex-col justify-between gap-4 w-full">
-                <h2 className="text-lg">{phase.title}</h2>
+                <h2 className="text-lg">{phase.status?.name_ar}</h2>
                 <div className="flex justify-between items-center w-full">
-                  <h4 className="text-[#666666] text-xs">{phase.name}</h4>
+                  <h4 className="text-[#666666] text-xs">{phase.notes}</h4>
                   <span className="text-[#666666] text-xs">
-                    {formatDate(phase.updated_at)}
+                    {phase.updated_at && formatDate(phase.updated_at)}
                   </span>
                 </div>
               </div>

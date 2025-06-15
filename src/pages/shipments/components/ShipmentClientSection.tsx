@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
-import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { ClientSerializerList } from "../../../Api";
-import { useClientQuery, useClientsInfinityQuery } from "../../api/clients.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  useWatch,
+} from "react-hook-form";
+import { ClientSerializerList } from "../../../../Api";
+import {
+  useClientQuery,
+  useClientsInfinityQuery,
+} from "../../../api/clients.api";
 import AutoCompleteSelectField, {
   AutocompleteOption,
-} from "../ui/AutoCompleteSelectField";
-import PhoneInputField from "../ui/PhoneInputField";
-import TextAreaField from "../ui/TextAreaField";
-import TextInputField from "../ui/TextInputField";
+} from "../../../components/ui/AutoCompleteSelectField";
+import PhoneInputField from "../../../components/ui/PhoneInputField";
+import TextAreaField from "../../../components/ui/TextAreaField";
+import TextInputField from "../../../components/ui/TextInputField";
+import { ShipmentSerializerSchema } from "../../../schemas/shipment.schema";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentClientSectionProps = {
@@ -26,6 +34,11 @@ const ShipmentClientSection = ({
     ClientSerializerList | undefined
   >(undefined);
   const [branchOptions, setBranchOptions] = useState<AutocompleteOption[]>([]);
+  const [showNotes, setShowNotes] = useState(false);
+  const customerNotes = useWatch({
+    control,
+    name: "notes_customer",
+  });
 
   const { data: clientsData } = useClientsInfinityQuery();
   const { data: selectedClientData, isLoading: isLoadingBranches } =
@@ -67,9 +80,6 @@ const ShipmentClientSection = ({
         options={branchOptions}
         error={errors.client_branch?.message}
         isLoading={isLoadingBranches}
-        // onInputChange={(value) => {
-        //   const branch = data?.items.find((item) => item.name === value);
-        // }}
         disabled={!branchOptions.length}
       />
       <TextInputField
@@ -91,13 +101,24 @@ const ShipmentClientSection = ({
         value={selectedClient?.second_phone_number || "+966"}
         control={control}
       />
-      <TextAreaField
-        label="ملاحظات المرسل"
-        containerClassName="col-span-2"
-        className="h-40"
-        error={errors.notes_customer?.message}
-        {...register("notes_customer")}
-      />
+
+      {showNotes || customerNotes ? (
+        <TextAreaField
+          label="ملاحظات المرسل"
+          containerClassName="col-span-2"
+          className="h-40"
+          error={errors.notes_customer?.message}
+          {...register("notes_customer")}
+        />
+      ) : (
+        <button
+          className="py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
+          type="button"
+          onClick={() => setShowNotes(!showNotes)}
+        >
+          {showNotes ? "إخفاء" : "إضافة ملاحظات"}
+        </button>
+      )}
     </ShipmentSectionWrapper>
   );
 };

@@ -8,11 +8,11 @@ import {
   useTruckTypesInfinityQuery,
   useUpdateDriver,
 } from "../../api/drivers.api";
+import { useSidebar } from "../../context/SidebarContext";
 import DriverForm, {
   DriverFormData,
   driverSchema,
-} from "../../components/DriverForm";
-import { useSidebar } from "../../context/SidebarContext";
+} from "./components/DriverForm";
 
 const EditDriver = () => {
   const { isSidebarOpen } = useSidebar();

@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ShipmentFiltersType,
@@ -62,7 +61,6 @@ type EntityShipmentsTableProps = ShipmentFiltersType;
 const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const { ref, inView } = useInView();
 
   const { data: statusData } = useShipmentStatusInfinityQuery();
 
@@ -80,20 +78,13 @@ const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
     (option) => option.label === selectedStatus,
   )?.value;
 
-  const { data, isLoading, hasNextPage, fetchNextPage } =
-    useShipmentsInfinityQuery({
-      ...props,
-      status,
-    });
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
+  const { data, isLoading, ref } = useShipmentsInfinityQuery({
+    ...props,
+    status,
+  });
 
   return (
-    <div className="col-span-1 lg:col-span-2 h-fit shadow-lg rounded-3xl px-8 py-4 w-full overflow-x-auto">
+    <div className="col-span-1 bg-white lg:col-span-2 h-fit shadow-lg rounded-3xl px-8 py-4 w-full overflow-x-auto">
       <div className="w-full flex justify-between items-center mb-6">
         <h1 className="xs:text-lg text-xl font-bold">قائمة الشحنات</h1>
         <SelectMenu

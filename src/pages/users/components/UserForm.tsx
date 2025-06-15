@@ -1,12 +1,11 @@
+import { useCompanyBranchesInfinityQuery } from "@/api/profiles.api";
+import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
+import Card from "@/components/ui/Card";
+import FormButton from "@/components/ui/FormButton";
+import TextInputField from "@/components/ui/TextInputField";
+import Toggle from "@/components/ui/Toggle";
+import { UserCreateSchemaType } from "@/schemas/user.schema";
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { useCompanyBranchesInfinityQuery } from "../api/profiles.api";
-import { UserCreateSchemaType } from "../schemas/user.schema";
-import AutoCompleteSelectField from "./ui/AutoCompleteSelectField";
-import Card from "./ui/Card";
-import FormButton from "./ui/FormButton";
-import TextInputField from "./ui/TextInputField";
-import Toggle from "./ui/Toggle";
-
 type UserFormProps = {
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   isLoading: boolean;

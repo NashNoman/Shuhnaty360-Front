@@ -4,6 +4,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { Register, Users, UsersUpdate } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
@@ -13,8 +15,10 @@ import { defaultInfinityQueryOptions } from "../utils/queryOptions";
 const ENDPOINT = "/accounts/users/";
 const KEY = "users";
 
-export const useUsersInfinityQuery = () =>
-  useInfiniteQuery({
+export const useUsersInfinityQuery = () => {
+  const { ref, inView } = useInView();
+
+  const query = useInfiniteQuery({
     ...defaultInfinityQueryOptions<Users>([KEY]),
     queryFn: async ({ pageParam }) => {
       const response = await api.get<ApiListResponse<Users>>(
@@ -23,6 +27,21 @@ export const useUsersInfinityQuery = () =>
       return response.data;
     },
   });
+
+  const { isFetchingNextPage, hasNextPage, fetchNextPage } = query;
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
+
+  return {
+    ...query,
+    ref,
+    inView,
+  };
+};
 
 export const useUserQuery = (id?: number | string) =>
   useQuery({

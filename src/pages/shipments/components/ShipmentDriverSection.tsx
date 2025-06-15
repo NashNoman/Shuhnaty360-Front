@@ -1,20 +1,21 @@
+import {
+  useDriversInfinityQuery,
+  useTruckTypesInfinityQuery,
+} from "@/api/drivers.api";
+import AutoCompleteSelectField, {
+  AutocompleteOption,
+} from "@/components/ui/AutoCompleteSelectField";
+import TextInputField from "@/components/ui/TextInputField";
+import { ShipmentSerializerSchema } from "@/schemas/shipment.schema";
+import { DriverList } from "Api";
 import { useEffect, useMemo, useState } from "react";
 import {
   Control,
   FieldErrors,
   UseFormRegister,
   UseFormSetValue,
+  useWatch,
 } from "react-hook-form";
-import { DriverList } from "../../../Api";
-import {
-  useDriversInfinityQuery,
-  useTruckTypesInfinityQuery,
-} from "../../api/drivers.api";
-import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
-import AutoCompleteSelectField, {
-  AutocompleteOption,
-} from "../ui/AutoCompleteSelectField";
-import TextInputField from "../ui/TextInputField";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentDriverSectionProps = {
@@ -33,6 +34,10 @@ const ShipmentDriverSection = ({
   const [selectedDriver, setSelectedDriver] = useState<DriverList | undefined>(
     undefined,
   );
+  const selectedDriverId = useWatch({
+    control,
+    name: "driver",
+  });
 
   const { data, isLoading: isLoadingDrivers } = useDriversInfinityQuery();
   const { data: truckTypesData, isLoading: isLoadingTruckTypes } =
@@ -54,17 +59,35 @@ const ShipmentDriverSection = ({
   );
 
   useEffect(() => {
-    if (selectedDriver) {
+    if (selectedDriverId === selectedDriver?.id) {
+      return;
+    }
+
+    const driver = data?.items.find((driver) => driver.id === selectedDriverId);
+    setSelectedDriver(driver);
+
+    if (driver) {
+      setSelectedDriver(driver);
+
       const option = truckTypeOptions.find(
-        (o) => o.label === selectedDriver.truck_type,
+        (o) => o.label === driver.truck_type,
       );
       if (option) {
         setValue("truck_type", option.value as number);
       } else {
         setValue("truck_type", 1);
       }
+    } else {
+      setValue("truck_type", 0);
+      setSelectedDriver(undefined);
     }
-  }, [selectedDriver, setValue, truckTypeOptions]);
+  }, [
+    data?.items,
+    selectedDriver?.id,
+    selectedDriverId,
+    setValue,
+    truckTypeOptions,
+  ]);
 
   return (
     <ShipmentSectionWrapper title="السائق">

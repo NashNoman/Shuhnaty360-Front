@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import { useRecipientsInfinityQuery } from "../../api/recipients.api";
 import locationIcon from "../../assets/images/location.svg";
@@ -35,20 +34,13 @@ const tableColumns: TableColumn[] = [
 const Recipients = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
-  const { ref, inView } = useInView();
 
   const {
     data: recipientsData,
     isFetching,
     hasNextPage,
-    fetchNextPage,
+    ref,
   } = useRecipientsInfinityQuery();
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
 
   return (
     <>
