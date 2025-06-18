@@ -1,7 +1,7 @@
 import inShippingIcon from "../../../../assets/images/in-shipping-truck.svg";
 import inTransitIcon from "../../../../assets/images/in-transit-truck.svg";
 import underReviewIcon from "../../../../assets/images/under-review-truck.svg";
-// import CancelledShipmentIcon from '../../../../assets/images/Cancelled-shipment-truck.svg';
+// import CancelledShipmentIcon from '../../../../assets/images/cancelled-shipment-truck.svg';
 import returnedShipmentIcon from "../../../../assets/images/returned-shipment-truck.svg";
 
 const phases = [

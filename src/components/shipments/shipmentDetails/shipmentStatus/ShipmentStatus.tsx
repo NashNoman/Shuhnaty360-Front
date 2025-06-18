@@ -1,5 +1,5 @@
 import { ShipmentHistory } from "Api";
-import CancelledShipmentIcon from "../../../../assets/images/Cancelled-shipment-truck.svg";
+import CancelledShipmentIcon from "../../../../assets/images/cancelled-shipment-truck.svg";
 import deliveredShipmentIcon from "../../../../assets/images/delivered-shipment-truck.svg";
 import inShippingIcon from "../../../../assets/images/in-shipping-truck.svg";
 import inTransitIcon from "../../../../assets/images/in-transit-truck.svg";

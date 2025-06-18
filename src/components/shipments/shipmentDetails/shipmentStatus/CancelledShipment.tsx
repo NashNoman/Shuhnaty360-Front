@@ -1,9 +1,9 @@
 import inShippingIcon from "../../../../assets/images/in-shipping-truck.svg";
 import inTransitIcon from "../../../../assets/images/in-transit-truck.svg";
 import underReviewIcon from "../../../../assets/images/under-review-truck.svg";
-// import CancelledShipmentIcon from '../../../../assets/images/Cancelled-shipment-truck.svg';
-import editIcon from "../../../../assets/images/edit-icon.svg";
+// import CancelledShipmentIcon from '../../../../assets/images/cancelled-shipment-truck.svg';
 import { useState } from "react";
+import editIcon from "../../../../assets/images/edit-icon.svg";
 
 const phases = [
   {
