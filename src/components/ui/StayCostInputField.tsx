@@ -40,7 +40,7 @@ const StayCostInputField = ({ register, errors }: StayCostInputFieldProps) => {
         />
         <div
           className={cn(
-            "h-full w-0.5 bg-[#CCCCCC]",
+            "h-full w-[.1rem] bg-[#CCCCCC]",
             (errors.stay_cost?.message || errors.days_stayed?.message) &&
               "bg-red-500",
           )}

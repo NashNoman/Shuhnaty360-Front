@@ -48,6 +48,7 @@ const ShipmentsForm = ({
           register={register}
           control={control}
           errors={errors}
+          setValue={setValue}
         />
         <hr className="border-0 border-t-2 border-dashed border-[] my-12" />
         <ShipmentClientSection
@@ -62,7 +63,11 @@ const ShipmentsForm = ({
           errors={errors}
         />
         <hr className="border-0 border-t-2 border-dashed border-[] my-12" />
-        <ShipmentCostSection register={register} errors={errors} />
+        <ShipmentCostSection
+          register={register}
+          control={control}
+          errors={errors}
+        />
         <hr className="border-0 border-t-2 border-dashed border-[] my-12" />
         <FormButton disabled={isLoading} className="w-full">
           {isEdit ? "تحديث الشحنة" : "إضافة الشحنة"}

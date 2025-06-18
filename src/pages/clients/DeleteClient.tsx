@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useClientQuery, useDeleteClient } from "../../api/clients.api";
@@ -12,14 +13,28 @@ const DeleteClient = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { clientId } = useParams();
 
-  const { data: clientRes, isLoading: isClientDataLoading } =
-    useClientQuery(clientId);
+  const {
+    data: clientRes,
+    isLoading: isClientDataLoading,
+    error,
+    refetch,
+  } = useClientQuery(clientId);
 
   const { mutate: deleteMutate, isPending: isDeleting } = useDeleteClient();
 
   if (!clientId) {
     navigate("/clients");
-    return;
+    return null;
+  }
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات العميل"
+      />
+    );
   }
 
   const client = clientRes?.data;

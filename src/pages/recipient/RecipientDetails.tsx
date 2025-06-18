@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useRecipientQuery } from "../../api/recipients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -9,9 +10,22 @@ const RecipientDetails = () => {
   const { recipientId } = useParams();
   const { isSidebarOpen } = useSidebar();
 
-  const { data: recipientData, isLoading } = useRecipientQuery(
-    recipientId as number | undefined,
-  );
+  const {
+    data: recipientData,
+    isLoading,
+    error,
+    refetch,
+  } = useRecipientQuery(recipientId as number | undefined);
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات المستلم"
+      />
+    );
+  }
 
   const recipient = recipientData?.data;
 

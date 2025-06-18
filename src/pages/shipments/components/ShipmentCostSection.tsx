@@ -1,4 +1,9 @@
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  useWatch,
+} from "react-hook-form";
 import StayCostInputField from "../../../components/ui/StayCostInputField";
 import TextInputField from "../../../components/ui/TextInputField";
 import { ShipmentSerializerSchema } from "../../../schemas/shipment.schema";
@@ -6,13 +11,35 @@ import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentCostSectionProps = {
   register: UseFormRegister<ShipmentSerializerSchema>;
+  control: Control<ShipmentSerializerSchema>;
   errors: FieldErrors<ShipmentSerializerSchema>;
 };
 
 const ShipmentCostSection = ({
   register,
+  control,
   errors,
 }: ShipmentCostSectionProps) => {
+  const [fare, premium, stay_cost, days_stayed, deducted, fare_return] =
+    useWatch({
+      control,
+      name: [
+        "fare",
+        "premium",
+        "stay_cost",
+        "days_stayed",
+        "deducted",
+        "fare_return",
+      ],
+    });
+
+  const total =
+    Number(fare || 0) +
+    Number(premium || 0) +
+    Number(stay_cost || 0) * Number(days_stayed || 0) -
+    Number(deducted || 0) +
+    Number(fare_return || 0);
+
   return (
     <ShipmentSectionWrapper title="التكلفة ر.س">
       <TextInputField
@@ -40,6 +67,11 @@ const ShipmentCostSection = ({
         type="number"
         {...register("fare_return")}
       />
+      <div className="self-end mb-2">
+        <p className="text-2xl font-bold">
+          الإجمالي: <span className="font-normal">{total} ر.س</span>
+        </p>
+      </div>
     </ShipmentSectionWrapper>
   );
 };

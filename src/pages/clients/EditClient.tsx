@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -24,7 +25,7 @@ const EditClient = () => {
     resolver: zodResolver(clientSchema),
   });
 
-  const { data, isLoading } = useClientQuery(clientId);
+  const { data, isLoading, error, refetch } = useClientQuery(clientId);
 
   const { mutate, isPending: isUpdating } = useUpdateClient(clientId);
 
@@ -57,6 +58,16 @@ const EditClient = () => {
       setValue("second_phone_number", client.second_phone_number);
     }
   }, [data, setValue]);
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات العميل"
+      />
+    );
+  }
 
   return (
     <>

@@ -6,8 +6,13 @@ import PhoneInputField from "@/components/ui/PhoneInputField";
 import TextAreaField from "@/components/ui/TextAreaField";
 import { ShipmentSerializerSchema } from "@/schemas/shipment.schema";
 import { RecipientSerializerList } from "Api";
-import { useState } from "react";
-import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { useEffect, useState } from "react";
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  useWatch,
+} from "react-hook-form";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentClientSectionProps = {
@@ -25,6 +30,13 @@ const ShipmentRecipientSection = ({
     RecipientSerializerList | undefined
   >();
 
+  const [showNotes, setShowNotes] = useState(false);
+  const recipientNotes = useWatch({
+    control,
+    name: "notes_recipient",
+  });
+  const hasNotes = !!recipientNotes;
+
   const { data: recipientsData } = useRecipientsInfinityQuery();
 
   const recipientOptions: AutocompleteOption[] =
@@ -38,6 +50,10 @@ const ShipmentRecipientSection = ({
       value: item.id!,
       label: item.address || "",
     })) || [];
+
+  useEffect(() => {
+    setShowNotes(hasNotes);
+  }, [hasNotes]);
 
   return (
     <ShipmentSectionWrapper title="المستلِم">
@@ -65,22 +81,32 @@ const ShipmentRecipientSection = ({
       <PhoneInputField
         name="recipient_phone"
         label="رقم الهاتف (أساسي)"
-        value={selectedRecipient?.phone_number || "+966"}
+        value={selectedRecipient?.phone_number || ""}
         control={control}
       />
       <PhoneInputField
         name="recipient_phone2"
         label="رقم الهاتف (احتياطي)"
-        value={selectedRecipient?.second_phone_number || "+966"}
+        value={selectedRecipient?.second_phone_number || ""}
         control={control}
       />
-      <TextAreaField
-        label="ملاحظات المستلم"
-        containerClassName="col-span-2"
-        className="h-40"
-        error={errors.notes_recipient?.message}
-        {...register("notes_recipient")}
-      />
+      {showNotes ? (
+        <TextAreaField
+          label="ملاحظات المستلم"
+          containerClassName="col-span-2"
+          className="h-40"
+          error={errors.notes_recipient?.message}
+          {...register("notes_recipient")}
+        />
+      ) : (
+        <button
+          className="py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
+          type="button"
+          onClick={() => setShowNotes(!showNotes)}
+        >
+          إضافة ملاحظات
+        </button>
+      )}
     </ShipmentSectionWrapper>
   );
 };

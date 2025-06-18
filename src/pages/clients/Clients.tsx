@@ -38,6 +38,8 @@ const Clients = () => {
     isFetching,
     hasNextPage,
     ref,
+    error,
+    fetchNextPage,
   } = useClientsInfinityQuery();
 
   return (
@@ -70,6 +72,9 @@ const Clients = () => {
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
             dataCount={clientsData?.items?.length}
+            error={error}
+            onRetry={fetchNextPage}
+            defaultMessage="حدث خطأ أثناء جلب بيانات العملاء"
           >
             {clientsData?.items &&
               clientsData.items.map((item, index) => (

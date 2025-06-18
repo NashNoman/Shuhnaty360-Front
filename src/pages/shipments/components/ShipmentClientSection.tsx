@@ -39,6 +39,7 @@ const ShipmentClientSection = ({
     control,
     name: "notes_customer",
   });
+  const hasNotes = !!customerNotes;
 
   const { data: clientsData } = useClientsInfinityQuery();
   const { data: selectedClientData, isLoading: isLoadingBranches } =
@@ -49,6 +50,10 @@ const ShipmentClientSection = ({
       value: item.id as number,
       label: item.name,
     })) || [];
+
+  useEffect(() => {
+    setShowNotes(hasNotes);
+  }, [hasNotes]);
 
   useEffect(() => {
     const options: AutocompleteOption[] =
@@ -102,7 +107,7 @@ const ShipmentClientSection = ({
         control={control}
       />
 
-      {showNotes || customerNotes ? (
+      {showNotes ? (
         <TextAreaField
           label="ملاحظات المرسل"
           containerClassName="col-span-2"
@@ -116,7 +121,7 @@ const ShipmentClientSection = ({
           type="button"
           onClick={() => setShowNotes(!showNotes)}
         >
-          {showNotes ? "إخفاء" : "إضافة ملاحظات"}
+          إضافة ملاحظات
         </button>
       )}
     </ShipmentSectionWrapper>

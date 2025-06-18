@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -29,7 +30,12 @@ const EditDriver = () => {
     resolver: zodResolver(driverSchema),
   });
 
-  const { data: driverData, isLoading } = useDriverQuery(driverId);
+  const {
+    data: driverData,
+    isLoading,
+    error,
+    refetch,
+  } = useDriverQuery(driverId);
   const { data: truckTypesRes } = useTruckTypesInfinityQuery();
 
   const truckType =
@@ -66,6 +72,16 @@ const EditDriver = () => {
       setValue("vehicle_number", driverData.data.vehicle_number);
     }
   }, [driverData, register, setValue, truckType]);
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات السائق"
+      />
+    );
+  }
 
   return (
     <>

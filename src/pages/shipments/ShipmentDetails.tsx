@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useParams } from "react-router-dom";
 import {
   useShipmentQuery,
@@ -18,7 +19,7 @@ const ShipmentDetails = () => {
   const { shipmentId } = useParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { data, isLoading } = useShipmentQuery(shipmentId);
+  const { data, isLoading, error, refetch } = useShipmentQuery(shipmentId);
   const { mutate } = useUpdateShipmentStatus(shipmentId);
 
   const shipment = data?.data;
@@ -79,6 +80,16 @@ const ShipmentDetails = () => {
       value: `${shipment?.deducted || "0"} ر.س`,
     },
   ];
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات الشحنة"
+      />
+    );
+  }
 
   return (
     <>

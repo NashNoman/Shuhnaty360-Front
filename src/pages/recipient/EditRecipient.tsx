@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,7 +20,7 @@ const EditRecipient = () => {
   const { isSidebarOpen } = useSidebar();
   const { recipientId } = useParams();
 
-  const { data, isLoading } = useRecipientQuery(
+  const { data, isLoading, error, refetch } = useRecipientQuery(
     recipientId ? parseInt(recipientId) : undefined,
   );
   const { mutate, isPending: isUpdating } = useUpdateRecipient(
@@ -36,15 +37,6 @@ const EditRecipient = () => {
     resolver: zodResolver(recipientSerializerSchema),
   });
 
-  const onSubmit = handleSubmit((formData: RecipientSerializerSchema) => {
-    mutate(formData, {
-      onSuccess: () => {
-        toast.success("تم تحديث العميل بنجاح");
-        navigate("/recipients");
-      },
-    });
-  });
-
   useEffect(() => {
     if (data) {
       const recipientData = data.data;
@@ -56,6 +48,25 @@ const EditRecipient = () => {
       setValue("city", recipientData.city);
     }
   }, [data, setValue]);
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات المستلم"
+      />
+    );
+  }
+
+  const onSubmit = handleSubmit((formData: RecipientSerializerSchema) => {
+    mutate(formData, {
+      onSuccess: () => {
+        toast.success("تم تحديث العميل بنجاح");
+        navigate("/recipients");
+      },
+    });
+  });
 
   return (
     <>

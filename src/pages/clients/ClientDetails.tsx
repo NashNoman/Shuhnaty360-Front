@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useClientQuery } from "../../api/clients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -11,11 +12,26 @@ const ClientDetails = () => {
   const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
 
-  const { data: clientRes, isLoading } = useClientQuery(clientId);
+  const {
+    data: clientRes,
+    isLoading,
+    error,
+    refetch,
+  } = useClientQuery(clientId);
 
   if (!clientId) {
     navigate("/clients");
-    return;
+    return null;
+  }
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات العميل"
+      />
+    );
   }
 
   const client = clientRes?.data;

@@ -3,10 +3,6 @@ import { fixHtmlFormOptionalFields } from "../utils/utils";
 
 export const shipmentSerializerSchema = fixHtmlFormOptionalFields(
   z.object({
-    // user: z.number({
-    //   required_error: "المستخدم مطلوب",
-    //   invalid_type_error: "المستخدم يجب أن يكون رقمًا",
-    // }),
     driver: z.number({
       required_error: "السائق مطلوب",
       invalid_type_error: "السائق يجب أن يكون رقمًا",
@@ -37,8 +33,8 @@ export const shipmentSerializerSchema = fixHtmlFormOptionalFields(
         required_error: "عدد أيام الوصول مطلوب",
         invalid_type_error: "عدد أيام الوصول يجب أن يكون رقمًا",
       })
-      .positive({
-        message: "عدد أيام الوصول يجب أن يكون أكبر من صفر",
+      .nonnegative({
+        message: "عدد أيام الوصول يجب أن يكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),
@@ -70,8 +66,8 @@ export const shipmentSerializerSchema = fixHtmlFormOptionalFields(
       .number({
         invalid_type_error: "وزن الشحنة يجب أن يكون رقمًا",
       })
-      .gt(0, {
-        message: "وزن الشحنة مطلوب ويجب أن يكون أكبر من 0",
+      .nonnegative({
+        message: "وزن الشحنة مطلوب ويجب أن يكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),
@@ -117,54 +113,54 @@ export const shipmentSerializerSchema = fixHtmlFormOptionalFields(
       .optional(),
     fare: z.coerce
       .number({
-        required_error: "الأجرة مطلوبة",
-        invalid_type_error: "الأجرة يجب أن تكون رقمًا",
+        required_error: "التكلفة الأساسية مطلوبة",
+        invalid_type_error: "التكلفة الأساسية يجب أن تكون رقمًا",
       })
-      .positive({
-        message: "الأجرة يجب أن تكون أكبر من صفر",
+      .nonnegative({
+        message: "التكلفة الأساسية يجب أن تكون أكبر من أو يساوي صفر",
       }),
     premium: z.coerce
       .number({
-        invalid_type_error: "القيمة الإضافية يجب أن تكون رقمًا",
+        invalid_type_error: "الزيادة يجب أن تكون رقمًا",
       })
-      .positive({
-        message: "القيمة الإضافية يجب أن تكون أكبر من صفر",
+      .nonnegative({
+        message: "الزيادة يجب أن تكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),
     fare_return: z.coerce
       .number({
-        invalid_type_error: "الأجرة المرتجعة يجب أن تكون رقمًا",
+        invalid_type_error: "التكلفة الأساسية المرتجعة يجب أن تكون رقمًا",
       })
-      .positive({
-        message: "الأجرة المرتجعة يجب أن تكون أكبر من صفر",
+      .nonnegative({
+        message: "التكلفة الأساسية المرتجعة يجب أن تكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),
     days_stayed: z.coerce
       .number({
-        invalid_type_error: "عدد أيام البقاء يجب أن يكون رقمًا",
+        invalid_type_error: "عدد أيام المبيت يجب أن يكون رقمًا",
       })
-      .positive({
-        message: "عدد أيام البقاء يجب أن يكون أكبر من صفر",
+      .nonnegative({
+        message: "عدد أيام المبيت يجب أن يكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),
     stay_cost: z.coerce
       .number({
-        invalid_type_error: "تكلفة البقاء يجب أن تكون رقمًا",
+        invalid_type_error: "تكلفة المبيت يجب أن تكون رقمًا",
       })
-      .positive({
-        message: "تكلفة البقاء يجب أن تكون أكبر من صفر",
+      .nonnegative({
+        message: "تكلفة المبيت يجب أن تكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),
     deducted: z.coerce
       .number({
-        invalid_type_error: "المخصوم يجب أن يكون رقمًا",
+        invalid_type_error: "الخصم يجب أن يكون رقمًا",
       })
-      .positive({
-        message: "المخصوم يجب أن يكون أكبر من صفر",
+      .nonnegative({
+        message: "الخصم يجب أن يكون أكبر من أو يساوي صفر",
       })
       .nullable()
       .optional(),

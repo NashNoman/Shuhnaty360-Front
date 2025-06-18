@@ -5,34 +5,73 @@ import DatePickerField from "@/components/ui/DatePickerField";
 import TextAreaField from "@/components/ui/TextAreaField";
 import TextInputField from "@/components/ui/TextInputField";
 import { ShipmentSerializerSchema } from "@/schemas/shipment.schema";
-import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  useWatch,
+} from "react-hook-form";
 import ShipmentSectionWrapper from "./ShipmentSectionWrapper";
 
 type ShipmentSectionProps = {
   register: UseFormRegister<ShipmentSerializerSchema>;
   control: Control<ShipmentSerializerSchema>;
   errors: FieldErrors<ShipmentSerializerSchema>;
+  setValue: UseFormSetValue<ShipmentSerializerSchema>;
 };
 
 const ShipmentSection = ({
   register,
   control,
   errors,
+  setValue,
 }: ShipmentSectionProps) => {
   const { data: citiesData } = useCitiesInfinityQuery();
   const { data: statusData } = useShipmentStatusInfinityQuery();
+  const selectedStatus = useWatch({
+    control,
+    name: "status",
+  });
 
-  const cityOptions =
-    citiesData?.items.map((city) => ({
-      value: city.id!,
-      label: city.ar_city!,
-    })) || [];
+  const [showActualDeliveryDate, setShowActualDeliveryDate] = useState(false);
+  const actualDeliveryDate = useWatch({
+    control,
+    name: "actual_delivery_date",
+  });
+  const hasActualDeliveryDate = !!actualDeliveryDate;
 
-  const statusOptions =
-    statusData?.items.map((status) => ({
-      value: status.id!,
-      label: status.name_ar!,
-    })) || [];
+  const cityOptions = useMemo(() => {
+    return (
+      citiesData?.items.map((city) => ({
+        value: city.id!,
+        label: city.ar_city!,
+      })) || []
+    );
+  }, [citiesData]);
+
+  const statusOptions = useMemo(() => {
+    return (
+      statusData?.items.map((status) => ({
+        value: status.id!,
+        label: status.name_ar!,
+      })) || []
+    );
+  }, [statusData]);
+
+  useEffect(() => {
+    const status = statusOptions.find(
+      (status) => status.value === selectedStatus,
+    );
+    if (status) {
+      setValue("status", status.value);
+    }
+  }, [selectedStatus, setValue, statusOptions]);
+
+  useEffect(() => {
+    setShowActualDeliveryDate(hasActualDeliveryDate);
+  }, [hasActualDeliveryDate]);
 
   return (
     <ShipmentSectionWrapper title="الشحنة">
@@ -64,12 +103,6 @@ const ShipmentSection = ({
         description="أكّد مع المستلم التاريخ الدقيق للاستلام"
         control={control}
       />
-      <DatePickerField
-        label="تاريخ التسليم الفعلي"
-        name="actual_delivery_date"
-        error={errors.actual_delivery_date?.message}
-        control={control}
-      />
       <TextInputField
         label="الوزن (بالطن)"
         type="number"
@@ -84,9 +117,26 @@ const ShipmentSection = ({
         error={errors.status?.message}
         control={control}
       />
+      {showActualDeliveryDate ? (
+        <DatePickerField
+          label="تاريح استلام الشحنه"
+          name="actual_delivery_date"
+          error={errors.actual_delivery_date?.message}
+          description="في حال استلم العميل الشحنه فقط يرجى ادخال تاريح استلام الشحنه"
+          control={control}
+        />
+      ) : (
+        <button
+          className="py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
+          type="button"
+          onClick={() => setShowActualDeliveryDate(!showActualDeliveryDate)}
+        >
+          إضافة تاريخ استلام الشحنة
+        </button>
+      )}
       <TextAreaField
         label="المحتويات"
-        className="h-32"
+        className="min-h-40"
         containerClassName="col-span-2"
         error={errors.contents?.message}
         {...register("contents")}

@@ -104,6 +104,7 @@ export const useCreateShipment = () => {
   const mutation = useMutation({
     mutationFn: async (formData: ShipmentSerializerCreate) => {
       const data = removeNullOrBlankFields(formData);
+
       console.log("Creating shipment with data:", data);
 
       const response = await api.post(ENDPOINT + "create/", data);

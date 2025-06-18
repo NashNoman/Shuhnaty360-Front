@@ -40,6 +40,8 @@ const Recipients = () => {
     isFetching,
     hasNextPage,
     ref,
+    error,
+    fetchNextPage,
   } = useRecipientsInfinityQuery();
 
   return (
@@ -72,6 +74,9 @@ const Recipients = () => {
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
             dataCount={recipientsData?.count}
+            error={error}
+            onRetry={fetchNextPage}
+            defaultMessage="حدث خطأ أثناء جلب بيانات المستلمين"
           >
             {recipientsData?.items &&
               recipientsData.items.map((item, index) => (

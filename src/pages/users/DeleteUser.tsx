@@ -1,5 +1,6 @@
 import DeleteItem from "../../components/shipments/deleteItem/DeleteItem";
 
+import ErrorContainer from "@/components/ErrorContainer";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteUser, useUserQuery } from "../../api/users.api";
@@ -11,7 +12,12 @@ const DeleteUser = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
 
-  const { data: userData, isLoading: isUserDataLoading } = useUserQuery(userId);
+  const {
+    data: userData,
+    isLoading: isUserDataLoading,
+    error,
+    refetch,
+  } = useUserQuery(userId);
 
   const { mutate: deleteMutate, isPending: isDeleting } = useDeleteUser();
 
@@ -64,6 +70,16 @@ const DeleteUser = () => {
     name: (user?.first_name || "") + " " + (user?.last_name || ""),
     image: image,
   };
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات المستخدم"
+      />
+    );
+  }
 
   return (
     <DeleteItem

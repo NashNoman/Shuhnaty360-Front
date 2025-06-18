@@ -1,5 +1,6 @@
 // import PieChart from '../../components/charts/PieChart';
 
+import ErrorContainer from "@/components/ErrorContainer";
 import { useParams } from "react-router-dom";
 import { Users } from "../../../Api";
 import { useUserQuery } from "../../api/users.api";
@@ -15,7 +16,7 @@ const UsersDetails = () => {
   const { userId } = useParams();
   const { isSidebarOpen } = useSidebar();
 
-  const { isLoading, data } = useUserQuery(userId);
+  const { isLoading, data, error, refetch } = useUserQuery(userId);
 
   const user: Users | undefined = data?.data;
 
@@ -61,6 +62,17 @@ const UsersDetails = () => {
       path: `/users/delete-user/${userId}`,
     },
   ];
+
+  if (error) {
+    return (
+      <ErrorContainer
+        className="size-full"
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات المستخدم"
+      />
+    );
+  }
 
   return (
     <>

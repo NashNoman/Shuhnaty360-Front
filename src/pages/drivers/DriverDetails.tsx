@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useDriverQuery } from "../../api/drivers.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -14,7 +15,12 @@ const DriverDetails = () => {
   const { driverId } = useParams();
   const { isSidebarOpen } = useSidebar();
 
-  const { data: driverDetailsRes, isLoading } = useDriverQuery(driverId);
+  const {
+    data: driverDetailsRes,
+    isLoading,
+    error,
+    refetch,
+  } = useDriverQuery(driverId);
 
   const driver = driverDetailsRes?.data;
 
@@ -68,6 +74,16 @@ const DriverDetails = () => {
       path: `/drivers/delete-driver/${driver?.id}`,
     },
   ];
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات السائق"
+      />
+    );
+  }
 
   return (
     <>

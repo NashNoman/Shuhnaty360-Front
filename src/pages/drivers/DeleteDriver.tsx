@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import ErrorContainer from "@/components/ErrorContainer";
 import { toast } from "sonner";
 import { useDeleteDriver, useDriverQuery } from "../../api/drivers.api";
 import image from "../../assets/images/avatar.jpg";
@@ -12,8 +13,12 @@ const DeleteDriver = () => {
   const navigate = useNavigate();
   const { driverId } = useParams();
 
-  const { data: driverData, isLoading: isDriverDataLoading } =
-    useDriverQuery(driverId);
+  const {
+    data: driverData,
+    isLoading: isDriverDataLoading,
+    error,
+    refetch,
+  } = useDriverQuery(driverId);
 
   const { mutate: deleteMutate, isPending: isDeleting } = useDeleteDriver();
 
@@ -66,6 +71,16 @@ const DeleteDriver = () => {
       value: driver?.vehicle_number,
     },
   ];
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات السائق"
+      />
+    );
+  }
 
   const personalData = {
     name: driver?.name || "",

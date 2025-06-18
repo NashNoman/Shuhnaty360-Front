@@ -1,4 +1,5 @@
 // import FileUploadInput from '../../components/usersDrivers/FileUploadInput';
+import ErrorContainer from "@/components/ErrorContainer";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLayoutEffect } from "react";
 import { Control, useForm, UseFormRegister } from "react-hook-form";
@@ -28,14 +29,13 @@ const EditUser = () => {
     resolver: zodResolver(userUpdateSchema),
   });
 
-  const { data: userData, isLoading } = useUserQuery(userId);
+  const { data: userData, isLoading, error, refetch } = useUserQuery(userId);
 
   const { mutate, isPending } = useUpdateUser(
     userId ? parseInt(userId) : undefined,
   );
 
   const onSubmit = handleSubmit((formData: UserUpdateSchemaType) => {
-    // TODO: Fix type issue with formData
     mutate(formData as UsersUpdate, {
       onSuccess: () => {
         navigate("/users");
@@ -56,6 +56,16 @@ const EditUser = () => {
       setValue("is_active", userData.data.is_active);
     }
   }, [userData, setValue]);
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات المستخدم"
+      />
+    );
+  }
 
   return (
     <>

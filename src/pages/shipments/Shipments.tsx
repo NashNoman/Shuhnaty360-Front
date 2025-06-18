@@ -44,14 +44,12 @@ const Shipments = () => {
 
   const [filters, setFilters] = useState<ShipmentFiltersType>({});
 
-  // Calculate number of active filters
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
   const params = { search: debouncedValue, ...filters };
 
-  const { data, isFetching, hasNextPage, ref } =
+  const { data, isFetching, hasNextPage, ref, error, fetchNextPage } =
     useShipmentsInfinityQuery(params);
-
   const { mutate } = useUpdateShipmentStatus(params);
 
   const handleStatusChange = (
@@ -129,11 +127,14 @@ const Shipments = () => {
           columns={tableColumns}
           isLoading={isFetching || hasNextPage}
           dataCount={filteredShipments?.length}
+          error={error}
+          onRetry={fetchNextPage}
+          defaultMessage="حدث خطأ أثناء جلب بيانات الشحنات"
         >
           {filteredShipments &&
             filteredShipments.map((shipment, index) => (
               <TableRow
-                key={`${shipment.id}${index}`}
+                key={shipment.id}
                 index={index}
                 onClick={() =>
                   navigate("/shipments/shipment-details/" + shipment.id)

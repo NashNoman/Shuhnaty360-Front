@@ -1,9 +1,6 @@
-import React from "react";
+import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
 import { Control, useController } from "react-hook-form";
-import { PhoneInput } from "react-international-phone";
-// import "react-international-phone/style.css";
-
-type PhoneInputProps = React.ComponentProps<typeof PhoneInput>;
 
 export type PhoneInputFieldProps = {
   name: string;
@@ -13,23 +10,69 @@ export type PhoneInputFieldProps = {
   error?: string;
   description?: string | string[];
   disabled?: boolean;
-} & Omit<PhoneInputProps, "someIncompatibleProp1" | "someIncompatibleProp2">; // Replace 'someIncompatibleProp' with the actual prop names
+  value?: string | undefined;
+  countryCodePlaceholder?: string;
+};
 
 const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
   name,
   control,
   label,
-  placeholder,
+  placeholder = "5XXXXXXXX",
   error,
   description,
   disabled,
-  ...props
+  value,
+  countryCodePlaceholder = "+966",
 }) => {
   const { field } = useController({
     name,
     control,
-    defaultValue: "",
+    defaultValue: value,
   });
+
+  const [countryCode, setCountryCode] = useState("+966");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  useEffect(() => {
+    const val = field.value || value;
+    if (val) {
+      const match = val.match(/^(\+\d{1,3})/);
+      if (match) {
+        setCountryCode(match[1]);
+        setPhoneNumber(val.replace(match[1], ""));
+      } else {
+        setPhoneNumber(val);
+      }
+    } else {
+      setCountryCode("+966");
+      setPhoneNumber("");
+    }
+  }, [field.value, value]);
+
+  useEffect(() => {
+    if (phoneNumber) {
+      const fullNumber = countryCode.startsWith("+")
+        ? `${countryCode}${phoneNumber}`
+        : phoneNumber;
+      field.onChange(fullNumber);
+    } else {
+      field.onChange("");
+    }
+  }, [countryCode, phoneNumber, field]);
+
+  const handleCountryCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9+]/g, "");
+    const cleanValue = value
+      .replace(/^\+*/, "+")
+      .replace(/\+/g, (_match, offset) => (offset === 0 ? "+" : ""));
+    setCountryCode(cleanValue);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setPhoneNumber(value);
+  };
 
   return (
     <div className="col-span-1 flex flex-col gap-1">
@@ -41,25 +84,32 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
           {label}
         </label>
       )}
-      <PhoneInput
-        {...field}
-        placeholder={placeholder}
-        disabled={disabled}
-        countrySelectorStyleProps={{
-          className:
-            "border-none bg-white rounded-lg flex items-center justify-center px-2.5",
-          dropdownStyleProps: {
-            className: "hidden",
-          },
-        }}
-        inputProps={{
-          required: true,
-          className:
-            "w-full! ps-4! text-[#1A1A1A]! bg-white! h-12 rounded-lg border border-[#CCCCCC] text-left font-Rubik focus:border! focus:border-[#DD7E1F]! focus:outline-hidden!",
-        }}
-        defaultCountry="sa"
-        {...props}
-      />
+      <div
+        className={cn(
+          "flex flex-row-reverse overflow-hidden gap-2 bg-white text-lg border border-[#CCCCCC] rounded-lg focus-within:ring-1 focus-within:ring-[#DD7E1F]",
+          error && "border-red-500",
+        )}
+      >
+        <input
+          type="tel"
+          value={countryCode}
+          onChange={handleCountryCodeChange}
+          placeholder={countryCodePlaceholder}
+          disabled={disabled}
+          className="w-20 p-2 focus:outline-hidden "
+        />
+        <div
+          className={cn("h-full w-[.1rem] bg-[#CCCCCC]", error && "bg-red-500")}
+        />
+        <input
+          type="tel"
+          value={phoneNumber}
+          onChange={handlePhoneChange}
+          placeholder={placeholder}
+          disabled={disabled}
+          className="grow px-2 focus:outline-hidden "
+        />
+      </div>
       {error && <span className="text-red-500 mt-1 text-sm">{error}</span>}
       {description && (
         <div className="text-[#999] font-Rubik text-sm">

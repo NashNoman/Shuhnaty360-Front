@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import ErrorContainer from "@/components/ErrorContainer";
 import {
   useDeleteRecipient,
   useRecipientQuery,
@@ -15,13 +16,31 @@ const DeleteRecipient = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { recipientId } = useParams();
 
-  const { data: recipientData, isLoading } = useRecipientQuery(
-    recipientId as number | undefined,
-  );
+  const {
+    data: recipientData,
+    isLoading,
+    error,
+    refetch,
+  } = useRecipientQuery(recipientId as number | undefined);
 
   const { mutate, isPending: isDeleting } = useDeleteRecipient();
 
   const recipient = recipientData?.data;
+
+  if (!recipientId) {
+    navigate("/recipients");
+    return null;
+  }
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات المستلم"
+      />
+    );
+  }
 
   const handleDeleteItemClick = () => {
     mutate(recipientId ? parseInt(recipientId) : undefined, {

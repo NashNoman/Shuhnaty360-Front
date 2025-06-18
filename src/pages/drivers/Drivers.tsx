@@ -84,6 +84,8 @@ const Drivers = () => {
     isFetching,
     hasNextPage,
     ref,
+    error,
+    fetchNextPage,
   } = useDriversInfinityQuery();
 
   return (
@@ -122,6 +124,9 @@ const Drivers = () => {
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
             dataCount={driversData?.items?.length}
+            error={error}
+            onRetry={fetchNextPage}
+            defaultMessage="حدث خطأ أثناء جلب بيانات السائقين"
           >
             {driversData?.items &&
               driversData.items.map((item, index) => (

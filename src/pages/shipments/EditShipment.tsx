@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import ErrorContainer from "@/components/ErrorContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -29,7 +30,7 @@ const EditShipment = () => {
     resolver: zodResolver(shipmentSerializerSchema),
   });
 
-  const { data, isLoading } = useShipmentQuery(shipmentId);
+  const { data, isLoading, error, refetch } = useShipmentQuery(shipmentId);
 
   const { mutate, status } = useUpdateShipment(shipmentId);
 
@@ -82,6 +83,16 @@ const EditShipment = () => {
       setValue("premium", shipmentData.premium);
     }
   }, [data, setValue]);
+
+  if (error) {
+    return (
+      <ErrorContainer
+        error={error}
+        onRetry={refetch}
+        defaultMessage="حدث خطأ أثناء جلب بيانات الشحنة"
+      />
+    );
+  }
 
   return (
     <>

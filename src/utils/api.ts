@@ -118,7 +118,7 @@ export const classifyAxiosError = (error: unknown) => {
   if (error.request) {
     return {
       type: "network",
-      message: "خطأ في الشبكة: لا يوجد استجابة من الخادم.",
+      message: "خطأ في الشبكة: لا توجد استجابة من الخادم.",
     };
   }
 

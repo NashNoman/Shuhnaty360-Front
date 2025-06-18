@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiCheckCircle, FiPlus, FiXCircle } from "react-icons/fi";
-import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import {
   useUpdateUserIsActive,
@@ -52,22 +51,17 @@ const Users = () => {
   const navigate = useNavigate();
   const [selectedUserStatus, setSelectedUserStatus] = useState("الكل");
   const [searchValue, setSearchValue] = useState("");
-  const { ref, inView } = useInView();
 
   const {
     data: usersData,
     isFetching,
+    error,
     hasNextPage,
+    ref,
     fetchNextPage,
   } = useUsersInfinityQuery();
 
   const { mutate } = useUpdateUserIsActive();
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView]);
 
   return (
     <>
@@ -105,6 +99,9 @@ const Users = () => {
             columns={tableColumns}
             isLoading={isFetching || hasNextPage}
             dataCount={usersData?.items?.length}
+            error={error}
+            onRetry={fetchNextPage}
+            defaultMessage="حدث خطأ أثناء جلب البيانات"
           >
             {usersData?.items &&
               usersData.items.map((item, index) => (
