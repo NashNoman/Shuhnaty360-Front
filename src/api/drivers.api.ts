@@ -3,11 +3,17 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
-import { DriverCreate, DriverList, TruckType } from "../../Api";
+import {
+  DriverCreate,
+  DriverList,
+  DriverOption,
+  TruckTypeOption,
+} from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
 import api, { classifyAxiosError } from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
@@ -43,6 +49,20 @@ export const useDriversInfinityQuery = () => {
   };
 };
 
+export const useDriversOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: [KEY],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<DriverOption>>(
+        ENDPOINT + "options/",
+      );
+      return response.data;
+    },
+  });
+
+  return query;
+};
+
 export const useDriverQuery = (id?: number | string) =>
   useQuery({
     queryKey: [KEY, id],
@@ -55,32 +75,18 @@ export const useDriverQuery = (id?: number | string) =>
     enabled: !!id,
   });
 
-export const useTruckTypesInfinityQuery = () => {
-  const { ref, inView } = useInView();
-
-  const query = useInfiniteQuery({
-    ...defaultInfinityQueryOptions<TruckType>(["truckTypes"]),
-    queryFn: async ({ pageParam }) => {
-      const response = await api.get<ApiListResponse<TruckType>>(
-        ENDPOINT + `TruckType/?page=${pageParam}`,
+export const useTruckTypesOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: ["truckTypes"],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<TruckTypeOption>>(
+        ENDPOINT + `TruckType/options/`,
       );
       return response.data;
     },
   });
 
-  const { isFetchingNextPage, hasNextPage, fetchNextPage } = query;
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
-
-  return {
-    ...query,
-    ref,
-    inView,
-  };
+  return query;
 };
 
 export const useCreateDriver = () => {

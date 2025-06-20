@@ -1,6 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -9,7 +10,6 @@ import {
   useUpdateRecipient,
 } from "../../api/recipients.api";
 import RecipientForm from "../../components/RecipientForm";
-import { useSidebar } from "../../context/SidebarContext";
 import {
   recipientSerializerSchema,
   RecipientSerializerSchema,
@@ -17,7 +17,6 @@ import {
 
 const EditRecipient = () => {
   const navigate = useNavigate();
-  const { isSidebarOpen } = useSidebar();
   const { recipientId } = useParams();
 
   const { data, isLoading, error, refetch } = useRecipientQuery(
@@ -70,23 +69,17 @@ const EditRecipient = () => {
 
   return (
     <>
-      {(isLoading || isUpdating) && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-      <RecipientForm
-        onSubmit={onSubmit}
-        isLoading={isLoading}
-        register={register}
-        control={control}
-        errors={errors}
-        isEdit
-      />
+      {(isLoading || isUpdating) && <PageLoader />}
+      <Suspense fallback={<PageLoader />}>
+        <RecipientForm
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+          register={register}
+          control={control}
+          errors={errors}
+          isEdit
+        />
+      </Suspense>
     </>
   );
 };

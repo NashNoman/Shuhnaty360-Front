@@ -1,4 +1,4 @@
-import { useCitiesInfinityQuery } from "@/api/cities.api";
+import { useCitiesOptions } from "@/api/cities.api";
 import { Combobox } from "../ui/Combobox";
 import { BaseComboboxProps } from "./types";
 
@@ -14,13 +14,9 @@ export function CityCombobox({
   notFoundText = "لا توجد مدن متاحة",
   ...props
 }: CityComboboxProps) {
-  const { data: citiesData, isLoading } = useCitiesInfinityQuery();
+  const { data: citiesData } = useCitiesOptions();
 
-  const cityOptions =
-    citiesData?.items.map((city) => ({
-      value: city.id as number,
-      label: city.ar_city || city.en_city || "",
-    })) || [];
+  const cityOptions = citiesData?.data.results || [];
 
   return (
     <Combobox
@@ -30,7 +26,7 @@ export function CityCombobox({
       placeholder={placeholder}
       searchPlaceholder={searchPlaceholder}
       notFoundText={notFoundText}
-      disabled={isLoading || props.disabled}
+      disabled={props.disabled}
       {...props}
     />
   );

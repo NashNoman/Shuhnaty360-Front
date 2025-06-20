@@ -18,7 +18,7 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
   name,
   control,
   label,
-  placeholder = "5XXXXXXXX",
+  placeholder = "5xxxxxxxx",
   error,
   description,
   disabled,
@@ -35,8 +35,9 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
   const [phoneNumber, setPhoneNumber] = useState("");
 
   useEffect(() => {
-    const val = field.value || value;
-    if (val) {
+    const val =
+      field.value && field.value?.trim() !== "+966" ? field.value : value;
+    if (val && val !== `${countryCode}${phoneNumber}`) {
       const match = val.match(/^(\+\d{1,3})/);
       if (match) {
         setCountryCode(match[1]);
@@ -44,22 +45,9 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
       } else {
         setPhoneNumber(val);
       }
-    } else {
-      setCountryCode("+966");
-      setPhoneNumber("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.value, value]);
-
-  useEffect(() => {
-    if (phoneNumber) {
-      const fullNumber = countryCode.startsWith("+")
-        ? `${countryCode}${phoneNumber}`
-        : phoneNumber;
-      field.onChange(fullNumber);
-    } else {
-      field.onChange("");
-    }
-  }, [countryCode, phoneNumber, field]);
 
   const handleCountryCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9+]/g, "");
@@ -67,11 +55,15 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
       .replace(/^\+*/, "+")
       .replace(/\+/g, (_match, offset) => (offset === 0 ? "+" : ""));
     setCountryCode(cleanValue);
+    const fullNumber = cleanValue + phoneNumber;
+    field.onChange(fullNumber);
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
     setPhoneNumber(value);
+    const fullNumber = countryCode + value;
+    field.onChange(fullNumber);
   };
 
   return (

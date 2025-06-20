@@ -1,4 +1,4 @@
-import { useDriversInfinityQuery } from "@/api/drivers.api";
+import { useDriversOptions } from "@/api/drivers.api";
 import { Combobox } from "../ui/Combobox";
 import { BaseComboboxProps } from "./types";
 
@@ -10,13 +10,9 @@ export function DriverCombobox({
   notFoundText = "لا يوجد سائقون متاحون",
   ...props
 }: BaseComboboxProps) {
-  const { data: driversData, isLoading } = useDriversInfinityQuery();
+  const { data: driversData } = useDriversOptions();
 
-  const driverOptions =
-    driversData?.items.map((driver) => ({
-      value: driver.id as number,
-      label: `${driver.name} - ${driver.phone_number}`,
-    })) || [];
+  const driverOptions = driversData?.data.results || [];
 
   return (
     <Combobox
@@ -26,7 +22,7 @@ export function DriverCombobox({
       placeholder={placeholder}
       searchPlaceholder={searchPlaceholder}
       notFoundText={notFoundText}
-      disabled={isLoading || props.disabled}
+      disabled={props.disabled}
       {...props}
     />
   );

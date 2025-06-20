@@ -1,7 +1,8 @@
 import Card from "@/components/ui/Card";
+import PhoneInputField from "@/components/ui/PhoneInputField";
 import TextAreaField from "@/components/ui/TextAreaField";
 import TextInputField from "@/components/ui/TextInputField";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 import * as z from "zod";
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -39,6 +40,7 @@ export type ClientFormData = z.infer<typeof clientSchema>;
 type ClientFormProps = {
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   isLoading: boolean;
+  control: Control<ClientFormData>;
   register: UseFormRegister<ClientFormData>;
   errors: FieldErrors<ClientFormData>;
   isEdit?: boolean;
@@ -47,6 +49,7 @@ type ClientFormProps = {
 const ClientForm = ({
   onSubmit,
   isLoading,
+  control,
   register,
   errors,
   isEdit = false,
@@ -65,15 +68,17 @@ const ClientForm = ({
             error={errors.address?.message}
             {...register("address")}
           />
-          <TextInputField
+          <PhoneInputField
             label="رقم الهاتف"
             error={errors.phone_number?.message}
-            {...register("phone_number")}
+            control={control}
+            name="phone_number"
           />
-          <TextInputField
+          <PhoneInputField
             label="رقم هاتف إضافي"
             error={errors.second_phone_number?.message}
-            {...register("second_phone_number")}
+            control={control}
+            name="second_phone_number"
           />
           <TextInputField
             label="البريد الإلكتروني"

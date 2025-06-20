@@ -3,11 +3,16 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
-import { RecipientSerializerCreate, RecipientSerializerList } from "../../Api";
+import {
+  RecipientOption,
+  RecipientSerializerCreate,
+  RecipientSerializerList,
+} from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
 import api, { classifyAxiosError } from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
@@ -41,6 +46,20 @@ export const useRecipientsInfinityQuery = () => {
     ref,
     inView,
   };
+};
+
+export const useRecipientsOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: [KEY],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<RecipientOption>>(
+        ENDPOINT + "options/",
+      );
+      return response.data;
+    },
+  });
+
+  return query;
 };
 
 export const useRecipientQuery = (id?: number) =>

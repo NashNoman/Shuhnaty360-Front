@@ -18,7 +18,7 @@ import { ReactNode, useState } from "react";
 
 type Option = {
   value: string | number;
-  label: string | ReactNode;
+  label?: string | ReactNode;
 };
 
 export type ComboboxProps = {

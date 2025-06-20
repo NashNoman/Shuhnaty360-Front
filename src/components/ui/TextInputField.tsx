@@ -41,7 +41,7 @@ const TextInputField = ({
           error && "border-red-500",
           disabled && "bg-gray-100 cursor-not-allowed",
         )}
-        value={value}
+        value={value?.toString()}
         onChange={onChange}
         name={name}
         autoComplete="off"

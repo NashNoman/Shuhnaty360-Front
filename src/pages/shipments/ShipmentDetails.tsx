@@ -1,5 +1,6 @@
-import { useState } from "react";
 import ErrorContainer from "@/components/ErrorContainer";
+import { formatDate } from "@/utils/formatDate";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   useShipmentQuery,
@@ -23,6 +24,9 @@ const ShipmentDetails = () => {
   const { mutate } = useUpdateShipmentStatus(shipmentId);
 
   const shipment = data?.data;
+
+  const totalStayConst =
+    Number(shipment?.days_stayed) * Number(shipment?.stay_cost);
 
   const menuActions = [
     {
@@ -64,6 +68,7 @@ const ShipmentDetails = () => {
     { label: "الى", value: shipment?.destination_city?.ar_city || "-" },
     { label: "المحتويات", value: shipment?.contents || "-" },
     { label: "الوزن", value: shipment?.weight || "-" },
+    { label: "عدد ايام المبيت", value: shipment?.days_stayed || 0 },
   ];
 
   const shipmentCost = [
@@ -73,6 +78,14 @@ const ShipmentDetails = () => {
     },
     {
       label: "الزيادة ",
+      value: `${shipment?.premium || "0"} ر.س`,
+    },
+    {
+      label: `تكلفة المبيت (${shipment?.days_stayed || "0"} ليلة)`,
+      value: `${totalStayConst || "0"} ر.س`,
+    },
+    {
+      label: "الزيادة",
       value: `${shipment?.premium || "0"} ر.س`,
     },
     {
@@ -149,7 +162,7 @@ const ShipmentDetails = () => {
               <div className="bg-[#F8F8F8] w-full rounded-lg py-4 px-3 flex flex-col items-start gap-2 font-Rubik text-[#333333] border border-[#CCC] mt-6 mb-12 xs:text-base text-lg font-medium">
                 {[
                   "يرجى التأكد من الشراع الثقيل",
-                  "يرجى تسليم الشحنة بموعد 2025/1/20",
+                  `يرجى تسليم الشحنة بموعد ${shipment?.loading_date ? formatDate(shipment.loading_date) : "-"}`,
                   "تأكد من إرجاع جهاز الحرارة",
                 ].map((item, index) => (
                   <span key={index}>- {item}</span>
@@ -175,10 +188,7 @@ const ShipmentDetails = () => {
                 <div className="w-full flex justify-between items-center mt-6 font-Rubik text-[#333333] font-bold xs:text-base text-lg">
                   <span>الإجمالي</span>{" "}
                   <span className="xs:text-nowrap">
-                    {(shipment?.fare ?? 0) +
-                      (shipment?.premium ?? 0) -
-                      (shipment?.deducted ?? 0)}{" "}
-                    ر.س
+                    {shipment?.total_cost || "0"} ر.س
                   </span>
                 </div>
               </div>

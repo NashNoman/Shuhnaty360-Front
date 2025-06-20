@@ -1,22 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   useDriverQuery,
-  useTruckTypesInfinityQuery,
+  useTruckTypesOptions,
   useUpdateDriver,
 } from "../../api/drivers.api";
-import { useSidebar } from "../../context/SidebarContext";
 import DriverForm, {
   DriverFormData,
   driverSchema,
 } from "./components/DriverForm";
 
 const EditDriver = () => {
-  const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
   const { driverId } = useParams();
 
@@ -36,12 +35,12 @@ const EditDriver = () => {
     error,
     refetch,
   } = useDriverQuery(driverId);
-  const { data: truckTypesRes } = useTruckTypesInfinityQuery();
 
-  const truckType =
-    truckTypesRes?.items?.find(
-      (type) => type.name_ar === driverData?.data?.truck_type,
-    )?.id || 0;
+  const { data: truckTypesRes } = useTruckTypesOptions();
+
+  const truckType = truckTypesRes?.data?.results?.find(
+    (type) => type.label === driverData?.data?.truck_type,
+  )?.value;
 
   const { mutate } = useUpdateDriver(driverId);
 
@@ -58,6 +57,8 @@ const EditDriver = () => {
       },
     });
   });
+
+  console.log(driverData?.data);
 
   useEffect(() => {
     if (driverData?.data) {
@@ -85,24 +86,18 @@ const EditDriver = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-      <DriverForm
-        key={truckType}
-        isEdit
-        onSubmit={onSubmit}
-        isLoading={isLoading}
-        register={register}
-        errors={errors}
-        control={control}
-      />
+      {isLoading && <PageLoader />}
+      <Suspense fallback={<PageLoader />}>
+        <DriverForm
+          key={truckType}
+          isEdit
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+          register={register}
+          errors={errors}
+          control={control}
+        />
+      </Suspense>
     </>
   );
 };

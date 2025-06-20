@@ -3,19 +3,18 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateClient } from "../../api/clients.api";
-import { useSidebar } from "../../context/SidebarContext";
 import ClientForm, {
   ClientFormData,
   clientSchema,
 } from "./components/ClientForm";
 
 const AddClient = () => {
-  const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
 
   const {
     handleSubmit,
     register,
+    control,
     formState: { errors },
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
@@ -38,23 +37,13 @@ const AddClient = () => {
   });
 
   return (
-    <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-      <ClientForm
-        onSubmit={onSubmit}
-        isLoading={isLoading}
-        register={register}
-        errors={errors}
-      />
-    </>
+    <ClientForm
+      onSubmit={onSubmit}
+      isLoading={isLoading}
+      register={register}
+      control={control}
+      errors={errors}
+    />
   );
 };
 

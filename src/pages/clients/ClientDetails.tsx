@@ -1,16 +1,23 @@
-import { useNavigate, useParams } from "react-router-dom";
 import ErrorContainer from "@/components/ErrorContainer";
-import { useClientQuery } from "../../api/clients.api";
+import PageLoader from "@/components/PageLoader";
+import { Suspense, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Branch } from "../../../Api";
+import { useClientQuery, useDeleteClientBranch } from "../../api/clients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
 import ClientBranchDetailsSection from "../../components/clients/ClientBranchDetailsSection";
-import { useSidebar } from "../../context/SidebarContext";
+import { Button } from "../../components/ui/button";
+import ConfirmationDialog from "../../components/ui/ConfirmationDialog";
+import AddClientBranchDialog from "./components/AddClientBranchDialog";
 
 const ClientDetails = () => {
   const { clientId } = useParams();
-  const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
+  const [branchToDelete, setBranchToDelete] = useState<number | null>(null);
+  const [branchToEdit, setBranchToEdit] = useState<Branch | null>(null);
+  const [isBranchFormOpen, setIsBranchFormOpen] = useState(false);
 
   const {
     data: clientRes,
@@ -18,6 +25,18 @@ const ClientDetails = () => {
     error,
     refetch,
   } = useClientQuery(clientId);
+
+  const { mutate: deleteBranch } = useDeleteClientBranch();
+
+  const handleDelete = () => {
+    if (branchToDelete) {
+      deleteBranch(branchToDelete, {
+        onSuccess: () => {
+          setBranchToDelete(null);
+        },
+      });
+    }
+  };
 
   if (!clientId) {
     navigate("/clients");
@@ -51,15 +70,7 @@ const ClientDetails = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+      {isLoading && <PageLoader />}
 
       <div className="border border-[#DD7E1F] rounded-lg px-6 pt-10 pb-4 mx-4 md:mx-0">
         <div className="w-full flex justify-between items-start sm:items-center relative">
@@ -77,21 +88,31 @@ const ClientDetails = () => {
               </div>
             ))}
           </div>
-          <ActionsMenu
-            options={menuActions}
-            position={`top-7 -left-4 sm:top-11`}
-          />{" "}
+          <div className="flex items-center gap-4">
+            <ActionsMenu
+              options={menuActions}
+              position={`top-7 -left-4 sm:top-11`}
+            />
+          </div>
         </div>
-        <h1 className="mt-10 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
+        <h1 className="my-10 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
           {client?.dicription}
         </h1>
+        <Button
+          onClick={() => {
+            setBranchToEdit(null);
+            setIsBranchFormOpen(true);
+          }}
+        >
+          إضافة فرع
+        </Button>
         {Array.isArray(client?.branches) && client?.branches.length > 0 && (
           <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
         )}
         {Array.isArray(client?.branches) &&
           client?.branches.length > 0 &&
           client?.branches.map((branch, index) => (
-            <div>
+            <div key={branch.id}>
               <ClientBranchDetailsSection
                 title={branch.name}
                 branchNumber={index + 1}
@@ -99,13 +120,51 @@ const ClientDetails = () => {
                 mapLink={branch.name_address}
                 primaryPhone={branch.phone_number}
                 secondaryPhone={branch.second_phone_number}
-              />
+              >
+                <Button
+                  variant="ghost"
+                  className="border"
+                  size="icon"
+                  onClick={() => {
+                    setBranchToEdit(branch);
+                    setIsBranchFormOpen(true);
+                  }}
+                >
+                  <img src={editShipmentIcon} alt="" className="size-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="border"
+                  size="icon"
+                  onClick={() => {
+                    if (branch.id) {
+                      setBranchToDelete(branch.id);
+                    }
+                  }}
+                >
+                  <img src={deleteShipmentIcon} alt="" className="size-4" />
+                </Button>
+              </ClientBranchDetailsSection>
               {index < (client?.branches?.length || 0) - 1 && (
                 <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
               )}
             </div>
           ))}
       </div>
+      <ConfirmationDialog
+        isOpen={branchToDelete !== null}
+        onClose={() => setBranchToDelete(null)}
+        onConfirm={handleDelete}
+        title="تأكيد الحذف"
+        description="هل أنت متأكد أنك تريد حذف هذا الفرع؟ لا يمكن التراجع عن هذا الإجراء."
+      />
+      <Suspense fallback={<PageLoader />}>
+        <AddClientBranchDialog
+          isOpen={isBranchFormOpen}
+          setIsOpen={setIsBranchFormOpen}
+          initialData={branchToEdit}
+        />
+      </Suspense>
     </>
   );
 };

@@ -1,4 +1,6 @@
+import PageLoader from "@/components/PageLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -33,7 +35,7 @@ const AddRecipient = () => {
   });
 
   return (
-    <>
+    <Suspense fallback={<PageLoader />}>
       <RecipientForm
         onSubmit={onSubmit}
         isLoading={isLoading}
@@ -41,7 +43,7 @@ const AddRecipient = () => {
         control={control}
         errors={errors}
       />
-    </>
+    </Suspense>
   );
 };
 

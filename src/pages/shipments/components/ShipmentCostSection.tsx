@@ -45,24 +45,32 @@ const ShipmentCostSection = ({
       <TextInputField
         label="التكلفة الأساسية"
         error={errors.fare?.message}
+        value={fare?.toString()}
         type="number"
         {...register("fare")}
       />
       <TextInputField
         label="الزيادة"
         error={errors.premium?.message}
+        value={premium?.toString()}
         type="number"
         {...register("premium")}
       />
-      <StayCostInputField register={register} errors={errors} />
+      <StayCostInputField
+        control={control}
+        register={register}
+        errors={errors}
+      />
       <TextInputField
         label="الخصم"
         error={errors.deducted?.message}
+        value={deducted?.toString()}
         type="number"
         {...register("deducted")}
       />
       <TextInputField
         label="الأجرة المرتجعة"
+        value={fare_return?.toString()}
         error={errors.fare_return?.message}
         type="number"
         {...register("fare_return")}

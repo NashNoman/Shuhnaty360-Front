@@ -1,18 +1,17 @@
+import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import ErrorContainer from "@/components/ErrorContainer";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useClientQuery, useUpdateClient } from "../../api/clients.api";
-import { useSidebar } from "../../context/SidebarContext";
 import ClientForm, {
   ClientFormData,
   clientSchema,
 } from "./components/ClientForm";
 
 const EditClient = () => {
-  const { isSidebarOpen } = useSidebar();
   const { clientId } = useParams();
   const navigate = useNavigate();
 
@@ -20,6 +19,7 @@ const EditClient = () => {
     handleSubmit,
     register,
     setValue,
+    control,
     formState: { errors },
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
@@ -71,19 +71,12 @@ const EditClient = () => {
 
   return (
     <>
-      {(isUpdating || isLoading) && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+      {isLoading && <PageLoader />}
       <ClientForm
         onSubmit={onSubmit}
         isLoading={isUpdating}
         register={register}
+        control={control}
         errors={errors}
       />
     </>

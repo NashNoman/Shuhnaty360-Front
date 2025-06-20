@@ -4,7 +4,9 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
@@ -12,7 +14,7 @@ import {
   ShipmentSerializerCreate,
   ShipmentSerializerDetail,
   ShipmentSerializerList,
-  ShipmentStatus,
+  ShipmentStatusOption,
 } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
 import api, { classifyAxiosError } from "../utils/api";
@@ -31,6 +33,8 @@ export type ShipmentFiltersType = {
   status?: number | string;
   origin_city?: number | string;
   destination_city?: number | string;
+  loading_date__gte?: Date;
+  loading_date__lte?: Date;
   loading_date?: string;
   client_invoice_number?: string;
   search?: string | null;
@@ -49,7 +53,11 @@ export const useShipmentsInfinityQuery = (
       if (filters) {
         Object.entries(filters).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
-            paramsObj[key] = String(value);
+            if (value instanceof Date) {
+              paramsObj[key] = format(value, "yyyy-MM-dd");
+            } else {
+              paramsObj[key] = String(value);
+            }
           }
         });
       }
@@ -75,15 +83,15 @@ export const useShipmentsInfinityQuery = (
     inView,
   };
 };
-export const useShipmentStatusInfinityQuery = () =>
-  useInfiniteQuery({
-    ...defaultInfinityQueryOptions<ShipmentStatus>([KEY + "status"]),
-    queryFn: async ({ pageParam }) => {
-      const response = await api.get<ApiListResponse<ShipmentStatus>>(
-        ENDPOINT + `status/?page=${pageParam}`,
+export const useShipmentStatusOptions = () =>
+  useSuspenseQuery({
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<ShipmentStatusOption>>(
+        ENDPOINT + `status/options/`,
       );
       return response.data;
     },
+    queryKey: [KEY + "status"],
   });
 
 export const useShipmentQuery = (id?: number | string) =>

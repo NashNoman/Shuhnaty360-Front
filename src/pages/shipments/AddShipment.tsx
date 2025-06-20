@@ -1,5 +1,6 @@
+import PageLoader from "@/components/PageLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCreateShipment } from "../../api/shipments.api";
@@ -40,14 +41,16 @@ const AddShipment = () => {
   }, [navigate, status]);
 
   return (
-    <ShipmentsForm
-      onSubmit={onSubmit}
-      register={register}
-      setValue={setValue}
-      errors={errors}
-      isLoading={status === "pending"}
-      control={control}
-    />
+    <Suspense fallback={<PageLoader />}>
+      <ShipmentsForm
+        onSubmit={onSubmit}
+        register={register}
+        setValue={setValue}
+        errors={errors}
+        isLoading={status === "pending"}
+        control={control}
+      />
+    </Suspense>
   );
 };
 

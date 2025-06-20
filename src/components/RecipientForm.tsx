@@ -1,5 +1,5 @@
 import { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { useCitiesInfinityQuery } from "../api/cities.api";
+import { useCitiesOptions } from "../api/cities.api";
 import { RecipientSerializerSchema } from "../schemas/recipient.schema";
 import AutoCompleteSelectField, {
   AutocompleteOption,
@@ -24,14 +24,9 @@ const RecipientForm = ({
   control,
   isEdit = false,
 }: RecipientFormProps) => {
-  const { data: citiesData, isLoading: isLoadingCities } =
-    useCitiesInfinityQuery();
+  const { data: citiesData, isLoading: isLoadingCities } = useCitiesOptions();
 
-  const cities: AutocompleteOption[] =
-    citiesData?.items.map((item) => ({
-      value: item.id!,
-      label: item.ar_city,
-    })) || [];
+  const cities: AutocompleteOption[] = citiesData?.data.results || [];
 
   return (
     <Card>

@@ -1,34 +1,19 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { flatMap } from "lodash";
-import { CompanyBranch } from "../../Api";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { CompanyBranchOption } from "../../Api";
 import { ApiListResponse } from "../types";
 import api from "../utils/api";
-import { getUrlParams } from "../utils/utils";
 
 const ENDPOINT = "/profile/";
 
-type BranchResponse = ApiListResponse<CompanyBranch>["data"];
+type BranchResponse = ApiListResponse<CompanyBranchOption>;
 
-export const useCompanyBranchesInfinityQuery = () =>
-  useInfiniteQuery({
+export const useCompanyBranchesOptions = () =>
+  useSuspenseQuery({
     queryKey: ["profiles", "branches"],
-    queryFn: async ({ pageParam }) => {
+    queryFn: async () => {
       const response = await api.get<BranchResponse>(
-        ENDPOINT + `branch/?page=${pageParam}`,
+        ENDPOINT + `companies/options/`,
       );
       return response.data;
-    },
-    initialPageParam: 1,
-    getPreviousPageParam: (lastPage) =>
-      getUrlParams(lastPage.previous)?.page || undefined,
-    getNextPageParam: (lastPage) =>
-      getUrlParams(lastPage.next)?.page || undefined,
-    select: (data) => {
-      const items = flatMap(data.pages, (page) => page.results);
-      const count = data.pages[0]?.count;
-      return {
-        items,
-        count,
-      };
     },
   });

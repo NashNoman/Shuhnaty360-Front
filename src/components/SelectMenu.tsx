@@ -5,7 +5,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 type SelectMenuProps = {
   selectedItem: string | null;
   setSelectedItem: (value: string) => void;
-  options: { label: string; value: string }[];
+  options: { label?: string | number; value: string | number }[];
 };
 
 const SelectMenu = ({

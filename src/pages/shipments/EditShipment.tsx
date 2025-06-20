@@ -1,11 +1,11 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useShipmentQuery, useUpdateShipment } from "../../api/shipments.api";
-import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../hooks/useAuth";
 import {
   shipmentSerializerSchema,
@@ -17,7 +17,6 @@ import ShipmentsForm from "./components/ShipmentsForm";
 const EditShipment = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
-  const { isSidebarOpen } = useSidebar();
   const { shipmentId } = useParams();
 
   const {
@@ -32,7 +31,7 @@ const EditShipment = () => {
 
   const { data, isLoading, error, refetch } = useShipmentQuery(shipmentId);
 
-  const { mutate, status } = useUpdateShipment(shipmentId);
+  const { mutate, isPending } = useUpdateShipment(shipmentId);
 
   const onSubmit = handleSubmit((formData) => {
     console.log(formData);
@@ -53,19 +52,23 @@ const EditShipment = () => {
   useEffect(() => {
     if (data?.data) {
       const shipmentData = data.data;
+      console.log(shipmentData);
       setValue("driver", shipmentData.driver?.id as number);
       setValue("truck_type", shipmentData.truck_type?.id as number);
       setValue("client", shipmentData.client?.id as number);
       setValue("client_branch", shipmentData.client_branch?.id as number);
       setValue("client_invoice_number", shipmentData.client_invoice_number);
-      setValue("loading_date", formateDateTime(shipmentData.loading_date));
+      setValue(
+        "loading_date",
+        formateDateTime(shipmentData.loading_date) || undefined,
+      );
       setValue(
         "expected_arrival_date",
-        formateDateTime(shipmentData.expected_arrival_date),
+        formateDateTime(shipmentData.expected_arrival_date) || undefined,
       );
       setValue(
         "actual_delivery_date",
-        formateDateTime(shipmentData.actual_delivery_date),
+        formateDateTime(shipmentData.actual_delivery_date) || undefined,
       );
       setValue("origin_city", shipmentData.origin_city?.id as number);
       setValue("destination_city", shipmentData.destination_city?.id as number);
@@ -96,23 +99,17 @@ const EditShipment = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-      <ShipmentsForm
-        onSubmit={onSubmit}
-        register={register}
-        setValue={setValue}
-        errors={errors}
-        isLoading={status === "pending"}
-        control={control}
-      />
+      {isLoading && <PageLoader />}
+      <Suspense fallback={<PageLoader />}>
+        <ShipmentsForm
+          onSubmit={onSubmit}
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          isLoading={isPending}
+          control={control}
+        />
+      </Suspense>
     </>
   );
 };

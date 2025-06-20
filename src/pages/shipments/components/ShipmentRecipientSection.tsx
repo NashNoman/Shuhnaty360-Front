@@ -1,11 +1,11 @@
-import { useRecipientsInfinityQuery } from "@/api/recipients.api";
+import { useRecipientQuery, useRecipientsOptions } from "@/api/recipients.api";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "@/components/ui/AutoCompleteSelectField";
 import PhoneInputField from "@/components/ui/PhoneInputField";
 import TextAreaField from "@/components/ui/TextAreaField";
+import TextInputField from "@/components/ui/TextInputField";
 import { ShipmentSerializerSchema } from "@/schemas/shipment.schema";
-import { RecipientSerializerList } from "Api";
 import { useEffect, useState } from "react";
 import {
   Control,
@@ -26,34 +26,22 @@ const ShipmentRecipientSection = ({
   errors,
   control,
 }: ShipmentClientSectionProps) => {
-  const [selectedRecipient, setSelectedRecipient] = useState<
-    RecipientSerializerList | undefined
-  >();
-
   const [showNotes, setShowNotes] = useState(false);
-  const recipientNotes = useWatch({
+  const [recipientNotes, recipientId] = useWatch({
     control,
-    name: "notes_recipient",
+    name: ["notes_recipient", "recipient"],
   });
   const hasNotes = !!recipientNotes;
 
-  const { data: recipientsData } = useRecipientsInfinityQuery();
+  const { data: recipientsData } = useRecipientsOptions();
+  const { data: recipientData } = useRecipientQuery(recipientId);
 
   const recipientOptions: AutocompleteOption[] =
-    recipientsData?.items.map((item) => ({
-      value: item.id as number,
-      label: item.name,
-    })) || [];
-
-  const branchOptions: AutocompleteOption[] =
-    recipientsData?.items?.map((item) => ({
-      value: item.id!,
-      label: item.address || "",
-    })) || [];
+    recipientsData?.data.results || [];
 
   useEffect(() => {
-    setShowNotes(hasNotes);
-  }, [hasNotes]);
+    setShowNotes(hasNotes || showNotes);
+  }, [hasNotes, showNotes]);
 
   return (
     <ShipmentSectionWrapper title="المستلِم">
@@ -63,31 +51,22 @@ const ShipmentRecipientSection = ({
         control={control}
         options={recipientOptions}
         error={errors.recipient?.message}
-        onInputChange={(value) => {
-          const client = recipientsData?.items.find(
-            (item) => item.name === value,
-          );
-          setSelectedRecipient(client);
-        }}
       />
-      <AutoCompleteSelectField
-        key={selectedRecipient?.id || "none"}
-        name="address"
+      <TextInputField
+        value={recipientData?.data.address || undefined}
         label="العنوان"
-        control={control}
-        options={branchOptions}
-        disabled={!branchOptions.length}
+        disabled
       />
       <PhoneInputField
         name="recipient_phone"
         label="رقم الهاتف (أساسي)"
-        value={selectedRecipient?.phone_number || ""}
+        value={recipientData?.data.phone_number || undefined}
         control={control}
       />
       <PhoneInputField
         name="recipient_phone2"
         label="رقم الهاتف (احتياطي)"
-        value={selectedRecipient?.second_phone_number || ""}
+        value={recipientData?.data.second_phone_number || undefined}
         control={control}
       />
       {showNotes ? (

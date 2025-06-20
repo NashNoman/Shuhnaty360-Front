@@ -1,5 +1,5 @@
 import { useCitiesInfinityQuery } from "@/api/cities.api";
-import { useShipmentStatusInfinityQuery } from "@/api/shipments.api";
+import { useShipmentStatusOptions } from "@/api/shipments.api";
 import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
 import DatePickerField from "@/components/ui/DatePickerField";
 import TextAreaField from "@/components/ui/TextAreaField";
@@ -29,18 +29,21 @@ const ShipmentSection = ({
   setValue,
 }: ShipmentSectionProps) => {
   const { data: citiesData } = useCitiesInfinityQuery();
-  const { data: statusData } = useShipmentStatusInfinityQuery();
+  const { data: statusData } = useShipmentStatusOptions();
   const selectedStatus = useWatch({
     control,
     name: "status",
   });
 
   const [showActualDeliveryDate, setShowActualDeliveryDate] = useState(false);
-  const actualDeliveryDate = useWatch({
+  const [showContent, setShowContent] = useState(false);
+
+  const [actualDeliveryDate, contents] = useWatch({
     control,
-    name: "actual_delivery_date",
+    name: ["actual_delivery_date", "contents"],
   });
   const hasActualDeliveryDate = !!actualDeliveryDate;
+  const hasContents = !!contents;
 
   const cityOptions = useMemo(() => {
     return (
@@ -52,12 +55,7 @@ const ShipmentSection = ({
   }, [citiesData]);
 
   const statusOptions = useMemo(() => {
-    return (
-      statusData?.items.map((status) => ({
-        value: status.id!,
-        label: status.name_ar!,
-      })) || []
-    );
+    return statusData?.data.results || [];
   }, [statusData]);
 
   useEffect(() => {
@@ -70,8 +68,12 @@ const ShipmentSection = ({
   }, [selectedStatus, setValue, statusOptions]);
 
   useEffect(() => {
-    setShowActualDeliveryDate(hasActualDeliveryDate);
-  }, [hasActualDeliveryDate]);
+    setShowActualDeliveryDate(hasActualDeliveryDate || showActualDeliveryDate);
+  }, [hasActualDeliveryDate, showActualDeliveryDate]);
+
+  useEffect(() => {
+    setShowContent(hasContents || showContent);
+  }, [hasContents, showContent]);
 
   return (
     <ShipmentSectionWrapper title="الشحنة">
@@ -118,13 +120,16 @@ const ShipmentSection = ({
         control={control}
       />
       {showActualDeliveryDate ? (
-        <DatePickerField
-          label="تاريح استلام الشحنه"
-          name="actual_delivery_date"
-          error={errors.actual_delivery_date?.message}
-          description="في حال استلم العميل الشحنه فقط يرجى ادخال تاريح استلام الشحنه"
-          control={control}
-        />
+        <>
+          <DatePickerField
+            label="تاريح استلام الشحنه"
+            name="actual_delivery_date"
+            error={errors.actual_delivery_date?.message}
+            description="في حال استلم العميل الشحنه فقط يرجى ادخال تاريح استلام الشحنه"
+            control={control}
+          />
+          <span />
+        </>
       ) : (
         <button
           className="py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
@@ -134,13 +139,24 @@ const ShipmentSection = ({
           إضافة تاريخ استلام الشحنة
         </button>
       )}
-      <TextAreaField
-        label="المحتويات"
-        className="min-h-40"
-        containerClassName="col-span-2"
-        error={errors.contents?.message}
-        {...register("contents")}
-      />
+
+      {showContent ? (
+        <TextAreaField
+          label="المحتويات"
+          className="min-h-40"
+          containerClassName="col-span-2"
+          error={errors.contents?.message}
+          {...register("contents")}
+        />
+      ) : (
+        <button
+          className="py-4 rounded-lg text-xl bg-[#DD7E1F] text-[#FCFCFC] mt-4"
+          type="button"
+          onClick={() => setShowContent(!showContent)}
+        >
+          إضافة المحتويات
+        </button>
+      )}
     </ShipmentSectionWrapper>
   );
 };

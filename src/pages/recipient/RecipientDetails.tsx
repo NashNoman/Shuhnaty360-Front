@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
+import EntityShipmentsTable from "@/components/EntityShipmentsTable";
 import ErrorContainer from "@/components/ErrorContainer";
+import { useParams } from "react-router-dom";
 import { useRecipientQuery } from "../../api/recipients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -54,7 +55,7 @@ const RecipientDetails = () => {
         </div>
       )}
 
-      <div className="border border-[#DD7E1F] rounded-lg px-6 pt-10 pb-4 mx-4 md:mx-0">
+      <div className="mb-4 border border-[#DD7E1F] rounded-lg px-6 pt-10 pb-4 mx-4 md:mx-0">
         <div className="w-full flex justify-between items-start relative">
           <div className="flex flex-col gap-2">
             {[
@@ -84,9 +85,9 @@ const RecipientDetails = () => {
             position={`top-7 -left-4 sm:top-11`}
           />{" "}
         </div>
-        <h1 className="mt-10 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
-          {recipient?.city}
-        </h1>
+        {/* <h1 className="mt-10 bg-[#FCF2E9] font-md font-Rubik text-lg text-[#1A1A1A] p-3 rounded-md">
+          {recipient?.}
+        </h1> */}
         {/* {Array.isArray(recipient?.branches) &&
           recipient?.branches.length > 0 && (
             <hr className="border-0 border-t-2 border-dashed border-[#666] my-10" />
@@ -109,6 +110,7 @@ const RecipientDetails = () => {
             </div>
           ))} */}
       </div>
+      <EntityShipmentsTable recipient={recipientId} />
     </>
   );
 };

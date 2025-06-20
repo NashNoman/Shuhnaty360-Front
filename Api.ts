@@ -256,6 +256,13 @@ export interface Register {
   is_active?: boolean;
 }
 
+export interface UserOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+}
+
 export interface UsersUpdate {
   /** ID */
   id?: number;
@@ -331,6 +338,13 @@ export interface City {
    * @maxLength 255
    */
   en_city: string;
+}
+
+export interface CityOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
 }
 
 export interface ClientSerializerList {
@@ -453,6 +467,15 @@ export interface ClientBranchCreate {
   city: number;
 }
 
+export interface ClientBranchOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+  /** Client */
+  client: number;
+}
+
 export interface ClientBranchUpdate {
   /** ID */
   id?: number;
@@ -487,6 +510,13 @@ export interface ClientBranchUpdate {
   client: number;
   /** المدينة */
   city: number;
+}
+
+export interface ClientOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
 }
 
 export interface Branch {
@@ -641,6 +671,13 @@ export interface TruckType {
   description?: string | null;
 }
 
+export interface TruckTypeOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+}
+
 export interface DriverCreate {
   /** ID */
   id?: number;
@@ -692,6 +729,268 @@ export interface DriverCreate {
   updated_at?: string;
   /** نوع الشاحنة */
   truck_type?: number | null;
+}
+
+export interface DriverOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+}
+
+export interface PaymentVoucherCreate {
+  /** ID */
+  id?: number;
+  /** Shipment */
+  shipment: number;
+  /**
+   * Note
+   * @maxLength 255
+   */
+  note?: string | null;
+  /**
+   * Creator
+   * @pattern ^[\w.@+-]+$
+   */
+  creator?: string;
+  /**
+   * تاريخ الإنشاء
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * تاريخ التحديث
+   * @format date-time
+   */
+  updated_at?: string;
+}
+
+export interface PaymentVoucherUpdate {
+  /** ID */
+  id?: number;
+  /** Shipment */
+  shipment: number;
+  /**
+   * Note
+   * @maxLength 255
+   */
+  note?: string | null;
+  /**
+   * Creator
+   * @pattern ^[\w.@+-]+$
+   */
+  creator?: string;
+  /**
+   * تاريخ الإنشاء
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * تاريخ التحديث
+   * @format date-time
+   */
+  updated_at?: string;
+}
+
+export interface CompanyBranch {
+  /** ID */
+  id?: number;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string;
+  /**
+   * اسم الفرع
+   * @maxLength 255
+   */
+  branch_name_ar?: string | null;
+  /**
+   * Branch Name
+   * @maxLength 255
+   */
+  branch_name_en?: string | null;
+  /**
+   * الرقم الأساسي
+   * @maxLength 20
+   */
+  main_phone_number?: string | null;
+  /**
+   * الرقم الفرعي
+   * @maxLength 20
+   */
+  secondary_phone_number?: string | null;
+  /**
+   * البريد الالكتروني
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+  /** العنوان */
+  address?: string | null;
+  /** Is active */
+  is_active?: boolean;
+  /** Company */
+  company: number;
+  /** City */
+  city?: number | null;
+}
+
+export interface CompanyProfile {
+  /** ID */
+  id?: number;
+  /**
+   * اسم الشركة
+   * @maxLength 255
+   */
+  company_name_ar?: string | null;
+  /**
+   * Company Name
+   * @maxLength 255
+   */
+  company_name_en?: string | null;
+  /**
+   * Company logo
+   * @format uri
+   */
+  company_logo?: string | null;
+  /** وصف الشركة */
+  company_description_ar?: string | null;
+  /** Company Description */
+  company_description_en?: string | null;
+  /**
+   * الرقم الأساسي
+   * @maxLength 20
+   */
+  main_phone_number?: string | null;
+  /**
+   * الرقم الفرعي
+   * @maxLength 20
+   */
+  secondary_phone_number?: string | null;
+  /**
+   * البريد الالكتروني
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+  /**
+   * الموقع الالكتروني
+   * @format uri
+   * @maxLength 200
+   */
+  website?: string | null;
+  /** العنوان */
+  address?: string | null;
+  /** City */
+  city?: number | null;
+  branches?: CompanyBranch[];
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string;
+}
+
+export interface CompanyOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+}
+
+export interface CompanyBranchOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+  /** Company */
+  company: number;
+}
+
+export interface RecipientSerializerList {
+  /** ID */
+  id?: number;
+  /** City */
+  city?: string;
+  /**
+   * اسم المستلم
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * العنوان
+   * @maxLength 255
+   */
+  address?: string | null;
+  /**
+   * رقم الهاتف
+   * @maxLength 20
+   */
+  phone_number?: string | null;
+  /**
+   * رقم الهاتف الثاني
+   * @maxLength 20
+   */
+  second_phone_number?: string | null;
+  /**
+   * البريد الإلكتروني
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+}
+
+export interface RecipientSerializerCreate {
+  /** ID */
+  id?: number;
+  /**
+   * اسم المستلم
+   * @minLength 1
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * العنوان
+   * @maxLength 255
+   */
+  address?: string | null;
+  /**
+   * رقم الهاتف
+   * @maxLength 20
+   */
+  phone_number?: string | null;
+  /**
+   * رقم الهاتف الثاني
+   * @maxLength 20
+   */
+  second_phone_number?: string | null;
+  /**
+   * البريد الإلكتروني
+   * @format email
+   * @maxLength 254
+   */
+  email?: string | null;
+  /** المدينة */
+  city: number;
+}
+
+export interface RecipientOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
 }
 
 export interface UserSerializerMini {
@@ -921,205 +1220,6 @@ export interface ShipmentSerializerList {
   history?: ShipmentHistory[];
 }
 
-export interface PaymentVoucher {
-  /** ID */
-  id?: number;
-  shipment?: ShipmentSerializerList;
-  /**
-   * Creator
-   * @pattern ^[\w.@+-]+$
-   */
-  creator?: string;
-  /**
-   * تاريخ الإنشاء
-   * @format date-time
-   */
-  created_at?: string;
-  /**
-   * تاريخ التحديث
-   * @format date-time
-   */
-  updated_at?: string;
-}
-
-export interface CompanyBranch {
-  /** ID */
-  id?: number;
-  /**
-   * Created at
-   * @format date-time
-   */
-  created_at?: string;
-  /**
-   * Updated at
-   * @format date-time
-   */
-  updated_at?: string;
-  /**
-   * اسم الفرع
-   * @maxLength 255
-   */
-  branch_name_ar?: string | null;
-  /**
-   * Branch Name
-   * @maxLength 255
-   */
-  branch_name_en?: string | null;
-  /**
-   * الرقم الأساسي
-   * @maxLength 20
-   */
-  main_phone_number?: string | null;
-  /**
-   * الرقم الفرعي
-   * @maxLength 20
-   */
-  secondary_phone_number?: string | null;
-  /**
-   * البريد الالكتروني
-   * @format email
-   * @maxLength 254
-   */
-  email?: string | null;
-  /** العنوان */
-  address?: string | null;
-  /** Is active */
-  is_active?: boolean;
-  /** Company */
-  company: number;
-  /** City */
-  city?: number | null;
-}
-
-export interface CompanyProfile {
-  /** ID */
-  id?: number;
-  /**
-   * اسم الشركة
-   * @maxLength 255
-   */
-  company_name_ar?: string | null;
-  /**
-   * Company Name
-   * @maxLength 255
-   */
-  company_name_en?: string | null;
-  /**
-   * Company logo
-   * @format uri
-   */
-  company_logo?: string | null;
-  /** وصف الشركة */
-  company_description_ar?: string | null;
-  /** Company Description */
-  company_description_en?: string | null;
-  /**
-   * الرقم الأساسي
-   * @maxLength 20
-   */
-  main_phone_number?: string | null;
-  /**
-   * الرقم الفرعي
-   * @maxLength 20
-   */
-  secondary_phone_number?: string | null;
-  /**
-   * البريد الالكتروني
-   * @format email
-   * @maxLength 254
-   */
-  email?: string | null;
-  /**
-   * الموقع الالكتروني
-   * @format uri
-   * @maxLength 200
-   */
-  website?: string | null;
-  /** العنوان */
-  address?: string | null;
-  /** City */
-  city?: number | null;
-  branches?: CompanyBranch[];
-  /**
-   * Created at
-   * @format date-time
-   */
-  created_at?: string;
-  /**
-   * Updated at
-   * @format date-time
-   */
-  updated_at?: string;
-}
-
-export interface RecipientSerializerList {
-  /** ID */
-  id?: number;
-  /** City */
-  city?: string;
-  /**
-   * اسم المستلم
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  /**
-   * العنوان
-   * @maxLength 255
-   */
-  address?: string | null;
-  /**
-   * رقم الهاتف
-   * @maxLength 20
-   */
-  phone_number?: string | null;
-  /**
-   * رقم الهاتف الثاني
-   * @maxLength 20
-   */
-  second_phone_number?: string | null;
-  /**
-   * البريد الإلكتروني
-   * @format email
-   * @maxLength 254
-   */
-  email?: string | null;
-}
-
-export interface RecipientSerializerCreate {
-  /** ID */
-  id?: number;
-  /**
-   * اسم المستلم
-   * @minLength 1
-   * @maxLength 255
-   */
-  name: string;
-  /**
-   * العنوان
-   * @maxLength 255
-   */
-  address?: string | null;
-  /**
-   * رقم الهاتف
-   * @maxLength 20
-   */
-  phone_number?: string | null;
-  /**
-   * رقم الهاتف الثاني
-   * @maxLength 20
-   */
-  second_phone_number?: string | null;
-  /**
-   * البريد الإلكتروني
-   * @format email
-   * @maxLength 254
-   */
-  email?: string | null;
-  /** المدينة */
-  city: number;
-}
-
 export interface ShipmentSerializerCreate {
   /** User */
   user: number;
@@ -1209,6 +1309,13 @@ export interface ShipmentSerializerCreate {
   status: number;
 }
 
+export interface ShipmentOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
+}
+
 export interface ShipmentStatus {
   /** ID */
   id?: number;
@@ -1224,6 +1331,13 @@ export interface ShipmentStatus {
    * @maxLength 50
    */
   name_en: string;
+}
+
+export interface ShipmentStatusOption {
+  /** Value */
+  value: number;
+  /** Label */
+  label?: string;
 }
 
 export interface ShipmentSerializerUpdate {
@@ -1791,6 +1905,40 @@ export class Api<
      * No description
      *
      * @tags accounts
+     * @name AccountsUsersOptionsList
+     * @request GET:/accounts/users/options/
+     * @secure
+     */
+    accountsUsersOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: UserOption[];
+        },
+        any
+      >({
+        path: `/accounts/users/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags accounts
      * @name AccountsUsersRead
      * @request GET:/accounts/users/{id}/
      * @secure
@@ -1916,6 +2064,40 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags cities
+     * @name CitiesOptionsList
+     * @request GET:/cities/options/
+     * @secure
+     */
+    citiesOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: CityOption[];
+        },
+        any
+      >({
+        path: `/cities/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -2105,6 +2287,40 @@ export class Api<
      * No description
      *
      * @tags clients
+     * @name ClientsBranchOptionsList
+     * @request GET:/clients/branch/options/
+     * @secure
+     */
+    clientsBranchOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: ClientBranchOption[];
+        },
+        any
+      >({
+        path: `/clients/branch/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags clients
      * @name ClientsBranchUpdateUpdate
      * @request PUT:/clients/branch/update/{id}
      * @secure
@@ -2177,6 +2393,40 @@ export class Api<
         path: `/clients/branch/${id}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags clients
+     * @name ClientsOptionsList
+     * @request GET:/clients/options/
+     * @secure
+     */
+    clientsOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: ClientOption[];
+        },
+        any
+      >({
+        path: `/clients/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
         ...params,
       }),
 
@@ -2351,6 +2601,40 @@ export class Api<
      * No description
      *
      * @tags drivers
+     * @name DriversTruckTypeOptionsList
+     * @request GET:/drivers/TruckType/options/
+     * @secure
+     */
+    driversTruckTypeOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: TruckTypeOption[];
+        },
+        any
+      >({
+        path: `/drivers/TruckType/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags drivers
      * @name DriversCreateCreate
      * @request POST:/drivers/create/
      * @secure
@@ -2362,6 +2646,40 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags drivers
+     * @name DriversOptionsList
+     * @request GET:/drivers/options/
+     * @secure
+     */
+    driversOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: DriverOption[];
+        },
+        any
+      >({
+        path: `/drivers/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -2450,11 +2768,11 @@ export class Api<
      * @description عرض قائمة السندات وإنشاء سند جديد
      *
      * @tags payment-vouchers
-     * @name PaymentVouchersPaymentVouchersList
-     * @request GET:/payment-vouchers/payment-vouchers/
+     * @name PaymentVouchersList
+     * @request GET:/payment-vouchers/
      * @secure
      */
-    paymentVouchersPaymentVouchersList: (
+    paymentVouchersList: (
       query?: {
         /** A page number within the paginated result set. */
         page?: number;
@@ -2468,11 +2786,11 @@ export class Api<
           next?: string | null;
           /** @format uri */
           previous?: string | null;
-          results: PaymentVoucher[];
+          results: PaymentVoucherCreate[];
         },
         any
       >({
-        path: `/payment-vouchers/payment-vouchers/`,
+        path: `/payment-vouchers/`,
         method: "GET",
         query: query,
         secure: true,
@@ -2481,19 +2799,19 @@ export class Api<
       }),
 
     /**
-     * @description عرض قائمة السندات وإنشاء سند جديد
+     * @description إنشاء سند جديد
      *
      * @tags payment-vouchers
-     * @name PaymentVouchersPaymentVouchersCreate
-     * @request POST:/payment-vouchers/payment-vouchers/
+     * @name PaymentVouchersCreateCreate
+     * @request POST:/payment-vouchers/create/
      * @secure
      */
-    paymentVouchersPaymentVouchersCreate: (
-      data: PaymentVoucher,
+    paymentVouchersCreateCreate: (
+      data: PaymentVoucherCreate,
       params: RequestParams = {},
     ) =>
-      this.request<PaymentVoucher, any>({
-        path: `/payment-vouchers/payment-vouchers/`,
+      this.request<PaymentVoucherCreate, any>({
+        path: `/payment-vouchers/create/`,
         method: "POST",
         body: data,
         secure: true,
@@ -2506,16 +2824,13 @@ export class Api<
      * @description عرض وتحديث وحذف سند
      *
      * @tags payment-vouchers
-     * @name PaymentVouchersPaymentVouchersRead
-     * @request GET:/payment-vouchers/payment-vouchers/{id}/
+     * @name PaymentVouchersRead
+     * @request GET:/payment-vouchers/{id}/
      * @secure
      */
-    paymentVouchersPaymentVouchersRead: (
-      id: number,
-      params: RequestParams = {},
-    ) =>
-      this.request<PaymentVoucher, any>({
-        path: `/payment-vouchers/payment-vouchers/${id}/`,
+    paymentVouchersRead: (id: number, params: RequestParams = {}) =>
+      this.request<PaymentVoucherUpdate, any>({
+        path: `/payment-vouchers/${id}/`,
         method: "GET",
         secure: true,
         format: "json",
@@ -2526,17 +2841,17 @@ export class Api<
      * @description عرض وتحديث وحذف سند
      *
      * @tags payment-vouchers
-     * @name PaymentVouchersPaymentVouchersUpdate
-     * @request PUT:/payment-vouchers/payment-vouchers/{id}/
+     * @name PaymentVouchersUpdate
+     * @request PUT:/payment-vouchers/{id}/
      * @secure
      */
-    paymentVouchersPaymentVouchersUpdate: (
+    paymentVouchersUpdate: (
       id: number,
-      data: PaymentVoucher,
+      data: PaymentVoucherUpdate,
       params: RequestParams = {},
     ) =>
-      this.request<PaymentVoucher, any>({
-        path: `/payment-vouchers/payment-vouchers/${id}/`,
+      this.request<PaymentVoucherUpdate, any>({
+        path: `/payment-vouchers/${id}/`,
         method: "PUT",
         body: data,
         secure: true,
@@ -2549,17 +2864,17 @@ export class Api<
      * @description عرض وتحديث وحذف سند
      *
      * @tags payment-vouchers
-     * @name PaymentVouchersPaymentVouchersPartialUpdate
-     * @request PATCH:/payment-vouchers/payment-vouchers/{id}/
+     * @name PaymentVouchersPartialUpdate
+     * @request PATCH:/payment-vouchers/{id}/
      * @secure
      */
-    paymentVouchersPaymentVouchersPartialUpdate: (
+    paymentVouchersPartialUpdate: (
       id: number,
-      data: PaymentVoucher,
+      data: PaymentVoucherUpdate,
       params: RequestParams = {},
     ) =>
-      this.request<PaymentVoucher, any>({
-        path: `/payment-vouchers/payment-vouchers/${id}/`,
+      this.request<PaymentVoucherUpdate, any>({
+        path: `/payment-vouchers/${id}/`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -2572,16 +2887,92 @@ export class Api<
      * @description عرض وتحديث وحذف سند
      *
      * @tags payment-vouchers
-     * @name PaymentVouchersPaymentVouchersDelete
-     * @request DELETE:/payment-vouchers/payment-vouchers/{id}/
+     * @name PaymentVouchersDelete
+     * @request DELETE:/payment-vouchers/{id}/
      * @secure
      */
-    paymentVouchersPaymentVouchersDelete: (
+    paymentVouchersDelete: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/payment-vouchers/${id}/`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * @description عرض وتحديث وحذف سند
+     *
+     * @tags payment-vouchers
+     * @name PaymentVouchersUpdateRead
+     * @request GET:/payment-vouchers/{id}/update/
+     * @secure
+     */
+    paymentVouchersUpdateRead: (id: number, params: RequestParams = {}) =>
+      this.request<PaymentVoucherUpdate, any>({
+        path: `/payment-vouchers/${id}/update/`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description عرض وتحديث وحذف سند
+     *
+     * @tags payment-vouchers
+     * @name PaymentVouchersUpdateUpdate
+     * @request PUT:/payment-vouchers/{id}/update/
+     * @secure
+     */
+    paymentVouchersUpdateUpdate: (
       id: number,
+      data: PaymentVoucherUpdate,
       params: RequestParams = {},
     ) =>
+      this.request<PaymentVoucherUpdate, any>({
+        path: `/payment-vouchers/${id}/update/`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description عرض وتحديث وحذف سند
+     *
+     * @tags payment-vouchers
+     * @name PaymentVouchersUpdatePartialUpdate
+     * @request PATCH:/payment-vouchers/{id}/update/
+     * @secure
+     */
+    paymentVouchersUpdatePartialUpdate: (
+      id: number,
+      data: PaymentVoucherUpdate,
+      params: RequestParams = {},
+    ) =>
+      this.request<PaymentVoucherUpdate, any>({
+        path: `/payment-vouchers/${id}/update/`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description عرض وتحديث وحذف سند
+     *
+     * @tags payment-vouchers
+     * @name PaymentVouchersUpdateDelete
+     * @request DELETE:/payment-vouchers/{id}/update/
+     * @secure
+     */
+    paymentVouchersUpdateDelete: (id: number, params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/payment-vouchers/payment-vouchers/${id}/`,
+        path: `/payment-vouchers/${id}/update/`,
         method: "DELETE",
         secure: true,
         ...params,
@@ -2655,6 +3046,142 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileCompaniesList
+     * @request GET:/profile/companies/
+     * @secure
+     */
+    profileCompaniesList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: CompanyOption[];
+        },
+        any
+      >({
+        path: `/profile/companies/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileCompaniesOptionsList
+     * @request GET:/profile/companies/options/
+     * @secure
+     */
+    profileCompaniesOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: CompanyOption[];
+        },
+        any
+      >({
+        path: `/profile/companies/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileCompanyBranchesList
+     * @request GET:/profile/company-branches/
+     * @secure
+     */
+    profileCompanyBranchesList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: CompanyBranchOption[];
+        },
+        any
+      >({
+        path: `/profile/company-branches/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags profile
+     * @name ProfileCompanyBranchesOptionsList
+     * @request GET:/profile/company-branches/options/
+     * @secure
+     */
+    profileCompanyBranchesOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: CompanyBranchOption[];
+        },
+        any
+      >({
+        path: `/profile/company-branches/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
   };
   recipient = {
     /**
@@ -2709,6 +3236,40 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags recipient
+     * @name RecipientOptionsList
+     * @request GET:/recipient/options/
+     * @secure
+     */
+    recipientOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: RecipientOption[];
+        },
+        any
+      >({
+        path: `/recipient/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -2855,6 +3416,40 @@ export class Api<
      * No description
      *
      * @tags shipments
+     * @name ShipmentsOptionsList
+     * @request GET:/shipments/options/
+     * @secure
+     */
+    shipmentsOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: ShipmentOption[];
+        },
+        any
+      >({
+        path: `/shipments/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags shipments
      * @name ShipmentsStatusList
      * @request GET:/shipments/status/
      * @secure
@@ -2902,6 +3497,40 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags shipments
+     * @name ShipmentsStatusOptionsList
+     * @request GET:/shipments/status/options/
+     * @secure
+     */
+    shipmentsStatusOptionsList: (
+      query?: {
+        /** A page number within the paginated result set. */
+        page?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<
+        {
+          count: number;
+          /** @format uri */
+          next?: string | null;
+          /** @format uri */
+          previous?: string | null;
+          results: ShipmentStatusOption[];
+        },
+        any
+      >({
+        path: `/shipments/status/options/`,
+        method: "GET",
+        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),

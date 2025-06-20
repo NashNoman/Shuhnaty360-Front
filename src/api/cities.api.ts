@@ -1,7 +1,7 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
+import { useInfiniteQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { City } from "../../Api";
+import { useInView } from "react-intersection-observer";
+import { City, CityOption } from "../../Api";
 import { ApiListResponse } from "../types";
 import api from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
@@ -34,4 +34,18 @@ export const useCitiesInfinityQuery = () => {
     ref,
     inView,
   };
+};
+
+export const useCitiesOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: ["cities", "options"],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<CityOption>>(
+        ENDPOINT + "options/",
+      );
+      return response.data;
+    },
+  });
+
+  return query;
 };

@@ -1,12 +1,12 @@
 // import FileUploadInput from '../../components/usersDrivers/FileUploadInput';
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLayoutEffect } from "react";
+import { Suspense, useLayoutEffect } from "react";
 import { Control, useForm, UseFormRegister } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { UsersUpdate } from "../../../Api";
 import { useUpdateUser, useUserQuery } from "../../api/users.api";
-import { useSidebar } from "../../context/SidebarContext";
 import {
   UserCreateSchemaType,
   userUpdateSchema,
@@ -15,7 +15,6 @@ import {
 import UserForm from "./components/UserForm";
 
 const EditUser = () => {
-  const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
   const { userId } = useParams();
 
@@ -45,12 +44,13 @@ const EditUser = () => {
 
   useLayoutEffect(() => {
     if (userData?.data) {
+      console.log("userData", userData.data);
       setValue("username", userData.data.username);
       setValue("first_name", userData.data.first_name!);
       setValue("last_name", userData.data.last_name!);
       setValue("company_branch", userData.data.company_branch?.id || 0);
       setValue("email", userData.data.email!);
-      setValue("phone", userData.data.phone!);
+      setValue("phone", userData.data.phone || "");
       setValue("is_superuser", userData.data.is_active);
       setValue("is_staff", userData.data.is_staff);
       setValue("is_active", userData.data.is_active);
@@ -69,23 +69,17 @@ const EditUser = () => {
 
   return (
     <>
-      {(isLoading || isPending) && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-      <UserForm
-        onSubmit={onSubmit}
-        isLoading={isLoading || isPending}
-        register={register as UseFormRegister<UserCreateSchemaType>}
-        errors={errors}
-        control={control as Control<UserCreateSchemaType>}
-        isEdit
-      />
+      {isLoading && <PageLoader />}
+      <Suspense fallback={<PageLoader />}>
+        <UserForm
+          onSubmit={onSubmit}
+          isLoading={isLoading || isPending}
+          register={register as UseFormRegister<UserCreateSchemaType>}
+          errors={errors}
+          control={control as Control<UserCreateSchemaType>}
+          isEdit
+        />
+      </Suspense>
     </>
   );
 };

@@ -1,4 +1,5 @@
-import { useClientQuery } from "@/api/clients.api";
+import { useClientBranchesOptions } from "@/api/clients.api";
+import { useMemo } from "react";
 import { Combobox } from "../ui/Combobox";
 import { BaseComboboxProps } from "./types";
 
@@ -15,15 +16,17 @@ export function ClientBranchCombobox({
   notFoundText = "لا يوجد فروع متاحة",
   ...props
 }: ClientBranchComboboxProps) {
-  const { data: clientData, isLoading } = useClientQuery(
-    clientId ? Number(clientId) : undefined,
-  );
+  const { data: clientBranchesData } = useClientBranchesOptions();
 
-  const branchOptions =
-    clientData?.data?.branches?.map((branch) => ({
-      value: branch.id as number,
-      label: branch.name,
-    })) || [];
+  const branchOptions = useMemo(() => {
+    if (!clientId || !clientBranchesData?.data) {
+      return [];
+    }
+
+    return clientBranchesData?.data.results.filter(
+      (branch) => branch.client === Number(clientId),
+    );
+  }, [clientId, clientBranchesData]);
 
   return (
     <Combobox
@@ -33,7 +36,7 @@ export function ClientBranchCombobox({
       placeholder={placeholder}
       searchPlaceholder={searchPlaceholder}
       notFoundText={notFoundText}
-      disabled={isLoading || !clientId || props.disabled}
+      disabled={!clientId || props.disabled}
       {...props}
     />
   );

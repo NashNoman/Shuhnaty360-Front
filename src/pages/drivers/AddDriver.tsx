@@ -1,16 +1,16 @@
+import PageLoader from "@/components/PageLoader";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateDriver } from "../../api/drivers.api";
-import { useSidebar } from "../../context/SidebarContext";
 import DriverForm, {
   DriverFormData,
   driverSchema,
 } from "./components/DriverForm";
 
 const AddDriver = () => {
-  const { isSidebarOpen } = useSidebar();
   const navigate = useNavigate();
 
   const {
@@ -40,16 +40,7 @@ const AddDriver = () => {
   });
 
   return (
-    <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+    <Suspense fallback={<PageLoader />}>
       <DriverForm
         onSubmit={onSubmit}
         isLoading={isLoading}
@@ -57,7 +48,7 @@ const AddDriver = () => {
         errors={errors}
         control={control}
       />
-    </>
+    </Suspense>
   );
 };
 

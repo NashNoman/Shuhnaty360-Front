@@ -82,6 +82,14 @@ export const Waybill = ({
       value: "الوزن",
       label: shipment.weight,
     },
+    {
+      value: "المندوب",
+      label: `${shipment.user?.first_name} ${shipment.user?.last_name}`,
+    },
+    {
+      value: "رقم التتبع",
+      label: shipment.tracking_number,
+    },
   ];
 
   return (
@@ -206,14 +214,14 @@ export const Waybill = ({
         <div>:ملاحظات</div>
         {[
           "يرجى التأكد من الشراع الثقيل",
-          "يرجى تسليم الشحنة بموعد 2025/1/20",
+          `يرجى تسليم الشحنة بموعد ${shipment.loading_date ? formatDate(shipment.loading_date) : "-"}`,
           "تأكد من إرجاع جهاز الحرارة",
         ].map((item, index) => (
           <div key={index}>{item} -</div>
         ))}
       </div>
 
-      <hr className="border-0 border-t-2 border-solid border-[#666] my-6" />
+      <hr className="border-0 border-t-2 border-solid border-[#666] my-3" />
       <div className="text-center font-Almarai font-semibold text-lg">
         إقرار سائق
       </div>

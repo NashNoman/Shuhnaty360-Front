@@ -1,7 +1,8 @@
-import { useTruckTypesInfinityQuery } from "@/api/drivers.api";
+import { useTruckTypesOptions } from "@/api/drivers.api";
 import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
 import Card from "@/components/ui/Card";
 import FormButton from "@/components/ui/FormButton";
+import PhoneInputField from "@/components/ui/PhoneInputField";
 import SelectField from "@/components/ui/SelectField";
 import TextInputField from "@/components/ui/TextInputField";
 import Toggle from "@/components/ui/Toggle";
@@ -56,13 +57,10 @@ const DriverForm = ({
   control,
   isEdit = false,
 }: DriverFormProps) => {
-  const { data: truckTypesRes } = useTruckTypesInfinityQuery();
+  const { data: truckTypesRes } = useTruckTypesOptions();
 
-  const truckTypeOptions =
-    truckTypesRes?.items.map((truckType) => ({
-      value: truckType.id as number,
-      label: truckType.name_ar,
-    })) || [];
+  const truckTypeOptions = truckTypesRes?.data.results || [];
+
   return (
     <Card>
       <form onSubmit={onSubmit}>
@@ -72,10 +70,11 @@ const DriverForm = ({
             error={errors.name?.message}
             {...register("name")}
           />
-          <TextInputField
+          <PhoneInputField
             label="رقم الهاتف"
             error={errors.phone_number?.message}
-            {...register("phone_number")}
+            control={control}
+            name="phone_number"
           />
           <TextInputField
             label="الجنسية"
@@ -109,7 +108,6 @@ const DriverForm = ({
           />
           <SelectField
             label="نوع الشاحنة"
-            placeholder="اختر نوع الشاحنة"
             error={errors.truck_type?.message}
             options={truckTypeOptions}
             {...register("truck_type")}

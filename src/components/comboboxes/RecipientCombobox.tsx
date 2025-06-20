@@ -1,4 +1,4 @@
-import { useRecipientsInfinityQuery } from "@/api/recipients.api";
+import { useRecipientsOptions } from "@/api/recipients.api";
 import { Combobox } from "../ui/Combobox";
 import { BaseComboboxProps } from "./types";
 
@@ -10,13 +10,9 @@ export function RecipientCombobox({
   notFoundText = "لا يوجد مستلمون متاحون",
   ...props
 }: BaseComboboxProps) {
-  const { data: recipientsData, isLoading } = useRecipientsInfinityQuery();
+  const { data: recipientsData } = useRecipientsOptions();
 
-  const recipientOptions =
-    recipientsData?.items.map((recipient) => ({
-      value: recipient.id as number,
-      label: recipient.name,
-    })) || [];
+  const recipientOptions = recipientsData?.data.results || [];
 
   return (
     <Combobox
@@ -26,7 +22,7 @@ export function RecipientCombobox({
       placeholder={placeholder}
       searchPlaceholder={searchPlaceholder}
       notFoundText={notFoundText}
-      disabled={isLoading || props.disabled}
+      disabled={props.disabled}
       {...props}
     />
   );

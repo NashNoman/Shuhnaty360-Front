@@ -5,10 +5,10 @@ import {
   UseFormRegister,
   useWatch,
 } from "react-hook-form";
-import { ClientSerializerList } from "../../../../Api";
 import {
+  useClientBranchesOptions,
   useClientQuery,
-  useClientsInfinityQuery,
+  useClientsOptions,
 } from "../../../api/clients.api";
 import AutoCompleteSelectField, {
   AutocompleteOption,
@@ -30,39 +30,34 @@ const ShipmentClientSection = ({
   errors,
   control,
 }: ShipmentClientSectionProps) => {
-  const [selectedClient, setSelectedClient] = useState<
-    ClientSerializerList | undefined
-  >(undefined);
   const [branchOptions, setBranchOptions] = useState<AutocompleteOption[]>([]);
   const [showNotes, setShowNotes] = useState(false);
-  const customerNotes = useWatch({
+  const [customerNotes, clientId] = useWatch({
     control,
-    name: "notes_customer",
+    name: ["notes_customer", "client"],
   });
   const hasNotes = !!customerNotes;
 
-  const { data: clientsData } = useClientsInfinityQuery();
-  const { data: selectedClientData, isLoading: isLoadingBranches } =
-    useClientQuery(selectedClient?.id);
+  const { data: clientsData } = useClientsOptions();
+  const { data: branchesData } = useClientBranchesOptions();
+  const { data: selectedClientData } = useClientQuery(clientId);
 
-  const clientOptions: AutocompleteOption[] =
-    clientsData?.items.map((item) => ({
-      value: item.id as number,
-      label: item.name,
-    })) || [];
+  const clientOptions: AutocompleteOption[] = clientsData?.data.results || [];
 
   useEffect(() => {
-    setShowNotes(hasNotes);
-  }, [hasNotes]);
+    setShowNotes(hasNotes || showNotes);
+  }, [hasNotes, showNotes]);
 
   useEffect(() => {
-    const options: AutocompleteOption[] =
-      selectedClientData?.data?.branches?.map((item) => ({
-        value: item.id as number,
-        label: item.name,
-      })) || [];
-    setBranchOptions(() => options);
-  }, [selectedClientData]);
+    if (!clientId) {
+      setBranchOptions([]);
+    } else {
+      const options = branchesData.data.results.filter(
+        (b) => b.client === clientId,
+      );
+      setBranchOptions(() => options);
+    }
+  }, [branchesData, clientId]);
 
   return (
     <ShipmentSectionWrapper title="المرسِل">
@@ -72,19 +67,14 @@ const ShipmentClientSection = ({
         control={control}
         options={clientOptions}
         error={errors.client?.message}
-        onInputChange={(value) => {
-          const client = clientsData?.items.find((item) => item.name === value);
-          setSelectedClient(client);
-        }}
       />
       <AutoCompleteSelectField
-        key={selectedClient?.id || "none"}
+        key={clientId || "none"}
         name="client_branch"
         label="الفرع"
         control={control}
         options={branchOptions}
         error={errors.client_branch?.message}
-        isLoading={isLoadingBranches}
         disabled={!branchOptions.length}
       />
       <TextInputField
@@ -97,13 +87,13 @@ const ShipmentClientSection = ({
       <PhoneInputField
         name="phone"
         label="رقم الهاتف (أساسي)"
-        value={selectedClient?.phone_number || "+966"}
+        value={selectedClientData?.data?.phone_number || "+966"}
         control={control}
       />
       <PhoneInputField
         name="phone2"
         label="رقم الهاتف (احتياطي)"
-        value={selectedClient?.second_phone_number || "+966"}
+        value={selectedClientData?.data?.second_phone_number || "+966"}
         control={control}
       />
 

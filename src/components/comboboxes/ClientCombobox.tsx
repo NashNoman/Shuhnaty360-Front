@@ -1,4 +1,4 @@
-import { useClientsInfinityQuery } from "@/api/clients.api";
+import { useClientsOptions } from "@/api/clients.api";
 import { Combobox } from "../ui/Combobox";
 import { BaseComboboxProps } from "./types";
 
@@ -10,13 +10,9 @@ export function ClientCombobox({
   notFoundText = "لا يوجد عملاء متاحون",
   ...props
 }: BaseComboboxProps) {
-  const { data: clientsData, isLoading } = useClientsInfinityQuery();
+  const { data: clientsData } = useClientsOptions();
 
-  const clientOptions =
-    clientsData?.items.map((client) => ({
-      value: client.id as number,
-      label: client.name,
-    })) || [];
+  const clientOptions = clientsData?.data.results || [];
 
   return (
     <Combobox
@@ -26,7 +22,7 @@ export function ClientCombobox({
       placeholder={placeholder}
       searchPlaceholder={searchPlaceholder}
       notFoundText={notFoundText}
-      disabled={isLoading || props.disabled}
+      disabled={props.disabled}
       {...props}
     />
   );

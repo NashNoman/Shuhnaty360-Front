@@ -1,4 +1,4 @@
-import { useShipmentStatusInfinityQuery } from "@/api/shipments.api";
+import { useShipmentStatusOptions } from "@/api/shipments.api";
 import { Combobox } from "../ui/Combobox";
 import { BaseComboboxProps } from "./types";
 
@@ -10,13 +10,9 @@ export function StatusCombobox({
   notFoundText = "لا توجد حالات متاحة",
   ...props
 }: BaseComboboxProps) {
-  const { data: statusData, isLoading } = useShipmentStatusInfinityQuery();
+  const { data: statusData } = useShipmentStatusOptions();
 
-  const statusOptions =
-    statusData?.items.map((status) => ({
-      value: status.id as number,
-      label: status.name_ar,
-    })) || [];
+  const statusOptions = statusData?.data.results || [];
 
   return (
     <Combobox
@@ -26,7 +22,7 @@ export function StatusCombobox({
       placeholder={placeholder}
       searchPlaceholder={searchPlaceholder}
       notFoundText={notFoundText}
-      disabled={isLoading || props.disabled}
+      disabled={props.disabled}
       {...props}
     />
   );

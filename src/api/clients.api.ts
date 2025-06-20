@@ -3,14 +3,32 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
-import { ClientSerializerDetails, ClientSerializerList } from "../../Api";
+import { z } from "zod";
+import {
+  ClientBranchCreate,
+  ClientBranchOption,
+  ClientOption,
+  ClientSerializerDetails,
+  ClientSerializerList,
+} from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
 import api, { classifyAxiosError } from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
+
+export const clientBranchSchema = z.object({
+  name: z.string().min(1, "الاسم مطلوب"),
+  address: z.string().min(1, "العنوان مطلوب"),
+  name_address: z.string().optional().nullable(),
+  phone_number: z.string().optional().nullable(),
+  second_phone_number: z.string().optional().nullable(),
+  client: z.number(),
+  city: z.number(),
+});
 
 const ENDPOINT = "/clients/";
 const KEY = "clients";
@@ -41,6 +59,20 @@ export const useClientsInfinityQuery = () => {
     ref,
     inView,
   };
+};
+
+export const useClientsOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: [KEY],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<ClientOption>>(
+        ENDPOINT + "options/",
+      );
+      return response.data;
+    },
+  });
+
+  return query;
 };
 
 export const useClientQuery = (id?: number | string) =>
@@ -116,4 +148,94 @@ export const useDeleteClient = () => {
   });
 
   return mutation;
+};
+
+export const useCreateClientBranch = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (formData: ClientBranchCreate) => {
+      const response = await api.post(ENDPOINT + "branch/create", formData);
+      return response.data;
+    },
+    onSettled: (_data, _error, variables) => {
+      queryClient.invalidateQueries({ queryKey: [KEY, variables.client] });
+    },
+    onError: (error) => {
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء إنشاء الفرع");
+    },
+    onSuccess: () => {
+      toast.success("تم إنشاء الفرع بنجاح");
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+  });
+
+  return mutation;
+};
+
+export const useUpdateClientBranch = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (data: ClientBranchCreate) => {
+      const response = await api.put(
+        ENDPOINT + `branch/update/${data.id}`,
+        data,
+      );
+      return response.data;
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+    onError: (error) => {
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء تحديث الفرع");
+    },
+    onSuccess: () => {
+      toast.success("تم تحديث الفرع بنجاح");
+    },
+  });
+
+  return mutation;
+};
+
+export const useDeleteClientBranch = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await api.delete(ENDPOINT + `branch/delete/${id}`);
+      return response.data;
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: [KEY] });
+    },
+    onError: (error) => {
+      const err = classifyAxiosError(error);
+      console.error(error);
+      toast.error(err?.message || "حدث خطأ أثناء حذف الفرع");
+    },
+    onSuccess: () => {
+      toast.success("تم حذف الفرع بنجاح");
+    },
+  });
+
+  return mutation;
+};
+
+export const useClientBranchesOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: [KEY, "options"],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<ClientBranchOption>>(
+        ENDPOINT + "branch/options/",
+      );
+      return response.data;
+    },
+  });
+
+  return query;
 };

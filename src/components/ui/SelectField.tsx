@@ -8,7 +8,7 @@ export type SelectFieldProps = {
   description?: string | string[];
   name?: string;
   error?: string;
-  options: { value: string | number; label: string }[];
+  options: { value: string | number; label?: string }[];
 } & React.SelectHTMLAttributes<HTMLSelectElement>;
 
 const SelectField = ({

@@ -8,7 +8,9 @@ import {
   StatusCombobox,
 } from "@/components/comboboxes";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { Suspense, useState } from "react";
+import { ShipmentFiltersSkeleton } from "./ShipmentFiltersSkeleton";
 
 interface ShipmentFiltersProps {
   initialFilters?: ShipmentFiltersType;
@@ -44,126 +46,165 @@ export function ShipmentFilters({
     onApply(tempFilters);
   };
 
+  const handleDateChange = (
+    key: "loading_date__gte" | "loading_date__lte",
+    date: Date | undefined,
+  ) => {
+    setTempFilters((prev) => ({
+      ...prev,
+      [key]: date,
+    }));
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-          السائق
-        </label>
-        <DriverCombobox
-          value={tempFilters.driver}
-          onChange={(value) =>
-            handleFilterChange("driver", value ? Number(value) : undefined)
-          }
-          className="w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-          العميل
-        </label>
-        <ClientCombobox
-          value={tempFilters.client}
-          onChange={(value) =>
-            handleFilterChange("client", value ? Number(value) : undefined)
-          }
-          className="w-full"
-        />
-      </div>
-
-      {tempFilters.client && (
+    <Suspense fallback={<ShipmentFiltersSkeleton />}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-            الفرع
+            السائق
           </label>
-          <ClientBranchCombobox
-            clientId={tempFilters.client}
-            value={tempFilters.client_branch}
+          <DriverCombobox
+            value={tempFilters.driver}
             onChange={(value) =>
-              handleFilterChange(
-                "client_branch",
-                value ? Number(value) : undefined,
-              )
+              handleFilterChange("driver", value ? Number(value) : undefined)
             }
             className="w-full"
           />
         </div>
-      )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-          المستلم
-        </label>
-        <RecipientCombobox
-          value={tempFilters.recipient}
-          onChange={(value) =>
-            handleFilterChange("recipient", value ? Number(value) : undefined)
-          }
-          className="w-full"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-          حالة الشحنة
-        </label>
-        <StatusCombobox
-          value={tempFilters.status}
-          onChange={(value) =>
-            handleFilterChange("status", value ? Number(value) : undefined)
-          }
-          className="w-full"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-            من مدينة
+            العميل
           </label>
-          <CityCombobox
-            type="origin"
-            value={tempFilters.origin_city}
+          <ClientCombobox
+            value={tempFilters.client}
             onChange={(value) =>
-              handleFilterChange(
-                "origin_city",
-                value ? Number(value) : undefined,
-              )
+              handleFilterChange("client", value ? Number(value) : undefined)
             }
             className="w-full"
           />
         </div>
+
+        {tempFilters.client && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+              الفرع
+            </label>
+            <ClientBranchCombobox
+              clientId={tempFilters.client}
+              value={tempFilters.client_branch}
+              onChange={(value) =>
+                handleFilterChange(
+                  "client_branch",
+                  value ? Number(value) : undefined,
+                )
+              }
+              className="w-full"
+            />
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-            إلى مدينة
+            المستلم
           </label>
-          <CityCombobox
-            type="destination"
-            value={tempFilters.destination_city}
+          <RecipientCombobox
+            value={tempFilters.recipient}
             onChange={(value) =>
-              handleFilterChange(
-                "destination_city",
-                value ? Number(value) : undefined,
-              )
+              handleFilterChange("recipient", value ? Number(value) : undefined)
             }
             className="w-full"
           />
         </div>
-      </div>
-      <div className="flex items-center justify-between pt-2">
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-gray-700 border-gray-300"
-          onClick={handleClear}
-        >
-          مسح الكل
-        </Button>
-        <Button size="sm" onClick={handleSubmit}>
-          تطبيق
-        </Button>
-      </div>
-    </form>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+            حالة الشحنة
+          </label>
+          <StatusCombobox
+            value={tempFilters.status}
+            onChange={(value) =>
+              handleFilterChange("status", value ? Number(value) : undefined)
+            }
+            className="w-full"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+              إلى مدينة
+            </label>
+            <CityCombobox
+              type="destination"
+              value={tempFilters.destination_city}
+              onChange={(value) =>
+                handleFilterChange(
+                  "destination_city",
+                  value ? Number(value) : undefined,
+                )
+              }
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+              من مدينة
+            </label>
+            <CityCombobox
+              type="origin"
+              value={tempFilters.origin_city}
+              onChange={(value) =>
+                handleFilterChange(
+                  "origin_city",
+                  value ? Number(value) : undefined,
+                )
+              }
+              className="w-full"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+              إلى تاريخ
+            </label>
+            <DatePicker
+              date={tempFilters.loading_date__lte}
+              onDateChange={(date) =>
+                handleDateChange("loading_date__lte", date)
+              }
+              className="w-full"
+              placeholder=""
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+              من تاريخ
+            </label>
+            <DatePicker
+              date={tempFilters.loading_date__gte}
+              onDateChange={(date) =>
+                handleDateChange("loading_date__gte", date)
+              }
+              className="w-full"
+              placeholder=""
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-between pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-gray-700 border-gray-300"
+            onClick={handleClear}
+          >
+            مسح الكل
+          </Button>
+          <Button size="sm" onClick={handleSubmit}>
+            تطبيق
+          </Button>
+        </div>
+      </form>
+    </Suspense>
   );
 }

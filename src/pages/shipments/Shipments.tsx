@@ -1,5 +1,5 @@
 import FiltersPopover from "@/components/searchInput/FiltersPopover";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
@@ -41,6 +41,10 @@ const Shipments = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [debouncedValue] = useDebounce(searchParams.get("search"), 500);
+  const filtersPopoverRef = useRef<{
+    open: boolean;
+    setOpen: (open: boolean) => void;
+  }>(null);
 
   const [filters, setFilters] = useState<ShipmentFiltersType>({});
 
@@ -108,11 +112,20 @@ const Shipments = () => {
             )
           }
           suffixIcon={
-            <FiltersPopover activeFilterCount={activeFilterCount}>
+            <FiltersPopover
+              ref={filtersPopoverRef}
+              activeFilterCount={activeFilterCount}
+            >
               <ShipmentFilters
                 initialFilters={filters}
-                onApply={setFilters}
-                onClear={() => setFilters({})}
+                onApply={(filters) => {
+                  setFilters(filters);
+                  filtersPopoverRef.current?.setOpen(false);
+                }}
+                onClear={() => {
+                  setFilters({});
+                  filtersPopoverRef.current?.setOpen(false);
+                }}
               />
             </FiltersPopover>
           }

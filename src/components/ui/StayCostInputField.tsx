@@ -1,21 +1,32 @@
-import { useState } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  UseFormRegister,
+  useWatch,
+} from "react-hook-form";
 import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import { cn } from "../../utils/utils";
 
 export type StayCostInputFieldProps = {
   register: UseFormRegister<ShipmentSerializerSchema>;
   errors: FieldErrors<ShipmentSerializerSchema>;
+  control: Control<ShipmentSerializerSchema>;
 };
 
-const StayCostInputField = ({ register, errors }: StayCostInputFieldProps) => {
-  const [daysStayed, setDaysStayed] = useState<number>(0);
-  const [stayCost, setStayCost] = useState<number>(0);
+const StayCostInputField = ({
+  register,
+  errors,
+  control,
+}: StayCostInputFieldProps) => {
+  const [daysStayed, stayCost] = useWatch({
+    control,
+    name: ["days_stayed", "stay_cost"],
+  });
 
   const daysStayedRegister = register("days_stayed");
   const stayCostRegister = register("stay_cost");
 
-  const total = daysStayed * stayCost;
+  const total = Number(daysStayed || 0) * Number(stayCost || 0);
 
   return (
     <div className="col-span-1 flex flex-col gap-1">
@@ -30,11 +41,11 @@ const StayCostInputField = ({ register, errors }: StayCostInputFieldProps) => {
         <input
           placeholder="عدد الليالي"
           type="number"
+          value={daysStayed?.toString()}
           className="w-1/5 p-2 focus:outline-hidden "
           autoComplete="off"
           {...daysStayedRegister}
           onChange={(e) => {
-            setDaysStayed(parseInt(e.target.value));
             daysStayedRegister.onChange(e);
           }}
         />
@@ -48,11 +59,11 @@ const StayCostInputField = ({ register, errors }: StayCostInputFieldProps) => {
         <input
           placeholder="تكلفة المبيت لليلة الواحدة"
           type="number"
+          value={stayCost?.toString()}
           className="grow px-2 focus:outline-hidden "
           autoComplete="off"
           {...stayCostRegister}
           onChange={(e) => {
-            setStayCost(parseInt(e.target.value));
             stayCostRegister.onChange(e);
           }}
         />

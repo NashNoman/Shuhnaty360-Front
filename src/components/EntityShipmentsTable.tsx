@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   ShipmentFiltersType,
   useShipmentsInfinityQuery,
-  useShipmentStatusInfinityQuery,
+  useShipmentStatusOptions,
 } from "../api/shipments.api";
 import { formatDate } from "../utils/formatDate";
 import SelectMenu from "./SelectMenu";
@@ -62,23 +62,18 @@ const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
   const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
-  const { data: statusData } = useShipmentStatusInfinityQuery();
+  const { data: statusData } = useShipmentStatusOptions();
 
   const options = [
     { label: "الكل", value: "" },
-    ...(statusData?.items.map((status) => ({
-      label: status.name_ar,
-      value: status.id?.toString() || "",
-    })) || []),
+    ...(statusData?.data.results || []),
   ];
-
-  console.log(JSON.stringify(statusData?.items));
 
   const status = options.find(
     (option) => option.label === selectedStatus,
   )?.value;
 
-  const { data, isLoading, ref } = useShipmentsInfinityQuery({
+  const { data, isLoading, ref, refetch, error } = useShipmentsInfinityQuery({
     ...props,
     status,
   });
@@ -103,6 +98,8 @@ const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
         dataCount={data?.items.length}
         columns={tableColumns}
         isLoading={isLoading}
+        error={error}
+        onRetry={refetch}
       >
         {data?.items.map((shipment, index) => (
           <TableRow

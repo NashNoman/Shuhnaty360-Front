@@ -1,7 +1,8 @@
-import { useCompanyBranchesInfinityQuery } from "@/api/profiles.api";
+import { useCompanyBranchesOptions } from "@/api/profiles.api";
 import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
 import Card from "@/components/ui/Card";
 import FormButton from "@/components/ui/FormButton";
+import PhoneInputField from "@/components/ui/PhoneInputField";
 import TextInputField from "@/components/ui/TextInputField";
 import Toggle from "@/components/ui/Toggle";
 import { UserCreateSchemaType } from "@/schemas/user.schema";
@@ -24,13 +25,9 @@ const UserForm = ({
   isEdit = false,
 }: UserFormProps) => {
   const { data: companyBranches, isLoading: isLoadingBranches } =
-    useCompanyBranchesInfinityQuery();
+    useCompanyBranchesOptions();
 
-  const companyBranchOptions =
-    companyBranches?.items.map((item) => ({
-      value: item.id!,
-      label: item.branch_name_ar!,
-    })) || [];
+  const companyBranchOptions = companyBranches.data.results || [];
 
   return (
     <Card>
@@ -69,11 +66,11 @@ const UserForm = ({
             error={errors.last_name?.message}
             {...register("last_name")}
           />
-          <TextInputField
+          <PhoneInputField
             label="رقم التواصل"
             error={errors.phone?.message}
-            type="number"
-            {...register("phone")}
+            control={control}
+            name="phone"
           />
           <AutoCompleteSelectField
             label="الفرع"

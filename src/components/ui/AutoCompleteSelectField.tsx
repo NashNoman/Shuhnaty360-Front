@@ -10,7 +10,7 @@ import { cn } from "../../utils/utils";
 
 export type AutocompleteOption = {
   value: string | number;
-  label: string;
+  label?: string | number;
 };
 
 export type AutocompleteSelectFieldProps = {
@@ -43,7 +43,7 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
   const [highlightedIndex, setHighlightedIndex] = useState(0);
 
   const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(inputValue.toLowerCase()),
+    option.label?.toString().toLowerCase().includes(inputValue.toLowerCase()),
   );
 
   const handleKeyDown = (
@@ -67,9 +67,9 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
       const selected = filteredOptions[highlightedIndex];
       if (selected) {
         field.onChange(selected.value);
-        setInputValue(selected.label);
+        setInputValue(selected.label?.toString() || "");
         setShowOptions(false);
-        if (onInputChange) onInputChange(selected.label);
+        if (onInputChange) onInputChange(selected.label?.toString() || "");
       }
     }
   };
@@ -150,9 +150,10 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
                     }`}
                     onMouseDown={() => {
                       field.onChange(option.value);
-                      setInputValue(option.label);
+                      setInputValue(option.label?.toString() || "");
                       setShowOptions(false);
-                      if (onInputChange) onInputChange(option.label);
+                      if (onInputChange)
+                        onInputChange(option.label?.toString() || "");
                     }}
                     onMouseEnter={() => setHighlightedIndex(idx)}
                   >

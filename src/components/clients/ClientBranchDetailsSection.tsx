@@ -36,20 +36,19 @@ const ClientBranchDetailsSection = ({
   mapLink,
   primaryPhone,
   secondaryPhone,
+  children,
 }: any) => {
   return (
-    <div>
-      <h1 className="text-[#1A1A1A] font-bold text-2xl mb-6">
-        الفرع({branchNumber}): {title}
-      </h1>
-      <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row justify-between items-start lg:items-center font-Rubik overflow-hidden">
-        <div className="flex flex-col gap-4">
+    <div className="flex justify-between items-start">
+      <div>
+        <h1 className="text-[#1A1A1A] font-bold text-2xl mb-6">
+          الفرع({branchNumber}): {title}
+        </h1>
+        <div className="space-y-4 lg:gap-0 lg:flex-row justify-between items-start lg:items-center font-Rubik overflow-hidden">
           <DetailRow label="العنوان: " value={address} />
           {mapLink && mapLink !== address && (
             <DetailRow label="الموقع: " value={mapLink} isLink />
           )}
-        </div>
-        <div className="flex flex-col gap-4">
           {primaryPhone && (
             <DetailRow label="رقم الهاتف (أساسي): " value={primaryPhone} />
           )}
@@ -58,6 +57,7 @@ const ClientBranchDetailsSection = ({
           )}
         </div>
       </div>
+      <div className="flex gap-2">{children}</div>
     </div>
   );
 };
