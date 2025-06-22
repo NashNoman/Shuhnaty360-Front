@@ -101,14 +101,11 @@ export const Waybill = ({
         <div className="font-light">
           <div className="font-bold">AL Jeed Transportation</div>
           <div>
-            <span>Jeddah</span> Branch
-          </div>
-          <div>
-            <span>C.R</span> 4030172574
+            <span>{shipment.user?.company_branch.branch_name_en}</span> Branch
           </div>
           <div>
             <span>التاريخ:</span>{" "}
-            {shipment.loading_date ? formatDate(shipment.loading_date) : "-"}
+            {formatDate(new Date().toISOString().split("T")[0])}
           </div>
         </div>
         <div>
@@ -124,10 +121,7 @@ export const Waybill = ({
         <div className="font-Almarai text-right">
           <div className="font-bold">مؤسسة الجيد للنقليات</div>
           <div>
-            فرع <span>جدة</span>
-          </div>
-          <div>
-            س ت: <span>4030172574</span>
+            فرع <span>{shipment.user?.company_branch.branch_name_ar}</span>
           </div>
           <div className="mt-2 px-2 py-1 rounded-lg bg-[#DD7E1F] text-[#FCFCFC]">
             رقم الشحنة: <span>{shipment.id}</span>

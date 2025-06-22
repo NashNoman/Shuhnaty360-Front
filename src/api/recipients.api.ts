@@ -82,7 +82,7 @@ export const useCreateRecipient = () => {
       const response = await api.post(ENDPOINT + "create/", formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -103,7 +103,7 @@ export const useUpdateRecipient = (id?: number | string) => {
       const response = await api.patch(ENDPOINT + `${id}`, formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -122,7 +122,7 @@ export const useDeleteRecipient = () => {
       const response = await api.delete(ENDPOINT + `${id}`);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {

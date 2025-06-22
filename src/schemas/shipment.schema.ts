@@ -26,8 +26,7 @@ export const shipmentSerializerSchema = fixHtmlFormOptionalFields(
       })
       .datetime({
         message: "تاريخ التحميل غير صالح",
-      })
-      .optional(),
+      }),
     days_to_arrive: z
       .number({
         required_error: "عدد أيام الوصول مطلوب",
@@ -45,8 +44,7 @@ export const shipmentSerializerSchema = fixHtmlFormOptionalFields(
       })
       .datetime({
         message: "تاريخ الوصول المتوقع غير صالح",
-      })
-      .optional(),
+      }),
     actual_delivery_date: z
       .string({
         invalid_type_error: "تاريخ التسليم الفعلي يجب أن يكون نصًا",

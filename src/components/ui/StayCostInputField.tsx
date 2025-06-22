@@ -4,13 +4,17 @@ import {
   UseFormRegister,
   useWatch,
 } from "react-hook-form";
-import { ShipmentSerializerSchema } from "../../schemas/shipment.schema";
 import { cn } from "../../utils/utils";
 
+type StayCostInputFieldSchema = {
+  days_stayed: number;
+  stay_cost: number;
+} & any;
+
 export type StayCostInputFieldProps = {
-  register: UseFormRegister<ShipmentSerializerSchema>;
-  errors: FieldErrors<ShipmentSerializerSchema>;
-  control: Control<ShipmentSerializerSchema>;
+  register: UseFormRegister<StayCostInputFieldSchema>;
+  errors: FieldErrors<StayCostInputFieldSchema>;
+  control: Control<StayCostInputFieldSchema>;
 };
 
 const StayCostInputField = ({
@@ -70,12 +74,12 @@ const StayCostInputField = ({
       </div>
       {errors.days_stayed?.message && (
         <span className="text-red-500 mt-1 text-sm">
-          {errors.days_stayed?.message}
+          {errors.days_stayed?.message as string}
         </span>
       )}
       {errors.stay_cost?.message && (
         <span className="text-red-500 mt-1 text-sm">
-          {errors.stay_cost?.message}
+          {errors.stay_cost?.message as string}
         </span>
       )}
       <div className="text-[#999] font-Rubik text-sm">

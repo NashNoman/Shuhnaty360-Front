@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import {
+  ShipmentOption,
   ShipmentSerializerCreate,
   ShipmentSerializerDetail,
   ShipmentSerializerList,
@@ -83,6 +84,17 @@ export const useShipmentsInfinityQuery = (
     inView,
   };
 };
+export const useShipmentsOptions = () =>
+  useSuspenseQuery({
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<ShipmentOption>>(
+        ENDPOINT + `options/`,
+      );
+      return response.data;
+    },
+    queryKey: [KEY + "options"],
+  });
+
 export const useShipmentStatusOptions = () =>
   useSuspenseQuery({
     queryFn: async () => {
@@ -118,7 +130,7 @@ export const useCreateShipment = () => {
       const response = await api.post(ENDPOINT + "create/", data);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -239,7 +251,7 @@ export const useUpdateShipmentStatus = (keys?: any) => {
       console.error(error);
       toast.error(err?.message || "حدث خطأ أثناء تحديث حالة الشحنة");
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY, keys] });
     },
   });
@@ -253,7 +265,7 @@ export const useDeleteShipment = () => {
       const response = await api.delete(ENDPOINT + id);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {

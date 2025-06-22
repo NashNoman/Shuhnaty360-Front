@@ -1,7 +1,8 @@
 import FiltersPopover from "@/components/searchInput/FiltersPopover";
+import { SHIPMENT_STATUS_MAP } from "@/utils/constants";
 import { useRef, useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import {
   ShipmentFiltersType,
@@ -17,28 +18,18 @@ import ShipmentStatusSelect from "./components/ShipmentStatusSelect";
 const tableColumns = [
   { label: "رقم الشحنة", key: "id" },
   { label: "المندوب", key: "user" },
+  { label: "المرسل", key: "client" },
   { label: "المستلم", key: "recipient" },
   { label: "السائق", key: "driver" },
-  { label: "الفرع", key: "client_branch" },
   { label: "المصدر", key: "origin_city" },
   { label: "الوجهة", key: "destination_city" },
   { label: "تاريخ التحميل", key: "loading_at" },
   { label: "حالة الشحنة", key: "status" },
 ];
 
-const routeStatusMap: Record<string, string> = {
-  all: "الكل",
-  "in-shipping": "قيد الشحن",
-  "in-transit": "في الطريق",
-  delivered: "تم التوصيل",
-  returned: "تم الإرجاع",
-  "under-review": "قيد المراجعة",
-  cancelled: "تم الإلغاء",
-};
-
 const Shipments = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { shipmentName } = useParams<{ shipmentName?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const [debouncedValue] = useDebounce(searchParams.get("search"), 500);
   const filtersPopoverRef = useRef<{
@@ -50,7 +41,10 @@ const Shipments = () => {
 
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
-  const params = { search: debouncedValue, ...filters };
+  const status =
+    (shipmentName && SHIPMENT_STATUS_MAP.get(shipmentName)) || undefined;
+
+  const params = { search: debouncedValue, status, ...filters };
 
   const { data, isFetching, hasNextPage, ref, error, fetchNextPage } =
     useShipmentsInfinityQuery(params);
@@ -69,17 +63,6 @@ const Shipments = () => {
   };
 
   const shipmentsData = data?.items || [];
-
-  const pathParts = location.pathname.split("/").filter(Boolean);
-  const lastPath = pathParts[pathParts.length - 1];
-  const statusFromRoute = routeStatusMap[lastPath] || "الكل";
-
-  let filteredShipments = shipmentsData;
-  if (statusFromRoute !== "الكل") {
-    filteredShipments = shipmentsData.filter(
-      (shipment) => shipment.status?.name_ar === statusFromRoute,
-    );
-  }
 
   return (
     <div className="p-4">
@@ -118,6 +101,7 @@ const Shipments = () => {
             >
               <ShipmentFilters
                 initialFilters={filters}
+                hideStatus={!!shipmentName}
                 onApply={(filters) => {
                   setFilters(filters);
                   filtersPopoverRef.current?.setOpen(false);
@@ -139,13 +123,13 @@ const Shipments = () => {
           className="w-full overflow-x-auto"
           columns={tableColumns}
           isLoading={isFetching || hasNextPage}
-          dataCount={filteredShipments?.length}
+          dataCount={shipmentsData?.length}
           error={error}
           onRetry={fetchNextPage}
           defaultMessage="حدث خطأ أثناء جلب بيانات الشحنات"
         >
-          {filteredShipments &&
-            filteredShipments.map((shipment, index) => (
+          {shipmentsData &&
+            shipmentsData.map((shipment, index) => (
               <TableRow
                 key={shipment.id}
                 index={index}
@@ -155,9 +139,9 @@ const Shipments = () => {
               >
                 <TableCell>{shipment.id}</TableCell>
                 <TableCell>{`${shipment.user?.first_name} ${shipment.user?.last_name}`}</TableCell>
+                <TableCell>{`${shipment.client?.name} - ${shipment.client_branch?.name}`}</TableCell>
                 <TableCell>{shipment.recipient?.name}</TableCell>
                 <TableCell>{shipment.driver?.name}</TableCell>
-                <TableCell>{shipment.client_branch?.name}</TableCell>
                 <TableCell>{shipment.origin_city?.ar_city}</TableCell>
                 <TableCell>{shipment.destination_city?.ar_city}</TableCell>
                 <TableCell className="text-center">

@@ -99,6 +99,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 *::-webkit-scrollbar {
@@ -129,9 +130,10 @@ html {
   #waybill-printable,
   #waybill-printable * {
     visibility: visible !important;
-    -webkit-print-color-adjust: exact !important; /* Chrome/Safari */
-    color-adjust: exact !important; /* Standard */
-    print-color-adjust: exact !important; /* Future */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    appearance: none !important;
   }
   #waybill-printable {
     position: fixed !important;

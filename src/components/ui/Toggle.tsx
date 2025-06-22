@@ -7,10 +7,19 @@ interface ToggleProps {
   label?: string;
   error?: string | FieldError;
   id?: string;
+  description?: string | string[];
   disabled?: boolean;
 }
 
-const Toggle = ({ name, control, label, error, id, disabled }: ToggleProps) => {
+const Toggle = ({
+  name,
+  control,
+  label,
+  error,
+  id,
+  description,
+  disabled,
+}: ToggleProps) => {
   return (
     <Controller
       name={name}
@@ -48,6 +57,21 @@ const Toggle = ({ name, control, label, error, id, disabled }: ToggleProps) => {
             <span className="text-red-500 text-sm">
               {typeof error === "string" ? error : error.message}
             </span>
+          )}
+          {description && (
+            <div className="text-[#999] font-Rubik text-sm">
+              {Array.isArray(description) ? (
+                <ul className="list-disc list-inside">
+                  {description.map((desc, index) => (
+                    <li key={index} className="text-[#666666]">
+                      {desc}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span>{description}</span>
+              )}
+            </div>
           )}
         </div>
       )}

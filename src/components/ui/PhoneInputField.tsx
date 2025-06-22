@@ -67,7 +67,7 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
   };
 
   return (
-    <div className="col-span-1 flex flex-col gap-1">
+    <div className="col-span-1 overflow-hidden flex flex-col gap-1">
       {label && (
         <label
           htmlFor={name}
@@ -77,8 +77,9 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
         </label>
       )}
       <div
+        dir="ltr"
         className={cn(
-          "flex flex-row-reverse overflow-hidden gap-2 bg-white text-lg border border-[#CCCCCC] rounded-lg focus-within:ring-1 focus-within:ring-[#DD7E1F]",
+          "flex overflow-hidden gap-2 bg-white text-lg border border-[#CCCCCC] rounded-lg focus-within:ring-1 focus-within:ring-[#DD7E1F]",
           error && "border-red-500",
         )}
       >
@@ -88,7 +89,7 @@ const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
           onChange={handleCountryCodeChange}
           placeholder={countryCodePlaceholder}
           disabled={disabled}
-          className="w-20 p-2 focus:outline-hidden "
+          className="max-w-16 shrink p-2 focus:outline-hidden "
         />
         <div
           className={cn("h-full w-[.1rem] bg-[#CCCCCC]", error && "bg-red-500")}

@@ -1,4 +1,4 @@
-import { useCitiesInfinityQuery } from "@/api/cities.api";
+import { useCitiesOptions } from "@/api/cities.api";
 import { useShipmentStatusOptions } from "@/api/shipments.api";
 import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
 import DatePickerField from "@/components/ui/DatePickerField";
@@ -28,7 +28,7 @@ const ShipmentSection = ({
   errors,
   setValue,
 }: ShipmentSectionProps) => {
-  const { data: citiesData } = useCitiesInfinityQuery();
+  const { data: citiesData } = useCitiesOptions();
   const { data: statusData } = useShipmentStatusOptions();
   const selectedStatus = useWatch({
     control,
@@ -46,12 +46,7 @@ const ShipmentSection = ({
   const hasContents = !!contents;
 
   const cityOptions = useMemo(() => {
-    return (
-      citiesData?.items.map((city) => ({
-        value: city.id!,
-        label: city.ar_city!,
-      })) || []
-    );
+    return citiesData?.data.results || [];
   }, [citiesData]);
 
   const statusOptions = useMemo(() => {

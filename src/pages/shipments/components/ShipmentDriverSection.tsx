@@ -1,4 +1,8 @@
-import { useDriversOptions, useTruckTypesOptions } from "@/api/drivers.api";
+import {
+  useDriverQuery,
+  useDriversOptions,
+  useTruckTypesOptions,
+} from "@/api/drivers.api";
 import AutoCompleteSelectField, {
   AutocompleteOption,
 } from "@/components/ui/AutoCompleteSelectField";
@@ -34,6 +38,7 @@ const ShipmentDriverSection = ({
 
   const { data } = useDriversOptions();
   const { data: truckTypesData } = useTruckTypesOptions();
+  const { data: driverData } = useDriverQuery(selectedDriverId);
 
   const driverOptions: AutocompleteOption[] = data?.data.results || [];
 
@@ -70,13 +75,13 @@ const ShipmentDriverSection = ({
       />
       <TextInputField
         name="driver_phone"
-        // value={selectedDriver?.phone_number || ""}
+        value={driverData?.data.phone_number || ""}
         label="رقم الهاتف"
         disabled
       />
       <TextInputField
         name="driver_vehicle_number"
-        // value={selectedDriver?.vehicle_number || ""}
+        value={driverData?.data.vehicle_number || ""}
         label="رقم الشاحنة"
         disabled
       />

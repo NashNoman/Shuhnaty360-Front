@@ -88,6 +88,7 @@ const UserForm = ({
           />
           <Toggle
             name="is_superuser"
+            description="إذا كان المستخدم إداريًا، فسيكون لديه جميع الصلاحيات. يرجى التأكيد على هذا الخيار بعناية."
             control={control}
             label="إداري"
             error={errors.is_superuser?.message}

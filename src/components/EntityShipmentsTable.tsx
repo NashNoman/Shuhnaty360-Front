@@ -11,10 +11,12 @@ import { Table, TableCell, TableRow } from "./ui/Table";
 
 const tableColumns = [
   { label: "رقم الشحنة", key: "id" },
+  { label: "المندوب", key: "user" },
+  { label: "المرسل", key: "client" },
+  { label: "المستلم", key: "recipient" },
+  { label: "السائق", key: "driver" },
   { label: "المصدر", key: "origin_city" },
   { label: "الوجهة", key: "destination_city" },
-  { label: "رقم الشحنة", key: "tracking_number" },
-  { label: "المستلم", key: "recipient" },
   { label: "تاريخ التحميل", key: "loading_at" },
   { label: "حالة الشحنة", key: "status" },
 ];
@@ -110,11 +112,13 @@ const EntityShipmentsTable = (props: EntityShipmentsTableProps) => {
             }
           >
             <TableCell>{shipment.id}</TableCell>
+            <TableCell>{`${shipment.user?.first_name} ${shipment.user?.last_name}`}</TableCell>
+            <TableCell>{`${shipment.client?.name} - ${shipment.client_branch?.name}`}</TableCell>
+            <TableCell>{shipment.recipient?.name}</TableCell>
+            <TableCell>{shipment.driver?.name}</TableCell>
             <TableCell>{shipment.origin_city?.ar_city}</TableCell>
             <TableCell>{shipment.destination_city?.ar_city}</TableCell>
-            <TableCell>{shipment.tracking_number}</TableCell>
-            <TableCell>{shipment.recipient?.name}</TableCell>
-            <TableCell className="text-center flex items-center justify-center gap-4">
+            <TableCell className="text-center">
               {shipment.loading_date && formatDate(shipment.loading_date)}
             </TableCell>
             <TableCell>

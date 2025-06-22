@@ -164,6 +164,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setGlobalLogout(handleLogout);
   }, [handleLogout]);
 
+  useEffect(() => {
+    if (!state.userId) {
+      handleLogout();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const authContextValue = useMemo(() => {
     return {
       accessToken: state.accessToken,

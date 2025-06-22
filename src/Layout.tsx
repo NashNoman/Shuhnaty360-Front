@@ -1,4 +1,5 @@
 import React from "react";
+import { ScrollRestoration } from "react-router-dom";
 import { Toaster } from "sonner";
 import Header from "./components/header/Header";
 import Sidebar from "./components/sidebar/Sidebar";
@@ -18,6 +19,11 @@ const Layout = React.memo(({ children }: any) => {
         }`}
       >
         <Header />
+        <ScrollRestoration
+          getKey={(location) => {
+            return location.key;
+          }}
+        />
         <Toaster position="bottom-left" />
         <div className="grow md:p-4">{children}</div>
       </div>

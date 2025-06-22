@@ -95,7 +95,7 @@ export const useCreateClient = () => {
       const response = await api.post(ENDPOINT, formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -116,7 +116,7 @@ export const useUpdateClient = (id?: number | string) => {
       const response = await api.patch(ENDPOINT + `update/${id}`, formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -137,7 +137,7 @@ export const useDeleteClient = () => {
       const response = await api.delete(ENDPOINT + id);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -157,9 +157,6 @@ export const useCreateClientBranch = () => {
     mutationFn: async (formData: ClientBranchCreate) => {
       const response = await api.post(ENDPOINT + "branch/create", formData);
       return response.data;
-    },
-    onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: [KEY, variables.client] });
     },
     onError: (error) => {
       const err = classifyAxiosError(error);
@@ -186,9 +183,6 @@ export const useUpdateClientBranch = () => {
       );
       return response.data;
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] });
-    },
     onError: (error) => {
       const err = classifyAxiosError(error);
       console.error(error);
@@ -196,6 +190,7 @@ export const useUpdateClientBranch = () => {
     },
     onSuccess: () => {
       toast.success("تم تحديث الفرع بنجاح");
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
 
@@ -210,9 +205,6 @@ export const useDeleteClientBranch = () => {
       const response = await api.delete(ENDPOINT + `branch/delete/${id}`);
       return response.data;
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: [KEY] });
-    },
     onError: (error) => {
       const err = classifyAxiosError(error);
       console.error(error);
@@ -220,6 +212,7 @@ export const useDeleteClientBranch = () => {
     },
     onSuccess: () => {
       toast.success("تم حذف الفرع بنجاح");
+      queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
 

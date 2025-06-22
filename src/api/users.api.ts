@@ -4,8 +4,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import { Register, Users, UsersUpdate } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
@@ -61,7 +61,7 @@ export const useCreateUser = () => {
       const response = await api.post(ENDPOINT + "create/", formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -82,7 +82,7 @@ export const useUpdateUser = (id?: number) => {
       const response = await api.put(ENDPOINT + `${id}/update`, formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -147,7 +147,7 @@ export const useUpdateUserIsActive = () => {
       console.error(error);
       toast.error(err?.message || "حدث خطأ أثناء تحديث المندوب");
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
   });
@@ -161,7 +161,7 @@ export const useDeleteUser = () => {
       const response = await api.delete(ENDPOINT + id);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {

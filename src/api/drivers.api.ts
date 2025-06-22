@@ -97,7 +97,7 @@ export const useCreateDriver = () => {
       const response = await api.post(ENDPOINT + "create/", formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -118,7 +118,7 @@ export const useUpdateDriver = (id?: number | string) => {
       const response = await api.patch(ENDPOINT + `update/${id}`, formData);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {
@@ -139,7 +139,7 @@ export const useDeleteDriver = () => {
       const response = await api.delete(ENDPOINT + id);
       return response.data;
     },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [KEY] });
     },
     onError: (error) => {

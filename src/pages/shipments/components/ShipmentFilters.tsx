@@ -16,12 +16,14 @@ interface ShipmentFiltersProps {
   initialFilters?: ShipmentFiltersType;
   onApply: (filters: ShipmentFiltersType) => void;
   onClear: () => void;
+  hideStatus?: boolean;
 }
 
 export function ShipmentFilters({
   initialFilters = {},
   onApply,
   onClear,
+  hideStatus,
 }: ShipmentFiltersProps) {
   const [tempFilters, setTempFilters] =
     useState<ShipmentFiltersType>(initialFilters);
@@ -59,6 +61,20 @@ export function ShipmentFilters({
   return (
     <Suspense fallback={<ShipmentFiltersSkeleton />}>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {!hideStatus && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+              حالة الشحنة
+            </label>
+            <StatusCombobox
+              value={tempFilters.status}
+              onChange={(value) =>
+                handleFilterChange("status", value ? Number(value) : undefined)
+              }
+              className="w-full"
+            />
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
             السائق
@@ -112,19 +128,6 @@ export function ShipmentFilters({
             value={tempFilters.recipient}
             onChange={(value) =>
               handleFilterChange("recipient", value ? Number(value) : undefined)
-            }
-            className="w-full"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-            حالة الشحنة
-          </label>
-          <StatusCombobox
-            value={tempFilters.status}
-            onChange={(value) =>
-              handleFilterChange("status", value ? Number(value) : undefined)
             }
             className="w-full"
           />

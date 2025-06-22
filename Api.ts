@@ -738,6 +738,90 @@ export interface DriverOption {
   label?: string;
 }
 
+export interface User {
+  /** ID */
+  id?: number;
+  /**
+   * Username
+   * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+   * @minLength 1
+   * @maxLength 150
+   * @pattern ^[\w.@+-]+$
+   */
+  username: string;
+  /**
+   * Last name
+   * @maxLength 150
+   */
+  last_name?: string;
+  /**
+   * First name
+   * @maxLength 150
+   */
+  first_name?: string;
+}
+
+export interface PaymentVoucherList {
+  /** ID */
+  id?: number;
+  /** Shipment */
+  shipment?: number;
+  /**
+   * Note
+   * @maxLength 255
+   */
+  note?: string | null;
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  created_by?: User;
+  /**
+   * Fare
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare?: number | null;
+  /**
+   * Premium
+   * @min -2147483648
+   * @max 2147483647
+   */
+  premium?: number | null;
+  /**
+   * Return
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare_return?: number | null;
+  /**
+   * Days Stayed
+   * @min -2147483648
+   * @max 2147483647
+   */
+  days_stayed?: number | null;
+  /**
+   * Stay Cost
+   * @min -2147483648
+   * @max 2147483647
+   */
+  stay_cost?: number | null;
+  /**
+   * Deducted
+   * @min -2147483648
+   * @max 2147483647
+   */
+  deducted?: number | null;
+  /** Total cost */
+  total_cost?: string;
+}
+
 export interface PaymentVoucherCreate {
   /** ID */
   id?: number;
@@ -749,12 +833,147 @@ export interface PaymentVoucherCreate {
    */
   note?: string | null;
   /**
-   * Creator
-   * @pattern ^[\w.@+-]+$
+   * Updated at
+   * @format date-time
    */
-  creator?: string;
+  updated_at?: string;
   /**
-   * تاريخ الإنشاء
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Fare
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare?: number | null;
+  /**
+   * Premium
+   * @min -2147483648
+   * @max 2147483647
+   */
+  premium?: number | null;
+  /**
+   * Return
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare_return?: number | null;
+  /**
+   * Days Stayed
+   * @min -2147483648
+   * @max 2147483647
+   */
+  days_stayed?: number | null;
+  /**
+   * Stay Cost
+   * @min -2147483648
+   * @max 2147483647
+   */
+  stay_cost?: number | null;
+  /**
+   * Deducted
+   * @min -2147483648
+   * @max 2147483647
+   */
+  deducted?: number | null;
+  /** Total cost */
+  total_cost?: string;
+}
+
+export interface Shipment {
+  /** ID */
+  id?: number;
+  /**
+   * Tracking number
+   * @minLength 1
+   */
+  tracking_number?: string | null;
+  /**
+   * Fare
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare: number;
+  /**
+   * Premium
+   * @min -2147483648
+   * @max 2147483647
+   */
+  premium?: number | null;
+  /**
+   * Return
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare_return?: number | null;
+  /**
+   * Days Stayed
+   * @min -2147483648
+   * @max 2147483647
+   */
+  days_stayed?: number | null;
+  /**
+   * Stay Cost
+   * @min -2147483648
+   * @max 2147483647
+   */
+  stay_cost?: number | null;
+  /**
+   * Deducted
+   * @min -2147483648
+   * @max 2147483647
+   */
+  deducted?: number | null;
+  /** Total cost */
+  total_cost?: string;
+  /** User */
+  user?: number | null;
+  /** Driver */
+  driver?: number | null;
+  /** Client */
+  client?: number | null;
+  /** Client branch */
+  client_branch?: number | null;
+  /**
+   * Customer Invoice Number
+   * @maxLength 50
+   */
+  client_invoice_number?: string | null;
+  /** Recipient */
+  recipient?: number | null;
+  /** مدينة التحميل */
+  origin_city?: number | null;
+  /** مدينة الوجهة */
+  destination_city?: number | null;
+  /**
+   * تاريخ التحميل
+   * @format date-time
+   */
+  loading_date?: string | null;
+  /**
+   * عدد الأيام  الوصول
+   * @min -2147483648
+   * @max 2147483647
+   */
+  days_to_arrive?: number | null;
+  /**
+   * تاريخ الوصول المتوقع
+   * @format date-time
+   */
+  expected_arrival_date?: string | null;
+  /**
+   * تاريخ الوصول الفعلي
+   * @format date-time
+   */
+  actual_delivery_date?: string | null;
+  /** وزن الشحنة (طن) */
+  weight?: number | null;
+  /** محتويات الشحنة */
+  contents?: string | null;
+  /**
+   * تاريخ الانشاء
    * @format date-time
    */
   created_at?: string;
@@ -763,6 +982,66 @@ export interface PaymentVoucherCreate {
    * @format date-time
    */
   updated_at?: string;
+}
+
+export interface PaymentVoucherDetail {
+  /** ID */
+  id?: number;
+  shipment?: Shipment;
+  /**
+   * Note
+   * @maxLength 255
+   */
+  note?: string | null;
+  created_by?: User;
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string;
+  /**
+   * Fare
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare?: number | null;
+  /**
+   * Premium
+   * @min -2147483648
+   * @max 2147483647
+   */
+  premium?: number | null;
+  /**
+   * Return
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare_return?: number | null;
+  /**
+   * Days Stayed
+   * @min -2147483648
+   * @max 2147483647
+   */
+  days_stayed?: number | null;
+  /**
+   * Stay Cost
+   * @min -2147483648
+   * @max 2147483647
+   */
+  stay_cost?: number | null;
+  /**
+   * Deducted
+   * @min -2147483648
+   * @max 2147483647
+   */
+  deducted?: number | null;
+  /** Total cost */
+  total_cost?: string;
 }
 
 export interface PaymentVoucherUpdate {
@@ -776,20 +1055,51 @@ export interface PaymentVoucherUpdate {
    */
   note?: string | null;
   /**
-   * Creator
-   * @pattern ^[\w.@+-]+$
-   */
-  creator?: string;
-  /**
-   * تاريخ الإنشاء
+   * Created at
    * @format date-time
    */
   created_at?: string;
   /**
-   * تاريخ التحديث
+   * Updated at
    * @format date-time
    */
   updated_at?: string;
+  /**
+   * Fare
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare?: number | null;
+  /**
+   * Premium
+   * @min -2147483648
+   * @max 2147483647
+   */
+  premium?: number | null;
+  /**
+   * Return
+   * @min -2147483648
+   * @max 2147483647
+   */
+  fare_return?: number | null;
+  /**
+   * Days Stayed
+   * @min -2147483648
+   * @max 2147483647
+   */
+  days_stayed?: number | null;
+  /**
+   * Stay Cost
+   * @min -2147483648
+   * @max 2147483647
+   */
+  stay_cost?: number | null;
+  /**
+   * Deducted
+   * @min -2147483648
+   * @max 2147483647
+   */
+  deducted?: number | null;
 }
 
 export interface CompanyBranch {
@@ -1027,17 +1337,6 @@ export interface DriverSerializerMini {
   name: string;
 }
 
-export interface TruckTypeSerializerMini {
-  /** ID */
-  id?: number;
-  /**
-   * نوع الشاحنة
-   * @minLength 1
-   * @maxLength 100
-   */
-  name_ar: string;
-}
-
 export interface ClientSerializerMini {
   /** ID */
   id?: number;
@@ -1105,22 +1404,6 @@ export interface ShipmentStatusSerializerMini {
   name_en: string;
 }
 
-export interface ShipmentHistory {
-  /** ID */
-  id?: number;
-  user?: UserSerializerMini;
-  status?: ShipmentStatusSerializerMini;
-  /**
-   * Updated at
-   * @format date-time
-   */
-  updated_at?: string;
-  /** Notes */
-  notes?: string | null;
-  /** Shipment */
-  shipment: number;
-}
-
 export interface ShipmentSerializerList {
   /** ID */
   id?: number;
@@ -1131,7 +1414,6 @@ export interface ShipmentSerializerList {
   tracking_number?: string | null;
   user?: UserSerializerMini;
   driver?: DriverSerializerMini;
-  truck_type?: TruckTypeSerializerMini;
   client?: ClientSerializerMini;
   client_branch?: BranchSerializerMini;
   /**
@@ -1139,85 +1421,15 @@ export interface ShipmentSerializerList {
    * @maxLength 50
    */
   client_invoice_number?: string | null;
-  /** ملاحظات العميل */
-  notes_customer?: string | null;
   recipient?: RecipientSerializerMini;
-  /** ملاحظات المستلم */
-  notes_recipient?: string | null;
   origin_city?: CitySerializerMini;
   destination_city?: CitySerializerMini;
-  /**
-   * Fare
-   * @min -2147483648
-   * @max 2147483647
-   */
-  fare: number;
-  /**
-   * Premium
-   * @min -2147483648
-   * @max 2147483647
-   */
-  premium?: number | null;
-  /**
-   * Return
-   * @min -2147483648
-   * @max 2147483647
-   */
-  fare_return?: number | null;
-  /**
-   * Days Stayed
-   * @min -2147483648
-   * @max 2147483647
-   */
-  days_stayed?: number | null;
-  /**
-   * Stay Cost
-   * @min -2147483648
-   * @max 2147483647
-   */
-  stay_cost?: number | null;
-  /**
-   * Deducted
-   * @min -2147483648
-   * @max 2147483647
-   */
-  deducted?: number | null;
-  /** Total cost */
-  total_cost?: string;
-  /**
-   * عدد الأيام  الوصول
-   * @min -2147483648
-   * @max 2147483647
-   */
-  days_to_arrive?: number | null;
-  /**
-   * Expected arrival date
-   * @format date-time
-   */
-  expected_arrival_date?: string;
-  /**
-   * Actual delivery date
-   * @format date-time
-   */
-  actual_delivery_date?: string;
-  /** ملاحظات */
-  notes?: string | null;
-  /** وزن الشحنة (طن) */
-  weight?: number | null;
-  /** محتويات الشحنة */
-  contents?: string | null;
   status?: ShipmentStatusSerializerMini;
   /**
    * Loading date
    * @format date-time
    */
   loading_date?: string;
-  /**
-   * Updated at
-   * @format date-time
-   */
-  updated_at?: string;
-  history?: ShipmentHistory[];
 }
 
 export interface ShipmentSerializerCreate {
@@ -1427,6 +1639,32 @@ export interface ShipmentSerializerUpdate {
   premium?: number | null;
   /** Total cost */
   total_cost?: string;
+}
+
+export interface ShipmentHistory {
+  /** ID */
+  id?: number;
+  user?: UserSerializerMini;
+  status?: ShipmentStatusSerializerMini;
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string;
+  /**
+   * Action
+   * @minLength 1
+   * @maxLength 10
+   */
+  action?: string;
+  /** Notes */
+  notes?: string | null;
+  /** Shipment */
+  shipment: number;
+  /** Old status */
+  old_status?: number | null;
+  /** New status */
+  new_status?: number | null;
 }
 
 export interface ShipmentSerializerDetail {
@@ -2509,6 +2747,23 @@ export class Api<
         ...params,
       }),
   };
+  dashboard = {
+    /**
+     * No description
+     *
+     * @tags dashboard
+     * @name DashboardList
+     * @request GET:/dashboard/
+     * @secure
+     */
+    dashboardList: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/dashboard/`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+  };
   drivers = {
     /**
      * No description
@@ -2786,7 +3041,7 @@ export class Api<
           next?: string | null;
           /** @format uri */
           previous?: string | null;
-          results: PaymentVoucherCreate[];
+          results: PaymentVoucherList[];
         },
         any
       >({
@@ -2821,7 +3076,7 @@ export class Api<
       }),
 
     /**
-     * @description عرض وتحديث وحذف سند
+     * @description عرض سند
      *
      * @tags payment-vouchers
      * @name PaymentVouchersRead
@@ -2829,7 +3084,7 @@ export class Api<
      * @secure
      */
     paymentVouchersRead: (id: number, params: RequestParams = {}) =>
-      this.request<PaymentVoucherUpdate, any>({
+      this.request<PaymentVoucherDetail, any>({
         path: `/payment-vouchers/${id}/`,
         method: "GET",
         secure: true,
@@ -2838,53 +3093,7 @@ export class Api<
       }),
 
     /**
-     * @description عرض وتحديث وحذف سند
-     *
-     * @tags payment-vouchers
-     * @name PaymentVouchersUpdate
-     * @request PUT:/payment-vouchers/{id}/
-     * @secure
-     */
-    paymentVouchersUpdate: (
-      id: number,
-      data: PaymentVoucherUpdate,
-      params: RequestParams = {},
-    ) =>
-      this.request<PaymentVoucherUpdate, any>({
-        path: `/payment-vouchers/${id}/`,
-        method: "PUT",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description عرض وتحديث وحذف سند
-     *
-     * @tags payment-vouchers
-     * @name PaymentVouchersPartialUpdate
-     * @request PATCH:/payment-vouchers/{id}/
-     * @secure
-     */
-    paymentVouchersPartialUpdate: (
-      id: number,
-      data: PaymentVoucherUpdate,
-      params: RequestParams = {},
-    ) =>
-      this.request<PaymentVoucherUpdate, any>({
-        path: `/payment-vouchers/${id}/`,
-        method: "PATCH",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description عرض وتحديث وحذف سند
+     * @description عرض وحذف سند
      *
      * @tags payment-vouchers
      * @name PaymentVouchersDelete
@@ -2900,28 +3109,11 @@ export class Api<
       }),
 
     /**
-     * @description عرض وتحديث وحذف سند
-     *
-     * @tags payment-vouchers
-     * @name PaymentVouchersUpdateRead
-     * @request GET:/payment-vouchers/{id}/update/
-     * @secure
-     */
-    paymentVouchersUpdateRead: (id: number, params: RequestParams = {}) =>
-      this.request<PaymentVoucherUpdate, any>({
-        path: `/payment-vouchers/${id}/update/`,
-        method: "GET",
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description عرض وتحديث وحذف سند
+     * @description تحديث سند
      *
      * @tags payment-vouchers
      * @name PaymentVouchersUpdateUpdate
-     * @request PUT:/payment-vouchers/{id}/update/
+     * @request PUT:/payment-vouchers/{id}/update
      * @secure
      */
     paymentVouchersUpdateUpdate: (
@@ -2930,7 +3122,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<PaymentVoucherUpdate, any>({
-        path: `/payment-vouchers/${id}/update/`,
+        path: `/payment-vouchers/${id}/update`,
         method: "PUT",
         body: data,
         secure: true,
@@ -2940,11 +3132,11 @@ export class Api<
       }),
 
     /**
-     * @description عرض وتحديث وحذف سند
+     * @description تحديث سند
      *
      * @tags payment-vouchers
      * @name PaymentVouchersUpdatePartialUpdate
-     * @request PATCH:/payment-vouchers/{id}/update/
+     * @request PATCH:/payment-vouchers/{id}/update
      * @secure
      */
     paymentVouchersUpdatePartialUpdate: (
@@ -2953,7 +3145,7 @@ export class Api<
       params: RequestParams = {},
     ) =>
       this.request<PaymentVoucherUpdate, any>({
-        path: `/payment-vouchers/${id}/update/`,
+        path: `/payment-vouchers/${id}/update`,
         method: "PATCH",
         body: data,
         secure: true,
@@ -2963,16 +3155,16 @@ export class Api<
       }),
 
     /**
-     * @description عرض وتحديث وحذف سند
+     * @description حذف سند
      *
      * @tags payment-vouchers
      * @name PaymentVouchersUpdateDelete
-     * @request DELETE:/payment-vouchers/{id}/update/
+     * @request DELETE:/payment-vouchers/{id}/update
      * @secure
      */
     paymentVouchersUpdateDelete: (id: number, params: RequestParams = {}) =>
       this.request<void, any>({
-        path: `/payment-vouchers/${id}/update/`,
+        path: `/payment-vouchers/${id}/update`,
         method: "DELETE",
         secure: true,
         ...params,

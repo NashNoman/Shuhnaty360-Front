@@ -83,7 +83,7 @@ const ShipmentClientSection = ({
         error={errors.client_invoice_number?.message}
         {...register("client_invoice_number")}
       />
-      <span />
+      <span className="hidden md:block" />
       <PhoneInputField
         name="phone"
         label="رقم الهاتف (أساسي)"

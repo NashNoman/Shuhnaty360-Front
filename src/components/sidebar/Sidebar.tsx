@@ -13,6 +13,7 @@ import statisticsIcon from "../../assets/images/statistics.svg";
 import truckIcon from "../../assets/images/truck.svg";
 import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../hooks/useAuth";
+import { SHIPMENT_STATUS } from "../../utils/constants";
 import NavbarAccordion from "./NavbarAccordion";
 
 const iconsStyles = "filter invert brightness-0";
@@ -34,31 +35,22 @@ const items = [
       nav: "/shipments/all",
       name: "كل الشحنات",
     },
-    {
-      nav: "/shipments/in-shipping",
-      name: "قيد الشحن",
-    },
-    {
-      nav: "/shipments/delivered",
-      name: "تم التوصيل",
-    },
-    {
-      nav: "/shipments/completed",
-      name: "مكتملة",
-    },
-    {
-      nav: "/shipments/delayed",
-      name: "متأخرة",
-    },
-    {
-      nav: "/shipments/cancelled",
-      name: "ملغية",
-    },
-    {
-      nav: "/shipments/returned",
-      name: "مرتجعة",
-    },
+    ...SHIPMENT_STATUS.map((status) => ({
+      nav: `/shipments/${status.name_en}`,
+      name: status.name_ar,
+    })),
   ],
+  {
+    nav: "/payment-vouchers",
+    name: "سندات الصرف",
+    icon: (selectedItem: string) => (
+      <img
+        src={statisticsIcon}
+        alt="payment-vouchers"
+        className={`${selectedItem.startsWith("/payment-vouchers") ? iconsStyles : ""}`}
+      />
+    ),
+  },
   {
     nav: "/users",
     name: "المناديب",

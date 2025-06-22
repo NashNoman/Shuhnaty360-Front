@@ -24,6 +24,7 @@ export type AutocompleteSelectFieldProps = {
   description?: string | string[];
   isLoading?: boolean;
   onInputChange?: (value: string) => void;
+  ref?: React.RefObject<any>;
 };
 
 const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
@@ -37,6 +38,7 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
   description,
   isLoading,
   onInputChange,
+  ref,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [showOptions, setShowOptions] = useState(false);
@@ -160,6 +162,16 @@ const AutoCompleteSelectField: React.FC<AutocompleteSelectFieldProps> = ({
                     {option.label}
                   </li>
                 ))}
+                <li ref={ref} className="h-0" />
+                {isLoading ? (
+                  <li className="px-4 py-2 flex items-center justify-center cursor-pointer hover:bg-[#F5F5F5]">
+                    <FiLoader className="animate-spin" />
+                  </li>
+                ) : filteredOptions.length === 0 ? (
+                  <li className="px-4 py-2 cursor-pointer hover:bg-[#F5F5F5]">
+                    لا يوجد نتائج
+                  </li>
+                ) : null}
               </ul>
             )}
           </>

@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useShipmentQuery, useUpdateShipment } from "../../api/shipments.api";
-import { useAuth } from "../../hooks/useAuth";
 import {
   shipmentSerializerSchema,
   ShipmentSerializerSchema,
@@ -16,7 +15,6 @@ import ShipmentsForm from "./components/ShipmentsForm";
 
 const EditShipment = () => {
   const navigate = useNavigate();
-  const { userId } = useAuth();
   const { shipmentId } = useParams();
 
   const {
@@ -34,10 +32,9 @@ const EditShipment = () => {
   const { mutate, isPending } = useUpdateShipment(shipmentId);
 
   const onSubmit = handleSubmit((formData) => {
-    console.log(formData);
     mutate(
       {
-        user: data?.data.user?.id || userId!,
+        user: data!.data.user!.id!,
         ...formData,
       },
       {
@@ -58,17 +55,14 @@ const EditShipment = () => {
       setValue("client", shipmentData.client?.id as number);
       setValue("client_branch", shipmentData.client_branch?.id as number);
       setValue("client_invoice_number", shipmentData.client_invoice_number);
-      setValue(
-        "loading_date",
-        formateDateTime(shipmentData.loading_date) || undefined,
-      );
+      setValue("loading_date", formateDateTime(shipmentData.loading_date!)!);
       setValue(
         "expected_arrival_date",
-        formateDateTime(shipmentData.expected_arrival_date) || undefined,
+        formateDateTime(shipmentData.expected_arrival_date!)!,
       );
       setValue(
         "actual_delivery_date",
-        formateDateTime(shipmentData.actual_delivery_date) || undefined,
+        formateDateTime(shipmentData.actual_delivery_date!)!,
       );
       setValue("origin_city", shipmentData.origin_city?.id as number);
       setValue("destination_city", shipmentData.destination_city?.id as number);
