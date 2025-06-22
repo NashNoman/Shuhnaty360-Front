@@ -285,3 +285,9 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  body.is-printing #root {
+    display: none !important;
+  }
+}

@@ -7,7 +7,7 @@ import { formatDate } from "@/utils/formatDate";
 import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
-import InfoSection from "./components/InfoSection";
+
 import PrintableVoucher from "./components/PrintableVoucher";
 
 const PaymentVoucherDetails = () => {
@@ -36,6 +36,8 @@ const PaymentVoucherDetails = () => {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
+    onBeforePrint: async () => document.body.classList.add("is-printing"),
+    onAfterPrint: () => document.body.classList.remove("is-printing"),
   });
 
   if (voucherError || shipmentError) {
@@ -53,39 +55,28 @@ const PaymentVoucherDetails = () => {
 
   const isLoading = isVoucherLoading || isShipmentLoading;
 
-  const voucherDetails: { label: string; value: string | number }[] = [
+  const details: { label: string; value: string | number }[] = [
     { label: "رقم السند", value: voucher?.id || "-" },
     {
       label: "التاريخ",
       value: voucher?.created_at ? formatDate(voucher.created_at) : "-",
     },
-    { label: "اسم السائق", value: shipment?.driver?.name || "-" },
-    { label: "المصدر", value: shipment?.origin_city?.ar_city || "-" },
-    { label: "الوجهة", value: shipment?.destination_city?.ar_city || "-" },
-    { label: "المرسل", value: shipment?.client?.name || "-" },
-    { label: "المستلم", value: shipment?.recipient?.name || "-" },
+    { label: "اسم المستفيد", value: shipment?.driver?.name || "-" },
+    {
+      label: "بواسطة",
+      value: voucher?.created_by
+        ? `${voucher.created_by.first_name} ${voucher.created_by.last_name}`
+        : "-",
+    },
     { label: "رقم الشحنة", value: voucher?.shipment?.id || "-" },
-    {
-      label: "منشئ الشحنة",
-      value: `${shipment?.user?.first_name} ${shipment?.user?.last_name}`,
-    },
-    {
-      label: "منشئ السند",
-      value: `${voucher?.created_by?.first_name} ${voucher?.created_by?.last_name}`,
-    },
-  ];
-
-  const costDetails = [
     { label: "الأجرة", value: `${voucher?.fare || 0} ر.س` },
     { label: "الزيادة", value: `${voucher?.premium || 0} ر.س` },
-    { label: "عدد الأيام", value: voucher?.days_stayed || 0 },
+    { label: "أيام المكوث", value: voucher?.days_stayed || 0 },
     { label: "تكلفة كل يوم", value: `${voucher?.stay_cost || 0} ر.س` },
     { label: "الرجعة", value: `${voucher?.fare_return || 0} ر.س` },
     { label: "الخصم", value: `${voucher?.deducted || 0} ر.س` },
-  ];
-
-  const totalCost = [
     { label: "الإجمالي", value: `${voucher?.total_cost || 0} ر.س` },
+    { label: "ملاحظات", value: voucher?.note || "-" },
   ];
 
   return (
@@ -93,13 +84,12 @@ const PaymentVoucherDetails = () => {
       {isLoading && <PageLoader />}
       {voucher && shipment && (
         <>
-          <div className="hidden">
-            <PrintableVoucher
-              ref={printRef}
-              voucher={voucher}
-              shipment={shipment}
-            />
-          </div>
+          <PrintableVoucher
+            ref={printRef}
+            voucher={voucher}
+            shipment={shipment}
+          />
+
           <div className="border border-[#DD7E1F] rounded-lg mx-4 bg-[#FCFCFC] p-8">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-2xl font-bold">تفاصيل سند الصرف</h1>
@@ -110,14 +100,13 @@ const PaymentVoucherDetails = () => {
                 طباعة
               </button>
             </div>
-            <InfoSection title="تفاصيل السند" data={voucherDetails} />
-            <InfoSection title="تفاصيل التكلفة" data={costDetails} />
-            <div className="pt-4 mt-4">
-              <InfoSection title="الإجمالي" data={totalCost} gridCols={1} />
-            </div>
-            <div className="mt-6">
-              <h3 className="text-lg font-bold">ملاحظات:</h3>
-              <p>{voucher.note || "-"}</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+              {details.map((item, index) => (
+                <div key={index} className="flex justify-between border-b py-2">
+                  <span className="font-bold text-gray-600">{item.label}:</span>
+                  <span className="text-gray-800">{item.value}</span>
+                </div>
+              ))}
             </div>
           </div>
         </>
