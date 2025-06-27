@@ -3,11 +3,12 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
-import { Register, Users, UsersUpdate } from "../../Api";
+import { Register, UserOption, Users, UsersUpdate } from "../../Api";
 import { ApiListResponse, ApiResponse } from "../types";
 import api, { classifyAxiosError } from "../utils/api";
 import { defaultInfinityQueryOptions } from "../utils/queryOptions";
@@ -52,6 +53,20 @@ export const useUserQuery = (id?: number | string) =>
     },
     enabled: !!id,
   });
+
+export const useUsersOptions = () => {
+  const query = useSuspenseQuery({
+    queryKey: [KEY],
+    queryFn: async () => {
+      const response = await api.get<ApiListResponse<UserOption>>(
+        ENDPOINT + "options/",
+      );
+      return response.data;
+    },
+  });
+
+  return query;
+};
 
 export const useCreateUser = () => {
   const queryClient = useQueryClient();

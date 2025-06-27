@@ -1,18 +1,17 @@
+import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import ErrorContainer from "@/components/ErrorContainer";
 import {
   useDeleteRecipient,
   useRecipientQuery,
 } from "../../api/recipients.api";
 import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
 import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
-import { useSidebar } from "../../context/SidebarContext";
 
 const DeleteRecipient = () => {
   const navigate = useNavigate();
-  const { isSidebarOpen } = useSidebar();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { recipientId } = useParams();
 
@@ -59,15 +58,7 @@ const DeleteRecipient = () => {
 
   return (
     <>
-      {(isDeleting || isLoading) && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+      {(isDeleting || isLoading) && <PageLoader />}
       <div className="flex flex-col gap-20">
         <div className="border border-[#DD7E1F] rounded-lg px-6 pt-10 pb-4 mx-4 md:mx-0">
           <div className="w-full flex justify-between items-center relative">

@@ -7,6 +7,7 @@ import {
   paymentVoucherSchema,
 } from "@/schemas/payment-voucher.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PaymentVoucherCreate } from "Api";
 import { Suspense, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +29,19 @@ const AddPaymentVoucher = () => {
   const { mutate, status } = useCreatePaymentVoucher();
 
   const onSubmit = handleSubmit((formData) => {
-    mutate(formData, {
+    const data: PaymentVoucherCreate = {
+      ...formData,
+      driver: shipmentData?.data?.driver?.id,
+      origin_city: shipmentData?.data?.origin_city?.id,
+      destination_city: shipmentData?.data?.destination_city?.id,
+      client: shipmentData?.data?.client?.id,
+      client_branch: shipmentData?.data?.client_branch?.id,
+      recipient: shipmentData?.data?.recipient?.id,
+      client_invoice_number: shipmentData?.data?.client_invoice_number,
+      receiver_name: shipmentData?.data.driver?.id,
+      tracking_number: shipmentData?.data?.tracking_number,
+    };
+    mutate(data, {
       onSuccess: () => {
         navigate("/payment-vouchers");
       },
@@ -45,6 +58,14 @@ const AddPaymentVoucher = () => {
       setValue("deducted", shipmentData.data.deducted || 0);
     }
   }, [setValue, shipmentData]);
+
+  useEffect(() => {
+    const shipmentTempId = sessionStorage.getItem("shipmentId");
+    if (shipmentTempId) {
+      setValue("shipment", Number(shipmentTempId));
+    }
+    sessionStorage.removeItem("shipmentId");
+  }, [setValue]);
 
   return (
     <Suspense fallback={<PageLoader />}>

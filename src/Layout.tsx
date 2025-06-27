@@ -1,23 +1,21 @@
 import React from "react";
 import { ScrollRestoration } from "react-router-dom";
 import { Toaster } from "sonner";
+import AppSidebar from "./components/AppSidebar";
 import Header from "./components/header/Header";
-import Sidebar from "./components/sidebar/Sidebar";
-import { useSidebar } from "./context/SidebarContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import SidebarMobileToggle from "./components/SidebarMobileToggle";
+import { SidebarProvider } from "./components/ui/sidebar";
 
-const Layout = React.memo(({ children }: any) => {
-  const { isSidebarOpen } = useSidebar();
-
+const Layout = React.memo(() => {
   return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <div
-        className={`flex relative flex-col grow overflow-y-auto ${
-          isSidebarOpen
-            ? "lg:w-[calc(100vw-278px)]"
-            : "lg:w-[calc(100vw-104px)]"
-        }`}
-      >
+    <SidebarProvider>
+      {/* <div className="flex h-screen"> */}
+      <AppSidebar />
+      <main className="w-full max-w-full relative overflow-hidden">
+        {/* <div className="relative overflow-y-auto"> */}
+        {/* <SidebarTrigger className="md:hidden fixed top-4 right-4 z-50" /> */}
+        <SidebarMobileToggle />
         <Header />
         <ScrollRestoration
           getKey={(location) => {
@@ -25,9 +23,13 @@ const Layout = React.memo(({ children }: any) => {
           }}
         />
         <Toaster position="bottom-left" />
-        <div className="grow md:p-4">{children}</div>
-      </div>
-    </div>
+        <div className="max-w-full md:p-4">
+          <ProtectedRoute />
+        </div>
+        {/* </div> */}
+      </main>
+      {/* </div> */}
+    </SidebarProvider>
   );
 });
 

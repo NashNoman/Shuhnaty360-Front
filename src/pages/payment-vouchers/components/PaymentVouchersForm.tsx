@@ -1,4 +1,7 @@
-import { useShipmentsOptions } from "@/api/shipments.api";
+import {
+  useShipmentsInvoiceOptions,
+  useShipmentsOptions,
+} from "@/api/shipments.api";
 import AutoCompleteSelectField from "@/components/ui/AutoCompleteSelectField";
 import FormButton from "@/components/ui/FormButton";
 import StayCostInputField from "@/components/ui/StayCostInputField";
@@ -23,7 +26,8 @@ const PaymentVouchersForm = ({
   control,
   isEdit,
 }: PaymentVouchersFormProps) => {
-  const { data } = useShipmentsOptions();
+  const { data: shipmentsData } = useShipmentsOptions();
+  const { data: invoiceData } = useShipmentsInvoiceOptions();
 
   return (
     <form
@@ -34,8 +38,15 @@ const PaymentVouchersForm = ({
         <AutoCompleteSelectField
           name="shipment"
           control={control}
-          options={data.data.results || []}
+          options={shipmentsData.data.results || []}
           label="الشحنة"
+          error={errors.shipment?.message}
+        />
+        <AutoCompleteSelectField
+          name="shipment"
+          control={control}
+          options={invoiceData.data.results || []}
+          label="رقم الفاتورة"
           error={errors.shipment?.message}
         />
         <TextInputField

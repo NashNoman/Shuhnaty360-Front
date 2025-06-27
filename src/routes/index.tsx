@@ -4,9 +4,7 @@ import PaymentVoucherDetails from "@/pages/payment-vouchers/PaymentVoucherDetail
 import PaymentVouchers from "@/pages/payment-vouchers/PaymentVouchers";
 import { createBrowserRouter, Outlet, RouteObject } from "react-router-dom";
 import Layout from "../Layout";
-import ProtectedRoute from "../components/ProtectedRoute";
 import { AuthProvider } from "../context/AuthContext";
-import { SidebarProvider } from "../context/SidebarContext";
 import DashboardPage from "../pages/Dashboard";
 import Login from "../pages/Login";
 import AlertMessages from "../pages/alertMessages/AlertMessages";
@@ -50,18 +48,10 @@ const routes: RouteObject[] = [
         element: <Login />,
       },
       {
-        element: (
-          <SidebarProvider>
-            <ProtectedRoute />
-          </SidebarProvider>
-        ),
+        element: <Layout />,
         children: [
           {
-            element: (
-              <Layout>
-                <Outlet />
-              </Layout>
-            ),
+            // element: <Outlet />,
             children: [
               {
                 path: "/",

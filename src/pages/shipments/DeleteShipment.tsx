@@ -1,17 +1,16 @@
-import { useState } from "react";
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useDeleteShipment, useShipmentQuery } from "../../api/shipments.api";
 import DeleteItemCard from "../../components/shipments/deleteItem/DeleteItemCard";
 import DeleteItemDialog from "../../components/shipments/deleteItem/deleteItemDialog";
-import { useSidebar } from "../../context/SidebarContext";
 import ShipmentStatusOverview from "../../components/shipments/shipment/rejectShipment/ShipmentStatusOverview";
 
 const DeleteShipment = () => {
   const navigate = useNavigate();
   const { shipmentId } = useParams();
-  const { isSidebarOpen } = useSidebar();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data, isLoading, error, refetch } = useShipmentQuery(shipmentId);
@@ -53,15 +52,7 @@ const DeleteShipment = () => {
 
   return (
     <>
-      {(isPending || isLoading) && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+      {(isPending || isLoading) && <PageLoader />}
       <div className="flex flex-col gap-20">
         <ShipmentStatusOverview shipment={shipment} />
         <div className="flex justify-center items-start h-[70vh] mx-4">

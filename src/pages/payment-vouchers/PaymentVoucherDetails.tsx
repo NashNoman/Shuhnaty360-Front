@@ -3,7 +3,6 @@ import { usePaymentVoucherQuery } from "@/api/payment-vouchers.api";
 import { useShipmentQuery } from "@/api/shipments.api";
 import ErrorContainer from "@/components/ErrorContainer";
 import PageLoader from "@/components/PageLoader";
-import { formatDate } from "@/utils/formatDate";
 import { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
@@ -55,28 +54,39 @@ const PaymentVoucherDetails = () => {
 
   const isLoading = isVoucherLoading || isShipmentLoading;
 
-  const details: { label: string; value: string | number }[] = [
-    { label: "رقم السند", value: voucher?.id || "-" },
-    {
-      label: "التاريخ",
-      value: voucher?.created_at ? formatDate(voucher.created_at) : "-",
-    },
-    { label: "اسم المستفيد", value: shipment?.driver?.name || "-" },
-    {
-      label: "بواسطة",
-      value: voucher?.created_by
-        ? `${voucher.created_by.first_name} ${voucher.created_by.last_name}`
-        : "-",
-    },
+  const details = [
+    // First Column
     { label: "رقم الشحنة", value: voucher?.shipment?.id || "-" },
-    { label: "الأجرة", value: `${voucher?.fare || 0} ر.س` },
-    { label: "الزيادة", value: `${voucher?.premium || 0} ر.س` },
-    { label: "أيام المكوث", value: voucher?.days_stayed || 0 },
-    { label: "تكلفة كل يوم", value: `${voucher?.stay_cost || 0} ر.س` },
-    { label: "الرجعة", value: `${voucher?.fare_return || 0} ر.س` },
-    { label: "الخصم", value: `${voucher?.deducted || 0} ر.س` },
-    { label: "الإجمالي", value: `${voucher?.total_cost || 0} ر.س` },
-    { label: "ملاحظات", value: voucher?.note || "-" },
+    { label: "اسم السائق", value: voucher?.shipment?.driver?.name || "-" },
+    {
+      label: "نوع السيارة",
+      value: voucher?.shipment?.truck_type?.name_ar || "-",
+    },
+    { label: "المرسل", value: voucher?.shipment?.client?.name || "-" },
+    {
+      label: "رقم فاتورة المرسل",
+      value: voucher?.shipment?.client_invoice_number || "-",
+    },
+    { label: "اسم المستلم", value: voucher?.shipment?.recipient?.name || "-" },
+    {
+      label: "مدينة التحميل",
+      value: voucher?.shipment?.origin_city?.ar_city || "-",
+    },
+
+    // Second Column
+    {
+      label: "مدينة التنزيل",
+      value: voucher?.shipment?.destination_city?.ar_city || "-",
+    },
+    { label: "المجموع", value: `${voucher?.total_cost || 0} ر.س` },
+    { label: "المستلم", value: voucher?.receiver_name || "-" },
+    { label: "المندوب", value: voucher?.created_by || "-" },
+    { label: "المحاسب", value: voucher?.approved_by || "-" },
+    {
+      label: "حالة الاعتماد",
+      value: voucher?.is_approved ? "معتمد" : "غير معتمد",
+      className: voucher?.is_approved ? "text-green-600" : "text-red-600",
+    },
   ];
 
   return (
@@ -100,13 +110,37 @@ const PaymentVoucherDetails = () => {
                 طباعة
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-              {details.map((item, index) => (
-                <div key={index} className="flex justify-between border-b py-2">
-                  <span className="font-bold text-gray-600">{item.label}:</span>
-                  <span className="text-gray-800">{item.value}</span>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                {details.slice(0, 7).map((detail, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center p-4 border-b"
+                  >
+                    <span className="text-gray-500 font-medium">
+                      {detail.label}
+                    </span>
+                    <span className={detail.className || "font-semibold"}>
+                      {detail.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-4">
+                {details.slice(7).map((detail, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center p-4 border-b"
+                  >
+                    <span className="text-gray-500 font-medium">
+                      {detail.label}
+                    </span>
+                    <span className={detail.className || "font-semibold"}>
+                      {detail.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </>

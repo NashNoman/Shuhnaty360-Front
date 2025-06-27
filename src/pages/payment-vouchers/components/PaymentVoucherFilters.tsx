@@ -1,36 +1,29 @@
-import { ShipmentFiltersType } from "@/api/shipments.api";
-import {
-  CityCombobox,
-  ClientBranchCombobox,
-  ClientCombobox,
-  DriverCombobox,
-  RecipientCombobox,
-  StatusCombobox,
-} from "@/components/comboboxes";
+import { PaymentVoucherFilters as FilterType } from "@/api/payment-vouchers.api";
+import { ClientCombobox, RecipientCombobox } from "@/components/comboboxes";
+import { BranchCombobox } from "@/components/comboboxes/BranchCombobox";
+import { InvoiceNumbersCombobox } from "@/components/comboboxes/InvoiceNumbersCombobox";
+import { ShipmentsCombobox } from "@/components/comboboxes/ShipmentsCombobox";
 import { UserCombobox } from "@/components/comboboxes/UserCombobox";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { Suspense, useState } from "react";
-import { ShipmentFiltersSkeleton } from "./ShipmentFiltersSkeleton";
+import { PaymentVoucherFiltersSkeleton } from "./PaymentVoucherFiltersSkeleton";
 
-interface ShipmentFiltersProps {
-  initialFilters?: ShipmentFiltersType;
-  onApply: (filters: ShipmentFiltersType) => void;
+interface PaymentVoucherFiltersProps {
+  initialFilters?: FilterType;
+  onApply: (filters: FilterType) => void;
   onClear: () => void;
-  hideStatus?: boolean;
 }
 
-export function ShipmentFilters({
+export function PaymentVoucherFilters({
   initialFilters = {},
   onApply,
   onClear,
-  hideStatus,
-}: ShipmentFiltersProps) {
-  const [tempFilters, setTempFilters] =
-    useState<ShipmentFiltersType>(initialFilters);
+}: PaymentVoucherFiltersProps) {
+  const [tempFilters, setTempFilters] = useState<FilterType>(initialFilters);
 
   const handleFilterChange = (
-    key: keyof ShipmentFiltersType,
+    key: keyof FilterType,
     value: string | number | undefined,
   ) => {
     setTempFilters((prev) => ({
@@ -60,23 +53,8 @@ export function ShipmentFilters({
   };
 
   return (
-    <Suspense fallback={<ShipmentFiltersSkeleton />}>
+    <Suspense fallback={<PaymentVoucherFiltersSkeleton />}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {!hideStatus && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-              حالة الشحنة
-            </label>
-            <StatusCombobox
-              value={tempFilters.status}
-              onChange={(value) =>
-                handleFilterChange("status", value ? Number(value) : undefined)
-              }
-              className="w-full"
-            />
-          </div>
-        )}
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
             المندوب
@@ -92,12 +70,15 @@ export function ShipmentFilters({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-            السائق
+            الفرع
           </label>
-          <DriverCombobox
-            value={tempFilters.driver}
+          <BranchCombobox
+            value={tempFilters.issuing_branch}
             onChange={(value) =>
-              handleFilterChange("driver", value ? Number(value) : undefined)
+              handleFilterChange(
+                "issuing_branch",
+                value ? Number(value) : undefined,
+              )
             }
             className="w-full"
           />
@@ -105,82 +86,59 @@ export function ShipmentFilters({
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-            العميل
+            الشحنة
           </label>
-          <ClientCombobox
-            value={tempFilters.client}
+          <ShipmentsCombobox
+            value={tempFilters.shipment}
             onChange={(value) =>
-              handleFilterChange("client", value ? Number(value) : undefined)
+              handleFilterChange("shipment", value ? Number(value) : undefined)
             }
             className="w-full"
           />
         </div>
 
-        {tempFilters.client && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-              الفرع
-            </label>
-            <ClientBranchCombobox
-              clientId={tempFilters.client}
-              value={tempFilters.client_branch}
-              onChange={(value) =>
-                handleFilterChange(
-                  "client_branch",
-                  value ? Number(value) : undefined,
-                )
-              }
-              className="w-full"
-            />
-          </div>
-        )}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+            الفاتورة
+          </label>
+          <InvoiceNumbersCombobox
+            value={tempFilters.invoice}
+            onChange={(value) =>
+              handleFilterChange("invoice", value ? Number(value) : undefined)
+            }
+            className="w-full"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
+            الفرع
+          </label>
+          <ClientCombobox
+            value={tempFilters.issuing_branch}
+            onChange={(value) =>
+              handleFilterChange(
+                "issuing_branch",
+                value ? Number(value) : undefined,
+              )
+            }
+            className="w-full"
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
             المستلم
           </label>
           <RecipientCombobox
-            value={tempFilters.recipient}
+            value={tempFilters.invoice}
             onChange={(value) =>
-              handleFilterChange("recipient", value ? Number(value) : undefined)
+              handleFilterChange("invoice", value ? Number(value) : undefined)
             }
             className="w-full"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-              إلى مدينة
-            </label>
-            <CityCombobox
-              type="destination"
-              value={tempFilters.destination_city}
-              onChange={(value) =>
-                handleFilterChange(
-                  "destination_city",
-                  value ? Number(value) : undefined,
-                )
-              }
-              className="w-full"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 text-right">
-              من مدينة
-            </label>
-            <CityCombobox
-              type="origin"
-              value={tempFilters.origin_city}
-              onChange={(value) =>
-                handleFilterChange(
-                  "origin_city",
-                  value ? Number(value) : undefined,
-                )
-              }
-              className="w-full"
-            />
-          </div>
-        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1 text-right">

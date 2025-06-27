@@ -7,7 +7,6 @@ import message from "../assets/images/message.svg";
 import HorizontalChart from "../components/charts/HorizontalChart";
 import LineChartComponent from "../components/charts/LineChart";
 import PieChart from "../components/charts/PieChart";
-import { useSidebar } from "../context/SidebarContext";
 
 function parseShipmentDate(dateStr: string): Date {
   return new Date(dateStr?.replace(" ", "T"));
@@ -162,7 +161,6 @@ function formatDate(date: Date) {
 }
 
 const Dashboard = React.memo(() => {
-  const { isSidebarOpen } = useSidebar();
   const [selectedRange, setSelectedRange] = useState("أسبوعي");
   const { data } = useShipmentsInfinityQuery();
   const shipments = data?.items;
@@ -432,11 +430,7 @@ const Dashboard = React.memo(() => {
             <PieChart data={pieChartData} />
           </div>
         </div>
-        <div
-          className={`mt-8 shadow-md rounded-3xl ${
-            isSidebarOpen && "flex flex-col shrink"
-          }`}
-        >
+        <div className="mt-8 shadow-md rounded-3xl">
           <div className="flex justify-between items-center p-4">
             <div className="flex flex-col gap-2">
               <span className="text-[#666666] xs:text-xs text-sm font-Rubik">

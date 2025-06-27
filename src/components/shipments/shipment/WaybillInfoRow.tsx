@@ -1,17 +1,16 @@
 const WaybillInfoRow = ({ image, label, value }: any) => (
-  <div className="flex items-center justify-between md:justify-start px-0 py-1 font-Rubik max-w-screen">
-    <div className="flex items-center gap-2 ">
+  <div className="flex items-center justify-end px-0 py-1 font-Rubik max-w-screen">
+    <div className="flex items-center gap-2 mr-1">
       <img src={image} alt="" />
       <span className="font-medium text-sm sm:text-base overflow-hidden text-ellipsis whitespace-nowrap">
         {label}
       </span>
     </div>
-    <div className="grow flex items-center gap-2">
-      <div className="grow border-t-2 border-[#999999] border-dashed mx-2"></div>
+    <span>
       <span className="text-sm sm:text-base overflow-hidden text-ellipsis whitespace-nowrap">
-        {value}
+        :{value}
       </span>
-    </div>
+    </span>
   </div>
 );
 

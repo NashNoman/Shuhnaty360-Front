@@ -1,7 +1,11 @@
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
+import { Button } from "@/components/ui/button";
+import Card from "@/components/ui/Card";
+import { useAuth } from "@/hooks/useAuth";
 import { formatDate } from "@/utils/formatDate";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useShipmentQuery,
   useUpdateShipmentStatus,
@@ -12,13 +16,13 @@ import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
 import PrintWaybillDialog from "../../components/shipments/shipment/PrintWaybillDialog";
 import ShipmentDetailsInfoSection from "../../components/shipments/shipmentDetails/infoSection/ShipmentDetailsInfoSection";
 import ShipmentStatus from "../../components/shipments/shipmentDetails/shipmentStatus/ShipmentStatus";
-import { useSidebar } from "../../context/SidebarContext";
 import ShipmentStatusSelect from "./components/ShipmentStatusSelect";
 
 const ShipmentDetails = () => {
-  const { isSidebarOpen } = useSidebar();
   const { shipmentId } = useParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   const { data, isLoading, error, refetch } = useShipmentQuery(shipmentId);
   const { mutate } = useUpdateShipmentStatus(shipmentId);
@@ -64,6 +68,7 @@ const ShipmentDetails = () => {
   ];
 
   const shipmentData = [
+    { label: "رقم التتبع", value: shipment?.tracking_number || "-" },
     { label: "من", value: shipment?.origin_city?.ar_city || "-" },
     { label: "الى", value: shipment?.destination_city?.ar_city || "-" },
     { label: "المحتويات", value: shipment?.contents || "-" },
@@ -106,26 +111,28 @@ const ShipmentDetails = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
-      <div className="border border-[#DD7E1F] rounded-lg mx-4 bg-[#FCFCFC]">
+      {isLoading && <PageLoader />}
+      <Card>
         <div className="grid xs:grid-cols-10 grid-cols-12 gap-8">
-          <div
-            className={`xs:col-span-10 col-span-12 ${
-              isSidebarOpen ? "lg:col-span-8" : "lg:col-span-9"
-            } px-6 py-8 relative`}
-          >
+          <div className={`xs:col-span-10 col-span-12 lg:col-span-9`}>
             <div className="absolute -left-8 top-0 bottom-0 w-px bg-[#B3B3B3] hidden lg:block"></div>
             <div className="flex items-center justify-between">
               <h1 className="text-xl sm:text-2xl font-bold">السائق</h1>
               <div className="flex items-center gap-2">
+                {(user?.id === shipment?.user?.id || user?.is_superuser) && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      sessionStorage.setItem(
+                        "shipmentId",
+                        shipment?.id?.toString() || "",
+                      );
+                      navigate("/payment-vouchers/add");
+                    }}
+                  >
+                    إضافة سند
+                  </Button>
+                )}
                 <ShipmentStatusSelect
                   status={shipment?.status?.name_ar || ""}
                   onStatusChange={(status) => {
@@ -164,6 +171,8 @@ const ShipmentDetails = () => {
                   "يرجى التأكد من الشراع الثقيل",
                   `يرجى تسليم الشحنة بموعد ${shipment?.loading_date ? formatDate(shipment.loading_date) : "-"}`,
                   "تأكد من إرجاع جهاز الحرارة",
+                  "يتم تسليم الفاتوره أو تصويرها فور التنزيل",
+                  "يتم خصم ١٠٪ في حالم لم يتم تصوير الفاتوره أو تصويرها في الوقت المحدد",
                 ].map((item, index) => (
                   <span key={index}>- {item}</span>
                 ))}
@@ -208,19 +217,11 @@ const ShipmentDetails = () => {
           </div>
 
           {shipment?.history && shipment?.history?.length > 0 ? (
-            <div
-              className={`xs:col-span-10 col-span-12 ${
-                isSidebarOpen ? "lg:col-span-4" : "lg:col-span-3"
-              }`}
-            >
+            <div className="xs:col-span-10 col-span-12 lg:col-span-3">
               <ShipmentStatus history={shipment.history} />
             </div>
           ) : (
-            <div
-              className={`mt-4 xs:col-span-10 col-span-12 ${
-                isSidebarOpen ? "lg:col-span-4" : "lg:col-span-3"
-              }`}
-            >
+            <div className={`mt-4 xs:col-span-10 col-span-12 lg:col-span-3`}>
               {" "}
               <h1 className="text-center font-Rubik font-medium">
                 تقرير الشحنة غير متوفر
@@ -228,7 +229,7 @@ const ShipmentDetails = () => {
             </div>
           )}
         </div>
-      </div>
+      </Card>
       {shipment && (
         <PrintWaybillDialog
           shipment={shipment}

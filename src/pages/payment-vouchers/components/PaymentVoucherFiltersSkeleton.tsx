@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ShipmentFiltersSkeleton() {
+export function PaymentVoucherFiltersSkeleton() {
   return (
     <div className="space-y-4">
       <div>

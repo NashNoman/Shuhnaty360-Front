@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import {
+  ClientInvoiceNumberOption,
   ShipmentOption,
   ShipmentSerializerCreate,
   ShipmentSerializerDetail,
@@ -95,6 +96,17 @@ export const useShipmentsOptions = () =>
     queryKey: [KEY + "options"],
   });
 
+export const useShipmentsInvoiceOptions = () =>
+  useSuspenseQuery({
+    queryFn: async () => {
+      const response = await api.get<
+        ApiListResponse<ClientInvoiceNumberOption>
+      >(ENDPOINT + `client/invoice-number/options/`);
+      return response.data;
+    },
+    queryKey: [KEY + "options"],
+  });
+
 export const useShipmentStatusOptions = () =>
   useSuspenseQuery({
     queryFn: async () => {
@@ -124,6 +136,18 @@ export const useCreateShipment = () => {
   const mutation = useMutation({
     mutationFn: async (formData: ShipmentSerializerCreate) => {
       const data = removeNullOrBlankFields(formData);
+      if (data.loading_date)
+        data.loading_date = format(new Date(data.loading_date), "yyyy-MM-dd");
+      if (data.expected_arrival_date)
+        data.expected_arrival_date = format(
+          new Date(data.expected_arrival_date),
+          "yyyy-MM-dd",
+        );
+      if (data.actual_delivery_date)
+        data.actual_delivery_date = format(
+          new Date(data.actual_delivery_date),
+          "yyyy-MM-dd",
+        );
 
       console.log("Creating shipment with data:", data);
 

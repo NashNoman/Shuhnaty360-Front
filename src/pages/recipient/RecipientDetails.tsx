@@ -1,15 +1,14 @@
 import EntityShipmentsTable from "@/components/EntityShipmentsTable";
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
 import { useParams } from "react-router-dom";
 import { useRecipientQuery } from "../../api/recipients.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
 import ActionsMenu from "../../components/actionsMenu/ActionsMenu";
-import { useSidebar } from "../../context/SidebarContext";
 
 const RecipientDetails = () => {
   const { recipientId } = useParams();
-  const { isSidebarOpen } = useSidebar();
 
   const {
     data: recipientData,
@@ -45,15 +44,7 @@ const RecipientDetails = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+      {isLoading && <PageLoader />}
 
       <div className="mb-4 border border-[#DD7E1F] rounded-lg px-6 pt-10 pb-4 mx-4 md:mx-0">
         <div className="w-full flex justify-between items-start relative">

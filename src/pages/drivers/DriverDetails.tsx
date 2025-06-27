@@ -1,5 +1,6 @@
-import { useParams } from "react-router-dom";
 import ErrorContainer from "@/components/ErrorContainer";
+import PageLoader from "@/components/PageLoader";
+import { useParams } from "react-router-dom";
 import { useDriverQuery } from "../../api/drivers.api";
 import deleteShipmentIcon from "../../assets/images/delete-shipment-icon.svg";
 import editShipmentIcon from "../../assets/images/edit-shipment-icon.svg";
@@ -9,11 +10,9 @@ import flagIcon from "../../assets/images/users/flag.svg";
 import userIdCardImage from "../../assets/images/users/personal-card.svg";
 import EntityShipmentsTable from "../../components/EntityShipmentsTable";
 import UserDriverProfileCard from "../../components/usersDrivers/userDriverDetails/userDriverProfileCard/UserDriverProfileCard";
-import { useSidebar } from "../../context/SidebarContext";
 
 const DriverDetails = () => {
   const { driverId } = useParams();
-  const { isSidebarOpen } = useSidebar();
 
   const {
     data: driverDetailsRes,
@@ -87,15 +86,7 @@ const DriverDetails = () => {
 
   return (
     <>
-      {isLoading && (
-        <div
-          className={`fixed inset-0 flex justify-center items-center z-50 ${
-            isSidebarOpen && "lg:transform -translate-x-[5%]"
-          }`}
-        >
-          <span className="loader"></span>
-        </div>
-      )}
+      {isLoading && <PageLoader />}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <EntityShipmentsTable driver={driverId} />
         <div className="col-span-1 min-h-screen bg-[#FCFCFC]">

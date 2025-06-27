@@ -34,7 +34,6 @@ const EditShipment = () => {
   const onSubmit = handleSubmit((formData) => {
     mutate(
       {
-        user: data!.data.user!.id!,
         ...formData,
       },
       {

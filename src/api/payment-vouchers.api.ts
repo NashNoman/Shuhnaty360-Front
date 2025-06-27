@@ -12,6 +12,7 @@ import {
   PaymentVoucherDetail,
   PaymentVoucherList,
 } from "Api";
+import { format } from "date-fns";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
@@ -81,14 +82,41 @@ export const usePaymentVoucherQuery = (id?: string) => {
   });
 };
 
-export const usePaymentVouchersInfinityQuery = () => {
+export type PaymentVoucherFilters = {
+  user?: number;
+  issuing_branch?: string;
+  voucher?: string;
+  shipment?: string;
+  invoice?: string;
+  search?: string | undefined;
+  loading_date__gte?: Date;
+  loading_date__lte?: Date;
+};
+
+export const usePaymentVouchersInfinityQuery = (
+  filters: PaymentVoucherFilters = {},
+) => {
   const { ref, inView } = useInView();
 
   const query = useInfiniteQuery({
-    ...defaultInfinityQueryOptions<PaymentVoucherList>([KEY]),
-    queryFn: async ({ pageParam }) => {
+    ...defaultInfinityQueryOptions<PaymentVoucherList>([KEY, filters]),
+    queryFn: async ({ pageParam = 1 }) => {
+      const paramsObj: Record<string, string> = {};
+      if (pageParam !== undefined) paramsObj.page = String(pageParam);
+      if (filters) {
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            if (value instanceof Date) {
+              paramsObj[key] = format(value, "yyyy-MM-dd");
+            } else {
+              paramsObj[key] = String(value);
+            }
+          }
+        });
+      }
+      const params = new URLSearchParams(paramsObj);
       const response = await api.get<ApiListResponse<PaymentVoucherList>>(
-        ENDPOINT + `?page=${pageParam}`,
+        `${ENDPOINT}?${params.toString()}`,
       );
       return response.data;
     },

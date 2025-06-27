@@ -4,7 +4,6 @@ import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCreateShipment } from "../../api/shipments.api";
-import { useAuth } from "../../hooks/useAuth";
 import {
   ShipmentSerializerSchema,
   shipmentSerializerSchema,
@@ -13,7 +12,6 @@ import ShipmentsForm from "./components/ShipmentsForm";
 
 const AddShipment = () => {
   const navigate = useNavigate();
-  const { userId } = useAuth();
   const {
     register,
     handleSubmit,
@@ -31,7 +29,6 @@ const AddShipment = () => {
 
   const onSubmit = handleSubmit((formData) => {
     mutate({
-      user: userId!,
       ...formData,
     });
   });

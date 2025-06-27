@@ -101,7 +101,7 @@ export const Waybill = ({
         <div className="font-light">
           <div className="font-bold">AL Jeed Transportation</div>
           <div>
-            <span>{shipment.user?.company_branch.branch_name_en}</span> Branch
+            <span>{shipment.user?.company_branch?.branch_name_en}</span> Branch
           </div>
           <div>
             <span>التاريخ:</span>{" "}
@@ -121,7 +121,7 @@ export const Waybill = ({
         <div className="font-Almarai text-right">
           <div className="font-bold">مؤسسة الجيد للنقليات</div>
           <div>
-            فرع <span>{shipment.user?.company_branch.branch_name_ar}</span>
+            فرع <span>{shipment.user?.company_branch?.branch_name_ar}</span>
           </div>
           <div className="mt-2 px-2 py-1 rounded-lg bg-[#DD7E1F] text-[#FCFCFC]">
             رقم الشحنة: <span>{shipment.id}</span>
@@ -129,9 +129,16 @@ export const Waybill = ({
         </div>
       </div>
       <hr className="border-0 border-t-2 border-solid border-[#666] mt-2 mb-6" />
-      <div className="text-center font-Almarai font-bold text-lg mb-6">
-        كشف تحميل شاحنة
-        <div className="font-semibold text-base">Truck Loading Sheet</div>
+      <div className="mb-6 relative">
+        <div className="text-center font-Almarai font-bold text-lg">
+          بوليصة شحن
+          <div className="font-semibold text-base">Shipment Policy</div>
+        </div>
+        <div className="absolute top-4 right-1/4 translate-x-1/2">
+          <span className="border-2 p-2 border-[#666]">
+            {shipment.tracking_number}
+          </span>
+        </div>
       </div>
 
       <div className="">
@@ -180,19 +187,7 @@ export const Waybill = ({
           </div>
         </div>
       </div>
-
       <div className="grid grid-cols-2">
-        {/* <div className='col-span-1'>
-          <div className='font-Almarai font-bold text-lg mb-2'>تكلفة الشحنة</div>
-          {shipmentCostDetails.map((row: any, index: any) => (
-            <div key={index}>
-              <WaybillInfoRow
-                label={row.label}
-                value={row.value}
-              />
-            </div>
-          ))}
-        </div> */}
         <div className="col-span-2">
           <div className="font-Almarai font-bold text-lg mb-1">
             تفاصيل الشحنة
@@ -204,12 +199,14 @@ export const Waybill = ({
           ))}
         </div>
       </div>
-      <div className="mt-6 bg-[#FCF2E9] border-2 border-[#ffb678] rounded-lg p-2 text-sm">
+      <div className="mt-3 bg-[#FCF2E9] border-2 border-[#ffb678] rounded-lg p-2 text-sm">
         <div>:ملاحظات</div>
         {[
           "يرجى التأكد من الشراع الثقيل",
           `يرجى تسليم الشحنة بموعد ${shipment.loading_date ? formatDate(shipment.loading_date) : "-"}`,
           "تأكد من إرجاع جهاز الحرارة",
+          "يتم تسليم الفاتوره أو تصويرها فور التنزيل",
+          "يتم خصم ١٠٪ في حالم لم يتم تصوير الفاتوره أو تصويرها في الوقت المحدد",
         ].map((item, index) => (
           <div key={index}>{item} -</div>
         ))}
